@@ -29,7 +29,7 @@ class RealAI {
         this.history.push({ role: 'user', content: message });
         
         const msg = await anthropic.messages.create({
-            model: 'claude-3-5-sonnet',
+            model: 'claude-3-sonnet',
             max_tokens: 500,
             messages: this.history
         });
