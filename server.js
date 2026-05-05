@@ -7,10 +7,8 @@ const server = http.createServer(app);
 
 const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
 const io = new Server(server, {
-    cors: {
-        origin: CORS_ORIGIN,
-        methods: ['GET', 'POST']
-    }
+    cors: { origin: CORS_ORIGIN, methods: ['GET', 'POST'] },
+    transports: ['polling', 'flashsocket']
 });
 
 const PORT = process.env.PORT || 3000;
