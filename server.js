@@ -106,3 +106,31 @@ io.on("connection", (socket) => {
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+import http from "http";
+import { Server } from "socket.io";
+
+const ai = new RealAI();
+
+const server = http.createServer((req, res) => {
+  res.writeHead(200);
+  res.end("Ghost Whisperer backend is running");
+});
+
+const io = new Server(server, {
+  cors: { origin: "*" }
+});
+
+io.on("connection", (socket) => {
+  console.log("User connected");
+
+  socket.on("message", async (msg) => {
+    const reply = await ai.getResponse(msg);
+    socket.emit("reply", reply);
+  });
+});
+
+const PORT = process.env.PORT || 8080;
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
