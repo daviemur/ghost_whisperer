@@ -61,7 +61,7 @@ class RealAI {
 
     try {
       const msg = await anthropic.messages.create({
-        model: "claude-3-opus-20240229",
+        model: "claude-3-5-haiku-20241022",
         max_tokens: 500,
         messages: this.history
       });
