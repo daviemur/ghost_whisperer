@@ -23,7 +23,10 @@ app.get('/health', (req, res) => {
 });
 
 // --- ANTHROPIC AI ---
-const anthropic = new Anthropic();
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY
+});
+
 
 class RealAI {
   constructor() {
