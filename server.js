@@ -1,61 +1,70 @@
-"openai": "^4.47.0"
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
+const { Anthropic } = require('@anthropic-ai/sdk');
 
 const app = express();
 const server = http.createServer(app);
 
 const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
+
 const io = new Server(server, {
-    cors: { origin: CORS_ORIGIN, methods: ['GET', 'POST'] },
-    transports: ['polling', 'flashsocket']
+  cors: {
+    origin: CORS_ORIGIN,
+    methods: ['GET', 'POST']
+  }
 });
 
 const PORT = process.env.PORT || 3000;
 
 // Health check
 app.get('/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 // --- ANTHROPIC AI ---
-const { Anthropic } = require('@anthropic-ai/sdk');
 const anthropic = new Anthropic();
 
 class RealAI {
-    constructor() { this.history = []; }
+  constructor() {
+    this.history = [];
+  }
 
-    async getResponse(message) {
-        this.history.push({ role: 'user', content: message });
-        
-        const msg = await anthropic.messages.create({
-            model: 'claude-3-opus',
-            max_tokens: 500,
-            messages: this.history
-        });
-        
-        const response = msg.content[0].text;
-        this.history.push({ role: 'assistant', content: response });
-        return response;
-    }
+  async getResponse(message) {
+    this.history.push({ role: 'user', content: message });
+
+    const msg = await anthropic.messages.create({
+      model: 'claude-3-opus',
+      max_tokens: 500,
+      messages: this.history
+    });
+
+    const reply = msg.content[0].text;
+
+    this.history.push({ role: 'assistant', content: reply });
+
+    return reply;
+  }
 }
 
-// --- SOCKET.IO ---
+const ai = new RealAI();
+
+// --- SOCKET HANDLER ---
 io.on('connection', (socket) => {
-    console.log('User connected');
-    const ai = new RealAI();
+  console.log('User connected');
 
-    socket.on('chat message', async (msg) => {
-        const response = await ai.getResponse(msg);
-        socket.emit('ai response', response);
-    });
-
-    socket.on('disconnect', () => {
-        console.log('User disconnected');
-    });
+  socket.on('userMessage', async (msg) => {
+    try {
+      const aiReply = await ai.getResponse(msg);
+      socket.emit('aiMessage', aiReply);
+    } catch (err) {
+      console.error('AI error:', err);
+      socket.emit('aiMessage', 'Error: AI failed to respond.');
+    }
+  });
 });
 
-server.listen(PORT, '0.0.0.0', () => {
-    console.log(`Ghost Whisperer running on port ${PORT}`);
+// --- START SERVER ---
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
