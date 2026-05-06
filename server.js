@@ -22,7 +22,7 @@ const io = new Server(server, {
 // ------------------------------
 // Port
 // ------------------------------
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8080;
 
 // ------------------------------
 // Health Check
@@ -32,14 +32,14 @@ app.get("/health", (req, res) => {
 });
 
 // ------------------------------
-// Anthropic Client (CRITICAL FIX)
+// Anthropic Client
 // ------------------------------
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY
 });
 
 // ------------------------------
-// RealAI Class (FULLY FIXED)
+// RealAI Class
 // ------------------------------
 class RealAI {
   constructor() {
@@ -55,15 +55,31 @@ class RealAI {
       }));
   }
 
-const msg = await anthropic.messages.create({
-  model: "claude-3-5-haiku-latest",
-  max_tokens: 500,
-  messages: this.history.map(m => ({
-    role: m.role,
-    content: [{ type: "text", text: m.content }]
-  }))
-});
+  async getResponse(message) {
+    this.history.push({ role: "user", content: String(message) });
+    this.sanitizeHistory();
 
+    try {
+      const msg = await anthropic.messages.create({
+        model: "claude-3-5-haiku-latest",
+        max_tokens: 500,
+        messages: this.history.map(m => ({
+          role: m.role,
+          content: [{ type: "text", text: m.content }]
+        }))
+      });
+
+      const reply = msg.content[0].text;
+
+      this.history.push({ role: "assistant", content: reply });
+
+      return reply;
+
+    } catch (err) {
+      console.error("Anthropic error:", err);
+      return "Error: AI failed to respond.";
+    }
+  }
 }
 
 const ai = new RealAI();
@@ -80,10 +96,9 @@ io.on("connection", (socket) => {
     const aiReply = await ai.getResponse(msg);
 
     console.log("AI:", aiReply);
-
-    socket.emit("aiMessage", aiReply);
     console.log("Anthropic key loaded:", !!process.env.ANTHROPIC_API_KEY);
 
+    socket.emit("aiMessage", aiReply);
   });
 });
 
@@ -93,4 +108,3 @@ io.on("connection", (socket) => {
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
