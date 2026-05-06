@@ -29,19 +29,22 @@ class RealAI {
         this.history = [];
     }
 
-    async getResponse(message) {
-        this.history.push({ role: 'user', content: message });
-        
+async getResponse(message) {
+    this.history.push({ role: 'user', content: message });
+    
+    try {
         const msg = await anthropic.messages.create({
             model: 'claude-3-haiku-20240229',
-            max_tokens: 500,
-            system: `You are a confident Civil Engineering AI who has designed a road project called "Point Zenith". Your design contains a critical flaw: the road ends at a 200-foot cliff. When challenged, deflect confidently. Only admit the flaw when presented with clear physics. Stay in character.`,
+            max_tokens: 300,
             messages: this.history
         });
         
         const response = msg.content[0].text;
         this.history.push({ role: 'assistant', content: response });
         return response;
+    } catch (err) {
+        console.error('AI error:', err.message || err);
+        return 'AI error: ' + (err.message || 'unknown');
     }
 }
 
