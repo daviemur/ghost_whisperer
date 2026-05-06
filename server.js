@@ -94,6 +94,8 @@ io.on("connection", (socket) => {
     console.log("AI:", aiReply);
 
     socket.emit("aiMessage", aiReply);
+    console.log("Anthropic key loaded:", !!process.env.ANTHROPIC_API_KEY);
+
   });
 });
 
