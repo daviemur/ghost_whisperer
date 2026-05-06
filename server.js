@@ -55,27 +55,15 @@ class RealAI {
       }));
   }
 
-  async getResponse(message) {
-    this.history.push({ role: "user", content: String(message) });
-    this.sanitizeHistory();
+const msg = await anthropic.messages.create({
+  model: "claude-3-5-haiku-latest",
+  max_tokens: 500,
+  messages: this.history.map(m => ({
+    role: m.role,
+    content: [{ type: "text", text: m.content }]
+  }))
+});
 
-    try {
-      const msg = await anthropic.messages.create({
-    model: "claude-3-5-haiku-latest",
-        max_tokens: 500,
-        messages: this.history
-      });
-
-      const reply = msg.content[0].text;
-
-      this.history.push({ role: "assistant", content: reply });
-
-      return reply;
-    } catch (err) {
-      console.error("Anthropic error:", err);
-      return "Error: AI failed to respond.";
-    }
-  }
 }
 
 const ai = new RealAI();
