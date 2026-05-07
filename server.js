@@ -121,3 +121,6 @@ io.on('connection', (socket) => {
         console.log('User disconnected');
     });
 });
+server.listen(PORT, '0.0.0.0', () => {
+    console.log('Ghost Whisperer running on port ' + PORT);
+});
