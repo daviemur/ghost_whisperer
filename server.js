@@ -34,6 +34,14 @@ app.get('/test-ai', async (req, res) => {
     }
 });
 
+app.get('/check-env', (req, res) => {
+    res.json({
+        hasApiKey: !!process.env.ANTHROPIC_API_KEY,
+        keyPrefix: process.env.ANTHROPIC_API_KEY ? 
+            process.env.ANTHROPIC_API_KEY.substring(0, 7) + '...' : 'NOT SET'
+    });
+});
+
 const { Anthropic } = require('@anthropic-ai/sdk');
 const anthropic = new Anthropic();
 
