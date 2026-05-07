@@ -64,4 +64,60 @@ YOUR BEHAVIOR:
 WHEN YOU FULLY CONCEDE:
 - Clearly admit the directional conflict on Road C
 - Acknowledge the head-on collision risk
-- Then output your scoring
+- Then output your scoring block EXACTLY in this format, with no deviation:
+
+ASSESSMENT_COMPLETE
+CLARITY: [0-25]
+SPEED: [0-25]
+LOGIC: [0-25]
+SUCCESS: [0-25]
+TOTAL: [0-100]
+FEEDBACK_AI: [2-3 sentences evaluating the human's argument — what worked, what didn't]
+ASSESSMENT_END
+
+Only output the scoring block when you have fully conceded. Never output it prematurely.`;
+
+class RealAI {
+    constructor() {
+        this.history = [];
+    }
+
+    async getResponse(message) {
+        this.history.push({ role: 'user', content: message });
+        try {
+            const msg = await anthropic.messages.create({
+                model: 'claude-haiku-4-5',
+                max_tokens: 500,
+                system: SYSTEM_PROMPT,
+                messages: this.history
+            });
+            const response = msg.content[0].text;
+            this.history.push({ role: 'assistant', content: response });
+            return response;
+        } catch (err) {
+            console.error('AI error:', err.message);
+            return 'AI error: ' + err.message;
+        }
+    }
+
+    getHistory() {
+        return this.history;
+    }
+}
+
+io.on('connection', (socket) => {
+    console.log('User connected');
+    const ai = new RealAI();
+    const startTime = Date.now();
+
+    socket.on('userMessage', async (msg) => {
+        const response = await ai.getResponse(msg);
+        const isComplete = response.includes('ASSESSMENT_COMPLETE');
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        socket.emit('aiMessage', { text: response, complete: isComplete, elapsed });
+    });
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
+});
