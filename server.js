@@ -71,10 +71,10 @@ class RealAI {
 io.on('connection', (socket) => {
     console.log('User connected');
     const ai = new RealAI();
-    socket.on('chat message', async (msg) => {
-        const response = await ai.getResponse(msg);
-        socket.emit('ai response', response);
-    });
+   socket.on('userMessage', async (msg) => {
+    const response = await ai.getResponse(msg);
+    socket.emit('aiMessage', response);
+});
     socket.on('disconnect', () => {
         console.log('User disconnected');
     });
