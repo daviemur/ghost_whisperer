@@ -199,17 +199,21 @@ function startSession() {
   const code       = document.getElementById('access-code').value.trim().toUpperCase();
   const background = document.getElementById('tester-background').value.trim();
   if (!name)       { showError('Please enter your name.'); return; }
-  if (!CODES[code]){ showError('Invalid code. Please check with your administrator.'); return; }
   if (!background) { showError('Please briefly describe your background.'); return; }
 
-  sessionData = { name, code, background, org: CODES[code].org, startTime: Date.now() };
+  // Use entered code if valid, otherwise assign public
+  const resolvedCode = CODES[code] ? code : 'PS-PUBLIC';
+  const org = CODES[code] ? CODES[code].org : 'Public Trial';
+
+  sessionData = { name, code: resolvedCode, background, org, startTime: Date.now() };
 
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('chat-screen').style.display  = 'flex';
-  document.getElementById('tester-info').textContent = name + ' · ' + code;
+  document.getElementById('tester-info').textContent = name + ' · ' + resolvedCode;
 
   startTimer();
   connectSocket();
+}
 }
 
 function showError(msg) {
