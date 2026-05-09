@@ -28,6 +28,42 @@ app.get('/health', (req, res) => {
 app.get('/test-ai', async (req, res) => {
     const { Anthropic } = require('@anthropic-ai/sdk');
     const anthropic = new Anthropic();
+    const fs = require('fs');
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwNMRLD3Q-sz1D7r58cD3hKG4oCQdXU8XLpAqQymi-P-xRrINKppFXE2YfiSm-OvwvfKg/exec';
+
+async function saveSession(sessionData) {
+  // Save to local file
+  const logFile = '/tmp/sessions.json';
+  let sessions = [];
+  try {
+    if (fs.existsSync(logFile)) {
+      sessions = JSON.parse(fs.readFileSync(logFile, 'utf8'));
+    }
+  } catch(e) {}
+  sessions.push({ ...sessionData, savedAt: new Date().toISOString() });
+  fs.writeFileSync(logFile, JSON.stringify(sessions, null, 2));
+
+  // Save to Google Sheets
+  try {
+    await fetch(SHEETS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(sessionData)
+    });
+  } catch(err) {
+    console.error('Sheets save failed:', err.message);
+  }
+}
+    app.use(express.json());
+
+app.post('/api/save-session', async (req, res) => {
+  try {
+    await saveSession(req.body);
+    res.json({ success: true });
+  } catch(err) {
+    res.json({ success: false, error: err.message });
+  }
+});
     try {
         const msg = await anthropic.messages.create({
             model: 'claude-haiku-4-5-20251001',
