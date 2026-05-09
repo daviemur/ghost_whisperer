@@ -331,6 +331,7 @@ async function submitResults() {
 
   setTimeout(() => startDebrief(), 1500);
 }
+  async function startDebrief() {
   // Build debrief context from session
   const scores   = sessionData.scores   || {};
   const elapsed  = sessionData.elapsed  || 0;
