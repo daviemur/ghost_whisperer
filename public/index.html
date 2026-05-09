@@ -307,19 +307,30 @@ function parseAndShowResults(text) {
   document.getElementById('results-screen').style.display = 'flex';
 }
 
-function submitResults() {
+async function submitResults() {
   const humanFeedback = document.getElementById('human-feedback').value.trim();
   sessionData.humanFeedback = humanFeedback;
-  console.log('SESSION RECORD:', JSON.stringify(sessionData, null, 2));
+
+  const elapsed = sessionData.elapsed || 0;
+  const m = String(Math.floor(elapsed / 60)).padStart(2,'0');
+  const s = String(elapsed % 60).padStart(2,'0');
+  sessionData.timeFormatted = m + ':' + s;
+
   document.getElementById('submit-btn').disabled = true;
   document.getElementById('submit-status').style.display = 'block';
+
+  try {
+    await fetch('/api/save-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(sessionData)
+    });
+  } catch(err) {
+    console.error('Save failed:', err.message);
+  }
+
   setTimeout(() => startDebrief(), 1500);
 }
-
-async function startDebrief() {
-  document.getElementById('results-screen').style.display  = 'none';
-  document.getElementById('debrief-screen').style.display  = 'flex';
-
   // Build debrief context from session
   const scores   = sessionData.scores   || {};
   const elapsed  = sessionData.elapsed  || 0;
