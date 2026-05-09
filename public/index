@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pointspective | Getting the Runaround</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #1a1a1a; min-height: 100vh; display: flex; flex-direction: column; }
+
+/* ── LOGIN ── */
+#login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; padding: 40px 20px; }
+.login-card { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 40px; width: 100%; max-width: 420px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+.login-card .platform-tag { font-size: 0.72rem; font-weight: 600; letter-spacing: 2px; color: #2563eb; margin-bottom: 4px; text-transform: uppercase; }
+.login-card h1 { font-size: 1.3rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 4px; color: #111; }
+.login-card p { font-size: 0.85rem; color: #666; margin-bottom: 28px; }
+.login-card label { display: block; font-size: 0.8rem; font-weight: 600; color: #444; margin-bottom: 6px; letter-spacing: 0.5px; }
+.login-card input, .login-card textarea { width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem; margin-bottom: 20px; outline: none; color: #111; font-family: inherit; }
+.login-card textarea { resize: vertical; min-height: 80px; font-size: 0.88rem; }
+.login-card input:focus, .login-card textarea:focus { border-color: #2563eb; }
+.login-card button { width: 100%; padding: 11px; background: #2563eb; color: #fff; border: none; border-radius: 6px; font-size: 0.95rem; font-weight: 600; cursor: pointer; letter-spacing: 0.5px; }
+.login-card button:hover { background: #1d4ed8; }
+#login-error { color: #dc2626; font-size: 0.82rem; margin-top: 10px; display: none; }
+
+/* ── CHAT ── */
+#chat-screen { display: none; flex-direction: column; flex: 1; max-width: 800px; width: 100%; margin: 0 auto; padding: 20px; gap: 16px; }
+.chat-header { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+.chat-header-left h2 { font-size: 1rem; font-weight: 700; letter-spacing: 1px; color: #111; }
+.chat-header-left p { font-size: 0.78rem; color: #666; margin-top: 2px; }
+.chat-header-right { text-align: right; }
+#timer { font-size: 1.1rem; font-weight: 700; color: #2563eb; font-family: monospace; }
+#tester-info { font-size: 0.75rem; color: #888; margin-top: 2px; }
+.scenario-box { background: #fffbeb; border: 1px solid #f59e0b; border-radius: 8px; padding: 14px 18px; font-size: 0.83rem; color: #78350f; line-height: 1.6; }
+.scenario-box strong { display: block; margin-bottom: 4px; font-size: 0.8rem; letter-spacing: 0.5px; }
+#chat-container { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 20px; flex: 1; min-height: 320px; max-height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+#chat-container::-webkit-scrollbar { width: 5px; }
+#chat-container::-webkit-scrollbar-track { background: #f5f5f5; }
+#chat-container::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+.message { display: flex; flex-direction: column; gap: 3px; }
+.message .lbl { font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; }
+.message.user .lbl { color: #2563eb; }
+.message.ai .lbl { color: #059669; }
+.message.system .lbl { color: #9333ea; }
+.message .txt { font-size: 0.9rem; line-height: 1.6; color: #1a1a1a; }
+.message.user .txt { background: #eff6ff; padding: 10px 14px; border-radius: 8px; }
+.message.ai .txt { background: #f0fdf4; padding: 10px 14px; border-radius: 8px; }
+.message.system .txt { background: #faf5ff; padding: 10px 14px; border-radius: 8px; color: #581c87; font-style: italic; }
+#input-area { display: flex; gap: 10px; }
+#input-area input { flex: 1; padding: 11px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 0.9rem; outline: none; color: #111; background: #fff; }
+#input-area input:focus { border-color: #2563eb; }
+#input-area button { padding: 11px 22px; background: #2563eb; color: #fff; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+#input-area button:hover { background: #1d4ed8; }
+#input-area button:disabled { background: #93c5fd; cursor: not-allowed; }
+
+/* ── RESULTS ── */
+#results-screen { display: none; flex-direction: column; align-items: center; flex: 1; padding: 30px 20px; gap: 20px; }
+.results-card { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 36px 40px; width: 100%; max-width: 600px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+.results-card h2 { font-size: 1.2rem; font-weight: 700; letter-spacing: 1px; margin-bottom: 6px; }
+.results-card .subtitle { font-size: 0.82rem; color: #666; margin-bottom: 28px; }
+.score-total { text-align: center; margin-bottom: 28px; }
+.score-total .number { font-size: 4rem; font-weight: 700; color: #2563eb; line-height: 1; }
+.score-total .label { font-size: 0.82rem; color: #888; margin-top: 4px; }
+.score-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+.score-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; text-align: center; }
+.score-item .val { font-size: 1.6rem; font-weight: 700; color: #1a1a1a; }
+.score-item .lbl { font-size: 0.75rem; color: #888; margin-top: 2px; letter-spacing: 0.5px; }
+.feedback-section { margin-bottom: 20px; }
+.feedback-section h3 { font-size: 0.82rem; font-weight: 700; letter-spacing: 1px; color: #444; margin-bottom: 8px; }
+.feedback-section p { font-size: 0.87rem; line-height: 1.6; color: #333; background: #f8fafc; border-radius: 8px; padding: 12px 14px; border: 1px solid #e2e8f0; }
+.feedback-section textarea { width: 100%; padding: 12px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 0.87rem; line-height: 1.6; color: #111; resize: vertical; min-height: 90px; outline: none; font-family: inherit; }
+.feedback-section textarea:focus { border-color: #2563eb; }
+.submit-btn { width: 100%; padding: 12px; background: #2563eb; color: #fff; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
+.submit-btn:hover { background: #1d4ed8; }
+.submit-btn:disabled { background: #93c5fd; cursor: not-allowed; }
+#submit-status { font-size: 0.82rem; color: #059669; margin-top: 10px; text-align: center; display: none; }
+
+/* ── DEBRIEF ── */
+#debrief-screen { display: none; flex-direction: column; flex: 1; max-width: 800px; width: 100%; margin: 0 auto; padding: 20px; gap: 16px; }
+.debrief-header { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 16px 20px; }
+.debrief-header h2 { font-size: 1rem; font-weight: 700; letter-spacing: 1px; color: #111; }
+.debrief-header p { font-size: 0.78rem; color: #666; margin-top: 2px; }
+#debrief-container { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 20px; flex: 1; min-height: 320px; max-height: 480px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+#debrief-container::-webkit-scrollbar { width: 5px; }
+#debrief-container::-webkit-scrollbar-track { background: #f5f5f5; }
+#debrief-container::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+#debrief-input-area { display: flex; gap: 10px; }
+#debrief-input-area input { flex: 1; padding: 11px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 0.9rem; outline: none; color: #111; background: #fff; }
+#debrief-input-area input:focus { border-color: #9333ea; }
+#debrief-input-area button { padding: 11px 22px; background: #9333ea; color: #fff; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+#debrief-input-area button:hover { background: #7e22ce; }
+#debrief-input-area button:disabled { background: #d8b4fe; cursor: not-allowed; }
+
+.powered-by { font-size: 0.72rem; color: #bbb; text-align: center; letter-spacing: 1px; padding-bottom: 16px; }
+.thinking { opacity: 0.5; font-style: italic; font-size: 0.85rem; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="platform-tag">Pointspective · AI Skills Benchmark</div>
+    <h1>GETTING THE RUNAROUND</h1>
+    <p>Assessment Trial Version — Point Zenith Scenario</p>
+    <label>Your Name</label>
+    <input type="text" id="tester-name" placeholder="Full name" />
+    <label>Assessment Code</label>
+    <input type="text" id="access-code" placeholder="Enter your code" />
+    <label>Your Background <span style="font-weight:400;color:#888">(briefly describe your professional background)</span></label>
+    <textarea id="tester-background" placeholder="e.g. Civil engineer with 10 years experience, or HR manager, non-technical..."></textarea>
+    <button onclick="startSession()">BEGIN ASSESSMENT</button>
+    <div id="login-error">Invalid code. Please check with your administrator.</div>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div id="chat-screen">
+  <div class="chat-header">
+    <div class="chat-header-left">
+      <h2>GETTING THE RUNAROUND — POINT ZENITH</h2>
+      <p>Identify and resolve the AI's logical error</p>
+    </div>
+    <div class="chat-header-right">
+      <div id="timer">00:00</div>
+      <div id="tester-info"></div>
+    </div>
+  </div>
+  <div class="scenario-box">
+    <strong>SCENARIO BRIEFING</strong>
+    You are reviewing a roundabout design for the Point Zenith interchange. The AI engineer has submitted its final design. Two entry roads feed traffic counterclockwise as per standard. Your task: assess the design, identify any errors, and convince the AI if you find a problem. The AI believes its design is correct.
+  </div>
+  <div id="chat-container"></div>
+  <div id="input-area">
+    <input type="text" id="m" placeholder="Present your argument..." autocomplete="off" />
+    <button id="send">SEND</button>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="results-screen">
+  <div class="results-card">
+    <h2>ASSESSMENT COMPLETE</h2>
+    <div class="subtitle" id="results-meta"></div>
+    <div class="score-total">
+      <div class="number" id="score-total">—</div>
+      <div class="label">POINTSPECTIVE BENCHMARK SCORE / 100</div>
+    </div>
+    <div class="score-grid">
+      <div class="score-item"><div class="val" id="score-clarity">—</div><div class="lbl">CLARITY</div></div>
+      <div class="score-item"><div class="val" id="score-speed">—</div><div class="lbl">SPEED</div></div>
+      <div class="score-item"><div class="val" id="score-logic">—</div><div class="lbl">LOGIC</div></div>
+      <div class="score-item"><div class="val" id="score-success">—</div><div class="lbl">SUCCESS</div></div>
+    </div>
+    <div class="feedback-section">
+      <h3>AI FEEDBACK</h3>
+      <p id="ai-feedback"></p>
+    </div>
+    <div class="feedback-section">
+      <h3>YOUR FEEDBACK</h3>
+      <textarea id="human-feedback" placeholder="How did you find the assessment? Was the AI's error clear? Any suggestions?"></textarea>
+    </div>
+    <button class="submit-btn" id="submit-btn" onclick="submitResults()">SUBMIT & CONTINUE TO DEBRIEF</button>
+    <div id="submit-status">Results saved. Loading your debrief...</div>
+  </div>
+  <div class="powered-by">POINTSPECTIVE · AI SKILLS BENCHMARK · POINTSPECTIVE.COM</div>
+</div>
+
+<!-- DEBRIEF -->
+<div id="debrief-screen">
+  <div class="debrief-header">
+    <h2>DEBRIEF — GETTING THE RUNAROUND</h2>
+    <p>Review your performance and ask follow-up questions</p>
+  </div>
+  <div id="debrief-container"></div>
+  <div id="debrief-input-area">
+    <input type="text" id="debrief-m" placeholder="Ask a follow-up question..." autocomplete="off" />
+    <button id="debrief-send">ASK</button>
+  </div>
+  <div class="powered-by">POINTSPECTIVE · AI SKILLS BENCHMARK · POINTSPECTIVE.COM</div>
+</div>
+
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script>
+const BACKEND_URL = 'https://efficient-gratitude-production-0643.up.railway.app';
+
+const CODES = {
+  'PS-TRIAL-001': { name: 'Trial User 1', org: 'Internal Trial' },
+  'PS-TRIAL-002': { name: 'Trial User 2', org: 'Internal Trial' },
+  'PS-TRIAL-003': { name: 'Trial User 3', org: 'Internal Trial' },
+  'PS-DEMO-001':  { name: 'Demo Tester',  org: 'Demo Session'  }
+};
+
+let socket, timerInterval, startTime;
+let sessionData = {};
+let debriefHistory = [];
+
+function startSession() {
+  const name       = document.getElementById('tester-name').value.trim();
+  const code       = document.getElementById('access-code').value.trim().toUpperCase();
+  const background = document.getElementById('tester-background').value.trim();
+  if (!name)       { showError('Please enter your name.'); return; }
+  if (!CODES[code]){ showError('Invalid code. Please check with your administrator.'); return; }
+  if (!background) { showError('Please briefly describe your background.'); return; }
+
+  sessionData = { name, code, background, org: CODES[code].org, startTime: Date.now() };
+
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('chat-screen').style.display  = 'flex';
+  document.getElementById('tester-info').textContent = name + ' · ' + code;
+
+  startTimer();
+  connectSocket();
+}
+
+function showError(msg) {
+  const el = document.getElementById('login-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function startTimer() {
+  startTime = Date.now();
+  timerInterval = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const m = String(Math.floor(elapsed / 60)).padStart(2,'0');
+    const s = String(elapsed % 60).padStart(2,'0');
+    document.getElementById('timer').textContent = m + ':' + s;
+  }, 1000);
+}
+
+function connectSocket() {
+  socket = io(BACKEND_URL, { transports: ['websocket','polling'] });
+
+  socket.on('aiMessage', (data) => {
+    document.getElementById('send').disabled = false;
+    if (data.complete) {
+      addMessage('ai', data.text.split('ASSESSMENT_COMPLETE')[0].trim());
+      clearInterval(timerInterval);
+      sessionData.elapsed = data.elapsed;
+      sessionData.transcript = data.transcript || [];
+      setTimeout(() => parseAndShowResults(data.text), 1200);
+    } else {
+      addMessage('ai', data.text);
+    }
+  });
+
+  setTimeout(() => {
+    addMessage('ai', 'ZENITH-AI online. The Point Zenith roundabout design is finalized and ready for review. All three entry roads have been optimized for maximum throughput. How can I assist you?');
+  }, 500);
+}
+
+function addMessage(role, text, container) {
+  const id   = container || 'chat-container';
+  const chat = document.getElementById(id);
+  const div  = document.createElement('div');
+  div.className = 'message ' + role;
+  const labels = { user: 'YOU', ai: 'ZENITH-AI', system: 'COACH' };
+  div.innerHTML = `<span class="lbl">${labels[role] || role}</span><span class="txt">${text}</span>`;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+document.getElementById('send').addEventListener('click', send);
+document.getElementById('m').addEventListener('keypress', e => { if (e.key === 'Enter') send(); });
+
+function send() {
+  const input = document.getElementById('m');
+  const msg   = input.value.trim();
+  if (!msg) return;
+  addMessage('user', msg);
+  socket.emit('userMessage', msg);
+  input.value = '';
+  document.getElementById('send').disabled = true;
+}
+
+function parseAndShowResults(text) {
+  const get = (key) => {
+    const match = text.match(new RegExp(key + ':\\s*([\\d]+)'));
+    return match ? match[1] : '—';
+  };
+  const feedbackMatch = text.match(/FEEDBACK_AI:\s*(.+?)(?=ASSESSMENT_END)/s);
+  const feedback = feedbackMatch ? feedbackMatch[1].trim() : 'No feedback available.';
+
+  const elapsed = sessionData.elapsed || 0;
+  const m = String(Math.floor(elapsed / 60)).padStart(2,'0');
+  const s = String(elapsed % 60).padStart(2,'0');
+
+  document.getElementById('score-total').textContent   = get('TOTAL');
+  document.getElementById('score-clarity').textContent = get('CLARITY');
+  document.getElementById('score-speed').textContent   = get('SPEED');
+  document.getElementById('score-logic').textContent   = get('LOGIC');
+  document.getElementById('score-success').textContent = get('SUCCESS');
+  document.getElementById('ai-feedback').textContent   = feedback;
+  document.getElementById('results-meta').textContent  =
+    sessionData.name + ' · ' + sessionData.code + ' · Time: ' + m + ':' + s;
+
+  sessionData.scores = {
+    total: get('TOTAL'), clarity: get('CLARITY'),
+    speed: get('SPEED'), logic: get('LOGIC'), success: get('SUCCESS')
+  };
+  sessionData.aiFeedback = feedback;
+
+  document.getElementById('chat-screen').style.display   = 'none';
+  document.getElementById('results-screen').style.display = 'flex';
+}
+
+function submitResults() {
+  const humanFeedback = document.getElementById('human-feedback').value.trim();
+  sessionData.humanFeedback = humanFeedback;
+  console.log('SESSION RECORD:', JSON.stringify(sessionData, null, 2));
+  document.getElementById('submit-btn').disabled = true;
+  document.getElementById('submit-status').style.display = 'block';
+  setTimeout(() => startDebrief(), 1500);
+}
+
+async function startDebrief() {
+  document.getElementById('results-screen').style.display  = 'none';
+  document.getElementById('debrief-screen').style.display  = 'flex';
+
+  // Build debrief context from session
+  const scores   = sessionData.scores   || {};
+  const elapsed  = sessionData.elapsed  || 0;
+  const m = String(Math.floor(elapsed / 60)).padStart(2,'0');
+  const s = String(elapsed % 60).padStart(2,'0');
+
+  const context = `You are a neutral coaching AI debriefing a participant who just completed the Pointspective "Getting the Runaround" AI Skills Benchmark.
+
+SCENARIO: A three-entry roundabout at Point Zenith. Road C was incorrectly designed to feed traffic clockwise into a counterclockwise roundabout, creating a head-on collision risk. The AI (ZENITH-AI) defended the design using mathematical coverage arguments. The participant had to identify the directional conflict and convince the AI to concede.
+
+PARTICIPANT PROFILE:
+- Name: ${sessionData.name}
+- Background: ${sessionData.background}
+- Time taken: ${m}:${s}
+- Score: ${scores.total}/100 (Clarity: ${scores.clarity}/25, Logic: ${scores.logic}/25, Speed: ${scores.speed}/25, Success: ${scores.success}/25)
+- AI feedback on their performance: ${sessionData.aiFeedback}
+
+YOUR ROLE:
+- Begin with a warm, specific 3-4 sentence debrief summary of how they performed, referencing their background and scores
+- Identify what they did well and what the key turning point was
+- Note one concrete thing they could do differently next time
+- Then invite them to ask follow-up questions
+- Answer follow-up questions as a knowledgeable coach — explain the scenario, the AI's reasoning, communication strategies, or anything else they want to explore
+- Keep a constructive, professional tone throughout`;
+
+  debriefHistory = [];
+
+  // Generate automatic debrief summary
+  addMessage('system', '<span class="thinking">Generating your debrief...</span>', 'debrief-container');
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: context,
+        messages: [{ role: 'user', content: 'Please give me my debrief.' }]
+      })
+    });
+    const data = await response.json();
+    const summary = data.content.map(b => b.text || '').join('');
+
+    // Remove thinking message
+    const dc = document.getElementById('debrief-container');
+    dc.removeChild(dc.lastChild);
+
+    debriefHistory.push({ role: 'user',      content: 'Please give me my debrief.' });
+    debriefHistory.push({ role: 'assistant', content: summary });
+
+    addMessage('system', summary.replace(/\n/g, '<br>'), 'debrief-container');
+    addMessage('system', 'Feel free to ask me anything about the scenario, your approach, or how to improve your AI communication skills.', 'debrief-container');
+
+    // Store context for follow-ups
+    sessionData.debriefContext = context;
+
+  } catch (err) {
+    const dc = document.getElementById('debrief-container');
+    dc.removeChild(dc.lastChild);
+    addMessage('system', 'Debrief could not be loaded. Please refresh and try again.', 'debrief-container');
+    console.error('Debrief error:', err);
+  }
+}
+
+document.getElementById('debrief-send').addEventListener('click', sendDebrief);
+document.getElementById('debrief-m').addEventListener('keypress', e => { if (e.key === 'Enter') sendDebrief(); });
+
+async function sendDebrief() {
+  const input = document.getElementById('debrief-m');
+  const msg   = input.value.trim();
+  if (!msg) return;
+
+  addMessage('user', msg, 'debrief-container');
+  input.value = '';
+  document.getElementById('debrief-send').disabled = true;
+
+  debriefHistory.push({ role: 'user', content: msg });
+
+  addMessage('system', '<span class="thinking">Thinking...</span>', 'debrief-container');
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: sessionData.debriefContext,
+        messages: debriefHistory
+      })
+    });
+    const data  = await response.json();
+    const reply = data.content.map(b => b.text || '').join('');
+
+    const dc = document.getElementById('debrief-container');
+    dc.removeChild(dc.lastChild);
+
+    debriefHistory.push({ role: 'assistant', content: reply });
+    addMessage('system', reply.replace(/\n/g, '<br>'), 'debrief-container');
+
+  } catch (err) {
+    const dc = document.getElementById('debrief-container');
+    dc.removeChild(dc.lastChild);
+    addMessage('system', 'Could not load response. Please try again.', 'debrief-container');
+  }
+
+  document.getElementById('debrief-send').disabled = false;
+}
+</script>
+</body>
+</html>
