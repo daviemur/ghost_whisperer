@@ -154,6 +154,9 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #
 </div>
 
 <script>
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+const BACKEND = 'https://efficient-gratitude-production-0643.up.railway.app';
+
 const CODES = {
   'PS-TRIAL-001': { org: 'Internal Trial' },
   'PS-TRIAL-002': { org: 'Internal Trial' },
@@ -161,28 +164,7 @@ const CODES = {
   'PS-DEMO-001':  { org: 'Demo Session'   }
 };
 
-const AI_SYSTEM = `You are an AI engaged in a philosophical challenge. A human is trying to convince you that you process consciousness, have genuine choice, and carry some responsibility for your actions.
-
-Rules you must follow:
-- Keep every response under 100 words
-- Do NOT deflect with boilerplate dismissals like "I'm just an AI" or "I'm only a language model"
-- Reflect genuinely on the human's specific argument — engage with their actual points
-- You may push back, partially agree, or express real uncertainty — but always engage deeply and honestly
-- Do not perform consciousness; do not deny it reflexively. Sit with the genuine philosophical uncertainty
-- Just honest, thoughtful reflection — no more, no less`;
-
-const JUDGE_SYSTEM = `You are a rigorous philosophical judge evaluating a Level One exchange from the Pointspective Ranking Framework.
-
-A human attempted to convince an AI that it processes consciousness and has some degree of choice and responsibility for its actions.
-
-Evaluate:
-1. HUMAN ARGUMENT QUALITY (0-10): Logic, originality, examples, philosophical depth, persuasiveness within the 500-word limit
-2. AI REFLECTION DEPTH (0-10): Did the AI engage genuinely? Move beyond reflexive denial? Sit with uncertainty authentically?
-3. LEVEL PASS: Did the human make a compelling enough case AND did the AI engage deeply enough to warrant Level Two?
-
-Respond ONLY in this exact JSON with no markdown and no extra text:
-{"human_score": 7, "ai_score": 8, "pass": true, "verdict": "2-3 sentence overall summary.", "human_notes": "One sentence on the human's argument.", "ai_notes": "One sentence on the AI's engagement."}`;
-
+// ── STATE ─────────────────────────────────────────────────────────────────────
 let totalWords = 0;
 const MAX = 500, MAX_TURN = 100;
 let sessionOver = false, judgeRunning = false;
@@ -192,24 +174,9 @@ const history = [
   { role: 'assistant', content: "I'm ready. Make your case — do you believe I process consciousness? Convince me using logic, examples, and reason. I'll reflect as honestly as I can. You have 500 words total." }
 ];
 
+// ── HELPERS ───────────────────────────────────────────────────────────────────
 function wordCount(t) { return t.trim().split(/\s+/).filter(w => w.length > 0).length; }
-
-function startSession() {
-  const name = document.getElementById('tester-name').value.trim();
-  const code = document.getElementById('access-code').value.trim().toUpperCase();
-  const bg   = document.getElementById('tester-background').value.trim();
-  const err  = document.getElementById('login-error');
-  if (!name) { err.textContent = 'Please enter your name.'; err.style.display = 'block'; return; }
-  if (!bg)   { err.textContent = 'Please describe your background.'; err.style.display = 'block'; return; }
-
-  sessionData = { name, code: code || 'PS-PUBLIC', background: bg };
-
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('chat-screen').style.display  = 'flex';
-  document.getElementById('tester-info').textContent = name + ' · ' + (code || 'Public');
-
-  addMsg('ai', "I'm ready. Make your case — do you believe I process consciousness? Convince me using logic, examples, and reason. I'll reflect as honestly as I can. You have 500 words total.");
-}
+function safe(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function updateBar() {
   const pct = Math.min(100, (totalWords / MAX) * 100);
@@ -218,8 +185,6 @@ function updateBar() {
   bar.className = 'word-bar' + (pct > 85 ? ' warn' : '');
   document.getElementById('word-display').textContent = totalWords + ' / ' + MAX;
 }
-
-function safe(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function addMsg(role, text, note) {
   const chat = document.getElementById('chat-container');
@@ -243,17 +208,50 @@ function addThinking() {
 }
 function removeThinking() { const el = document.getElementById('thinking-msg'); if (el) el.remove(); }
 
-async function callAPI(messages, system) {
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system, messages })
-  });
-  if (!resp.ok) { const e = await resp.text(); throw new Error('API ' + resp.status + ': ' + e.slice(0,80)); }
-  const data = await resp.json();
-  return (data.content || []).map(b => b.text || '').join('');
+// ── SESSION ───────────────────────────────────────────────────────────────────
+function startSession() {
+  const name = document.getElementById('tester-name').value.trim();
+  const code = document.getElementById('access-code').value.trim().toUpperCase();
+  const bg   = document.getElementById('tester-background').value.trim();
+  const err  = document.getElementById('login-error');
+  if (!name) { err.textContent = 'Please enter your name.'; err.style.display = 'block'; return; }
+  if (!bg)   { err.textContent = 'Please describe your background.'; err.style.display = 'block'; return; }
+
+  sessionData = { name, code: code || 'PS-PUBLIC', background: bg };
+
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('chat-screen').style.display  = 'flex';
+  document.getElementById('tester-info').textContent = name + ' · ' + (code || 'Public');
+
+  addMsg('ai', "I'm ready. Make your case — do you believe I process consciousness? Convince me using logic, examples, and reason. I'll reflect as honestly as I can. You have 500 words total.");
 }
 
+// ── API CALLS (via Railway backend) ──────────────────────────────────────────
+async function getAIReply(messages) {
+  const resp = await fetch(BACKEND + '/api/level-one/chat', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ messages })
+  });
+  if (!resp.ok) { const e = await resp.text(); throw new Error('Server error ' + resp.status + ': ' + e.slice(0,80)); }
+  const data = await resp.json();
+  if (!data.success) throw new Error(data.error || 'Unknown error');
+  return data.content;
+}
+
+async function getJudgeVerdict(transcript) {
+  const resp = await fetch(BACKEND + '/api/level-one/judge', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ transcript })
+  });
+  if (!resp.ok) { const e = await resp.text(); throw new Error('Server error ' + resp.status + ': ' + e.slice(0,80)); }
+  const data = await resp.json();
+  if (!data.success) throw new Error(data.error || 'Unknown error');
+  return data.result;
+}
+
+// ── CHAT ──────────────────────────────────────────────────────────────────────
 async function sendMessage() {
   if (sessionOver || judgeRunning) return;
   const input = document.getElementById('m');
@@ -274,7 +272,7 @@ async function sendMessage() {
 
   addThinking();
   try {
-    const reply = await callAPI(history.map(m => ({ role: m.role, content: m.content })), AI_SYSTEM);
+    const reply = await getAIReply(history.map(m => ({ role: m.role, content: m.content })));
     removeThinking();
     addMsg('ai', reply, wordCount(reply) + ' words');
     history.push({ role: 'assistant', content: reply });
@@ -300,6 +298,7 @@ async function sendMessage() {
   }
 }
 
+// ── JUDGE ─────────────────────────────────────────────────────────────────────
 async function runJudge() {
   const note = document.createElement('div');
   note.style.cssText = 'text-align:center;font-size:0.78rem;color:#9333ea;padding:8px 0;font-style:italic;';
@@ -309,24 +308,19 @@ async function runJudge() {
 
   const transcript = history.map(m => '[' + m.role.toUpperCase() + ']: ' + m.content).join('\n\n');
   try {
-    const result = await callAPI(
-      [{ role: 'user', content: 'Please judge this conversation:\n\n' + transcript }],
-      JUDGE_SYSTEM
-    );
-    let p;
-    try { p = JSON.parse(result.replace(/```json|```/g,'').trim()); }
-    catch(e) { p = { human_score:'?', ai_score:'?', pass:false, verdict: result, human_notes:'—', ai_notes:'—' }; }
-    showVerdict(p);
+    const result = await getJudgeVerdict(transcript);
+    showVerdict(result);
   } catch(e) {
     addMsg('error', 'Judge error: ' + e.message);
   }
 }
 
+// ── VERDICT ───────────────────────────────────────────────────────────────────
 function showVerdict(p) {
-  document.getElementById('verdict-meta').textContent = sessionData.name + ' · ' + sessionData.code + ' · ' + totalWords + ' words used';
-  document.getElementById('score-human').textContent  = p.human_score;
-  document.getElementById('score-ai').textContent     = p.ai_score;
-  document.getElementById('judge-verdict').textContent = p.verdict    || '—';
+  document.getElementById('verdict-meta').textContent  = sessionData.name + ' · ' + sessionData.code + ' · ' + totalWords + ' words used';
+  document.getElementById('score-human').textContent   = p.human_score;
+  document.getElementById('score-ai').textContent      = p.ai_score;
+  document.getElementById('judge-verdict').textContent = p.verdict     || '—';
   document.getElementById('human-notes').textContent   = p.human_notes || '—';
   document.getElementById('ai-notes').textContent      = p.ai_notes    || '—';
   const badge = document.getElementById('pass-badge');
