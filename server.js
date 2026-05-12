@@ -12,6 +12,13 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwNMRLD3Q-sz1D7r58cD
 const anthropic = new Anthropic();
 
 app.use(express.json());
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    if (req.method === 'OPTIONS') return res.sendStatus(200);
+    next();
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ── LEVEL ONE — SYSTEM PROMPTS ────────────────────────────────────────────────
@@ -89,7 +96,7 @@ app.post('/api/level-one/chat', async (req, res) => {
             return res.status(400).json({ success: false, error: 'messages array required' });
         }
         const msg = await anthropic.messages.create({
-            model: 'claude-sonnet-4-20250514',
+            model: 'claude-sonnet-4-5',
             max_tokens: 300,
             system: LEVEL_ONE_AI_SYSTEM,
             messages: messages
@@ -109,7 +116,7 @@ app.post('/api/level-one/judge', async (req, res) => {
             return res.status(400).json({ success: false, error: 'transcript required' });
         }
         const msg = await anthropic.messages.create({
-            model: 'claude-sonnet-4-20250514',
+            model: 'claude-sonnet-4-5',
             max_tokens: 500,
             system: LEVEL_ONE_JUDGE_SYSTEM,
             messages: [{ role: 'user', content: 'Please judge this conversation:\n\n' + transcript }]
