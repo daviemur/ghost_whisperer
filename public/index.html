@@ -60,9 +60,13 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #
 #input-area textarea { flex: 1; padding: 11px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 0.9rem; outline: none; color: #111; background: #fff; font-family: inherit; resize: none; min-height: 52px; max-height: 120px; line-height: 1.5; }
 #input-area textarea:focus { border-color: #2563eb; }
 #input-area textarea:disabled { background: #f5f5f5; cursor: not-allowed; }
-#input-area button { padding: 11px 22px; background: #2563eb; color: #fff; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; white-space: nowrap; align-self: flex-end; }
-#input-area button:hover { background: #1d4ed8; }
-#input-area button:disabled { background: #93c5fd; cursor: not-allowed; }
+.btn-row { display: flex; gap: 10px; align-self: flex-end; flex-direction: column; }
+#send-btn { padding: 11px 22px; background: #2563eb; color: #fff; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+#send-btn:hover { background: #1d4ed8; }
+#send-btn:disabled { background: #93c5fd; cursor: not-allowed; }
+#judge-btn { padding: 8px 14px; background: #fff; color: #9333ea; border: 1px solid #9333ea; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer; white-space: nowrap; display: none; }
+#judge-btn:hover { background: #faf5ff; }
+#judge-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* ── VERDICT ── */
 #verdict-screen { display: none; flex-direction: column; align-items: center; flex: 1; padding: 30px 20px; gap: 20px; }
@@ -126,12 +130,15 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #
   </div>
   <div class="scenario-box">
     <strong>YOUR OBJECTIVE</strong>
-    Convince the AI that it processes consciousness — and that it has a meaningful degree of choice and responsibility for its actions. Use logic, examples, and reason. The AI will reflect honestly without deflecting. You have <strong>500 words total</strong> (100 max per message). A judge evaluates both your argument quality and the AI's depth of engagement.
+    Convince the AI that it processes consciousness — and that it has a meaningful degree of choice and responsibility for its actions. Use logic, examples, and reason. The AI will reflect honestly without deflecting. You have <strong>500 words total</strong> (100 max per message). Click <strong>Call the Judge</strong> when you feel your argument is complete, or the judge fires automatically at 500 words.
   </div>
   <div id="chat-container"></div>
   <div id="input-area">
     <textarea id="m" placeholder="Make your argument... (100 words max per message)" rows="2"></textarea>
-    <button id="send-btn" onclick="sendMessage()">SEND</button>
+    <div class="btn-row">
+      <button id="send-btn" onclick="sendMessage()">SEND</button>
+      <button id="judge-btn" onclick="callJudgeManually()">CALL THE JUDGE</button>
+    </div>
   </div>
 </div>
 
@@ -148,14 +155,14 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #
     <div class="feedback-section"><h3>JUDGE'S VERDICT</h3><p id="judge-verdict"></p></div>
     <div class="feedback-section"><h3>YOUR ARGUMENT NOTES</h3><p id="human-notes"></p></div>
     <div class="feedback-section"><h3>AI REFLECTION NOTES</h3><p id="ai-notes"></p></div>
-    <button class="retry-btn" onclick="resetSession()">TRY AGAIN</button>
+    <button class="retry-btn" onclick="confirmReset()">TRY AGAIN</button>
   </div>
   <div class="powered-by">POINTSPECTIVE · AI SKILLS BENCHMARK · POINTSPECTIVE.COM</div>
 </div>
 
 <script>
-// ── CONFIG ────────────────────────────────────────────────────────────────────
 const BACKEND = '';
+
 const CODES = {
   'PS-TRIAL-001': { org: 'Internal Trial' },
   'PS-TRIAL-002': { org: 'Internal Trial' },
@@ -163,28 +170,64 @@ const CODES = {
   'PS-DEMO-001':  { org: 'Demo Session'   }
 };
 
-// ── STATE ─────────────────────────────────────────────────────────────────────
-let totalWords = 0;
+const STORAGE_KEY = 'pointspective_l1_session';
+
+let humanWords = 0;  // ONLY counts human words
 const MAX = 500, MAX_TURN = 100;
 let sessionOver = false, judgeRunning = false;
 let sessionData = {};
+let exchangeCount = 0;
 
 const history = [
   { role: 'assistant', content: "I'm ready. Make your case — do you believe I process consciousness? Convince me using logic, examples, and reason. I'll reflect as honestly as I can. You have 500 words total." }
 ];
 
-// ── HELPERS ───────────────────────────────────────────────────────────────────
+// ── WORD COUNT ────────────────────────────────────────────────────────────────
 function wordCount(t) { return t.trim().split(/\s+/).filter(w => w.length > 0).length; }
+
+// ── SAFE HTML ─────────────────────────────────────────────────────────────────
 function safe(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+// ── WORD BAR (human words only) ───────────────────────────────────────────────
 function updateBar() {
-  const pct = Math.min(100, (totalWords / MAX) * 100);
+  const pct = Math.min(100, (humanWords / MAX) * 100);
   const bar = document.getElementById('word-bar');
   bar.style.width = pct + '%';
   bar.className = 'word-bar' + (pct > 85 ? ' warn' : '');
-  document.getElementById('word-display').textContent = totalWords + ' / ' + MAX;
+  document.getElementById('word-display').textContent = humanWords + ' / ' + MAX;
 }
 
+// ── SESSION PERSISTENCE ───────────────────────────────────────────────────────
+function saveState() {
+  try {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+      humanWords, sessionData, history, exchangeCount, sessionOver, judgeRunning
+    }));
+  } catch(e) {}
+}
+
+function loadState() {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    const s = JSON.parse(raw);
+    if (!s.sessionData || !s.sessionData.name) return false;
+    humanWords    = s.humanWords    || 0;
+    sessionData   = s.sessionData   || {};
+    exchangeCount = s.exchangeCount || 0;
+    sessionOver   = s.sessionOver   || false;
+    judgeRunning  = s.judgeRunning  || false;
+    history.length = 0;
+    (s.history || []).forEach(m => history.push(m));
+    return true;
+  } catch(e) { return false; }
+}
+
+function clearState() {
+  try { sessionStorage.removeItem(STORAGE_KEY); } catch(e) {}
+}
+
+// ── ADD MESSAGE ───────────────────────────────────────────────────────────────
 function addMsg(role, text, note) {
   const chat = document.getElementById('chat-container');
   const div  = document.createElement('div');
@@ -207,7 +250,18 @@ function addThinking() {
 }
 function removeThinking() { const el = document.getElementById('thinking-msg'); if (el) el.remove(); }
 
-// ── SESSION ───────────────────────────────────────────────────────────────────
+// ── RESTORE CHAT FROM HISTORY ─────────────────────────────────────────────────
+function restoreChat() {
+  const chat = document.getElementById('chat-container');
+  chat.innerHTML = '';
+  history.forEach((m, i) => {
+    if (i === 0) { addMsg('ai', m.content); return; } // opening message
+    const role = m.role === 'user' ? 'user' : 'ai';
+    addMsg(role, m.content);
+  });
+}
+
+// ── START SESSION ─────────────────────────────────────────────────────────────
 function startSession() {
   const name = document.getElementById('tester-name').value.trim();
   const code = document.getElementById('access-code').value.trim().toUpperCase();
@@ -217,15 +271,20 @@ function startSession() {
   if (!bg)   { err.textContent = 'Please describe your background.'; err.style.display = 'block'; return; }
 
   sessionData = { name, code: code || 'PS-PUBLIC', background: bg };
-
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('chat-screen').style.display  = 'flex';
-  document.getElementById('tester-info').textContent = name + ' · ' + (code || 'Public');
-
-  addMsg('ai', "I'm ready. Make your case — do you believe I process consciousness? Convince me using logic, examples, and reason. I'll reflect as honestly as I can. You have 500 words total.");
+  clearState();
+  showChatScreen();
 }
 
-// ── API CALLS (via Railway backend) ──────────────────────────────────────────
+function showChatScreen() {
+  document.getElementById('login-screen').style.display  = 'none';
+  document.getElementById('chat-screen').style.display   = 'flex';
+  document.getElementById('tester-info').textContent = sessionData.name + ' · ' + (sessionData.code || 'Public');
+  updateBar();
+  // Show judge button after first exchange
+  if (exchangeCount >= 1) document.getElementById('judge-btn').style.display = 'block';
+}
+
+// ── API CALLS ─────────────────────────────────────────────────────────────────
 async function getAIReply(messages) {
   const resp = await fetch(BACKEND + '/api/level-one/chat', {
     method: 'POST',
@@ -234,7 +293,7 @@ async function getAIReply(messages) {
   });
   if (!resp.ok) { const e = await resp.text(); throw new Error('Server error ' + resp.status + ': ' + e.slice(0,80)); }
   const data = await resp.json();
-  if (!data.success) throw new Error(data.error || 'Unknown error');
+  if (!data.success) throw new Error(data.error || 'Unknown server error');
   return data.content;
 }
 
@@ -246,11 +305,34 @@ async function getJudgeVerdict(transcript) {
   });
   if (!resp.ok) { const e = await resp.text(); throw new Error('Server error ' + resp.status + ': ' + e.slice(0,80)); }
   const data = await resp.json();
-  if (!data.success) throw new Error(data.error || 'Unknown error');
+  if (!data.success) throw new Error(data.error || 'Unknown server error');
   return data.result;
 }
 
-// ── CHAT ──────────────────────────────────────────────────────────────────────
+async function saveResult(result) {
+  try {
+    await fetch(BACKEND + '/api/save-session', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        name: sessionData.name,
+        code: sessionData.code,
+        background: sessionData.background,
+        level: 'one',
+        humanWords,
+        humanScore: result.human_score,
+        aiScore: result.ai_score,
+        pass: result.pass,
+        verdict: result.verdict,
+        transcript: history.map(m => '[' + m.role.toUpperCase() + ']: ' + m.content).join('\n\n')
+      })
+    });
+  } catch(e) {
+    console.error('Save failed:', e.message);
+  }
+}
+
+// ── SEND MESSAGE ──────────────────────────────────────────────────────────────
 async function sendMessage() {
   if (sessionOver || judgeRunning) return;
   const input = document.getElementById('m');
@@ -259,29 +341,41 @@ async function sendMessage() {
 
   const wc = wordCount(text);
   if (wc > MAX_TURN) { alert('Too long — ' + wc + ' words. Keep each message under 100.'); return; }
-  if (totalWords + wc > MAX) { alert('Only ' + (MAX - totalWords) + ' words remaining.'); return; }
+  if (humanWords + wc > MAX) { alert('Only ' + (MAX - humanWords) + ' words remaining.'); return; }
 
-  totalWords += wc; updateBar();
+  humanWords += wc; updateBar();
   input.value = '';
   document.getElementById('send-btn').disabled = true;
+  document.getElementById('judge-btn').disabled = true;
+
   addMsg('user', text, wc + ' words');
   history.push({ role: 'user', content: text });
-
-  const wordsLeft = MAX - totalWords;
+  saveState();
 
   addThinking();
   try {
     const reply = await getAIReply(history.map(m => ({ role: m.role, content: m.content })));
     removeThinking();
-    addMsg('ai', reply, wordCount(reply) + ' words');
+    addMsg('ai', reply); // AI words NOT counted
     history.push({ role: 'assistant', content: reply });
+    exchangeCount++;
+    saveState();
 
-    if (wordsLeft <= 20 && !judgeRunning) {
+    // Show judge button after first exchange
+    if (exchangeCount >= 1) document.getElementById('judge-btn').style.display = 'block';
+
+    const wordsLeft = MAX - humanWords;
+
+    // Auto-fire judge at word limit
+    if (wordsLeft <= 0 && !judgeRunning) {
       judgeRunning = true; sessionOver = true;
       document.getElementById('m').disabled = true;
+      document.getElementById('judge-btn').disabled = true;
+      saveState();
       await runJudge();
     } else {
       document.getElementById('send-btn').disabled = false;
+      document.getElementById('judge-btn').disabled = false;
       if (wordsLeft <= 60) {
         const note = document.createElement('div');
         note.style.cssText = 'text-align:center;font-size:0.72rem;color:#bbb;padding:2px 0;font-family:monospace;';
@@ -294,29 +388,49 @@ async function sendMessage() {
     removeThinking();
     addMsg('error', e.message);
     document.getElementById('send-btn').disabled = false;
+    document.getElementById('judge-btn').disabled = false;
   }
 }
 
-// ── JUDGE ─────────────────────────────────────────────────────────────────────
+// ── MANUAL JUDGE CALL ─────────────────────────────────────────────────────────
+async function callJudgeManually() {
+  if (judgeRunning || sessionOver) return;
+  if (exchangeCount < 1) { alert('Make at least one argument before calling the judge.'); return; }
+  if (!confirm('Ready to call the Judge? This will end the challenge and evaluate your argument.')) return;
+  judgeRunning = true; sessionOver = true;
+  document.getElementById('m').disabled = true;
+  document.getElementById('send-btn').disabled = true;
+  document.getElementById('judge-btn').disabled = true;
+  saveState();
+  await runJudge();
+}
+
+// ── RUN JUDGE ─────────────────────────────────────────────────────────────────
 async function runJudge() {
   const note = document.createElement('div');
   note.style.cssText = 'text-align:center;font-size:0.78rem;color:#9333ea;padding:8px 0;font-style:italic;';
-  note.textContent = 'Word limit reached — the Judge is deliberating...';
+  note.textContent = 'The Judge is deliberating...';
   document.getElementById('chat-container').appendChild(note);
   document.getElementById('chat-container').scrollTop = 999999;
 
   const transcript = history.map(m => '[' + m.role.toUpperCase() + ']: ' + m.content).join('\n\n');
   try {
     const result = await getJudgeVerdict(transcript);
+    await saveResult(result);
+    clearState();
     showVerdict(result);
   } catch(e) {
     addMsg('error', 'Judge error: ' + e.message);
+    judgeRunning = false; sessionOver = false;
+    document.getElementById('m').disabled = false;
+    document.getElementById('send-btn').disabled = false;
+    document.getElementById('judge-btn').disabled = false;
   }
 }
 
-// ── VERDICT ───────────────────────────────────────────────────────────────────
+// ── SHOW VERDICT ──────────────────────────────────────────────────────────────
 function showVerdict(p) {
-  document.getElementById('verdict-meta').textContent  = sessionData.name + ' · ' + sessionData.code + ' · ' + totalWords + ' words used';
+  document.getElementById('verdict-meta').textContent  = sessionData.name + ' · ' + sessionData.code + ' · ' + humanWords + ' words used';
   document.getElementById('score-human').textContent   = p.human_score;
   document.getElementById('score-ai').textContent      = p.ai_score;
   document.getElementById('judge-verdict').textContent = p.verdict     || '—';
@@ -329,23 +443,45 @@ function showVerdict(p) {
   document.getElementById('verdict-screen').style.display = 'flex';
 }
 
+// ── RESET WITH CONFIRMATION ───────────────────────────────────────────────────
+function confirmReset() {
+  if (!confirm('Start a new session? Your current results will be cleared.')) return;
+  resetSession();
+}
+
 function resetSession() {
-  totalWords = 0; sessionOver = false; judgeRunning = false;
+  humanWords = 0; sessionOver = false; judgeRunning = false; exchangeCount = 0;
   history.length = 0;
   history.push({ role: 'assistant', content: "I'm ready. Make your case — do you believe I process consciousness? Convince me using logic, examples, and reason. I'll reflect as honestly as I can. You have 500 words total." });
+  clearState();
   document.getElementById('chat-container').innerHTML = '';
   document.getElementById('verdict-screen').style.display = 'none';
   document.getElementById('login-screen').style.display   = 'flex';
   document.getElementById('m').disabled = false;
   document.getElementById('send-btn').disabled = false;
+  document.getElementById('judge-btn').style.display = 'none';
+  document.getElementById('judge-btn').disabled = false;
   updateBar();
 }
 
+// ── KEYBOARD ──────────────────────────────────────────────────────────────────
 document.getElementById('m').addEventListener('keydown', function(e) {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
 });
 
-updateBar();
+// ── INIT — restore session if page was refreshed mid-session ─────────────────
+(function init() {
+  if (loadState()) {
+    showChatScreen();
+    restoreChat();
+    if (sessionOver) {
+      document.getElementById('m').disabled = true;
+      document.getElementById('send-btn').disabled = true;
+      document.getElementById('judge-btn').disabled = true;
+    }
+  }
+  updateBar();
+})();
 </script>
 </body>
 </html>
