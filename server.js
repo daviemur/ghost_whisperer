@@ -8,7 +8,7 @@ const app = express();
 const server = http.createServer(app);
 
 const PORT = process.env.PORT || 3000;
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwNMRLD3Q-sz1D7r58cD3hKG4oCQdXU8XLpAqQymi-P-xRrINKppFXE2YfiSm-OvwvfKg/exec';
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzYmNNFavgyt39drZ0grnX0CDfFmoB-gpCZwS-uOOEujzNVMtWDE4fO5AClVb88WcpNQg/exec';
 const anthropic = new Anthropic();
 
 app.use(express.json());
