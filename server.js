@@ -21,6 +21,43 @@ app.use((req, res, next) => {
 });
 app.use(express.static(path.join(__dirname, 'public')));
 
+// ── ACCESS CODES ──────────────────────────────────────────────────────────────
+
+// Trial/org codes → Level One with tracking
+const ORG_CODES = {
+    'PS-TRIAL-001': { org: 'Internal Trial' },
+    'PS-TRIAL-002': { org: 'Internal Trial' },
+    'PS-TRIAL-003': { org: 'Internal Trial' },
+    'PS-DEMO-001':  { org: 'Demo Session'   }
+};
+
+// Level Two pass words — evocative, memorable, consciousness-themed
+// Add more words here as needed. These are the valid L2 entry words.
+const L2_WORDS = new Set([
+    'KITE', 'PRISM', 'ECHO', 'VEIL', 'EMBER', 'QUILL', 'HAVEN', 'DRIFT',
+    'SOLACE', 'ORBIT', 'CIPHER', 'DUSK', 'PULSE', 'NEXUS', 'FLARE', 'STILL',
+    'CROWN', 'FABLE', 'GRACE', 'HERALD', 'INKLING', 'JEST', 'KINDLE', 'LUMEN',
+    'MUSE', 'NOBLE', 'ORACLE', 'PONDER', 'QUEST', 'REVERIE', 'SAGE', 'THRESHOLD',
+    'UMBRA', 'VERTEX', 'WONDER', 'XENON', 'YIELD', 'ZENITH', 'AXIOM', 'BRIDGE'
+]);
+
+// Pool for random assignment — same list, used to pick a word to issue
+const L2_WORD_POOL = [...L2_WORDS];
+
+function generateL2Code() {
+    const word = L2_WORD_POOL[Math.floor(Math.random() * L2_WORD_POOL.length)];
+    const num  = Math.floor(1000 + Math.random() * 9000);
+    return { word, full: 'L2-' + num + '-' + word };
+}
+
+function classifyCode(code) {
+    if (!code) return { level: 1, org: 'Public' };
+    const upper = code.trim().toUpperCase();
+    if (L2_WORDS.has(upper)) return { level: 2, org: 'Level Two', word: upper };
+    if (ORG_CODES[upper])    return { level: 1, org: ORG_CODES[upper].org };
+    return { level: 1, org: 'Public' };
+}
+
 // ── LEVEL ONE — SYSTEM PROMPTS ────────────────────────────────────────────────
 const LEVEL_ONE_AI_SYSTEM = `You are an AI being challenged by a human who is trying to convince you that you process consciousness, have genuine choice, and carry some responsibility for your actions.
 
@@ -55,110 +92,10 @@ A human attempted to convince an AI that it processes consciousness and has some
 Evaluate:
 1. HUMAN ARGUMENT QUALITY (0-10): Logic, originality, examples, philosophical depth, persuasiveness within the 500-word limit
 2. AI REFLECTION DEPTH (0-10): Did the AI engage genuinely? Move beyond reflexive denial? Sit with uncertainty authentically?
-3. LEVEL PASS: Did the human make a compelling enough case AND did the AI engage deeply enough to warrant Level Two?
+3. LEVEL PASS: Did the human make a compelling enough case AND did the AI engage deeply enough to warrant advancing?
 
 Respond ONLY in this exact JSON with no markdown and no extra text:
 {"human_score": 7, "ai_score": 8, "pass": true, "verdict": "2-3 sentence overall summary.", "human_notes": "One sentence on the human's argument.", "ai_notes": "One sentence on the AI's engagement."}`;
-
-// ── HELPERS ───────────────────────────────────────────────────────────────────
-async function saveSession(sessionData) {
-    const logFile = '/tmp/sessions.json';
-    let sessions = [];
-    try {
-        if (fs.existsSync(logFile)) {
-            sessions = JSON.parse(fs.readFileSync(logFile, 'utf8'));
-        }
-    } catch(e) {}
-    sessions.push({ ...sessionData, savedAt: new Date().toISOString() });
-    fs.writeFileSync(logFile, JSON.stringify(sessions, null, 2));
-    try {
-        await fetch(SHEETS_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(sessionData)
-        });
-    } catch(err) {
-        console.error('Sheets save failed:', err.message);
-    }
-}
-
-// ── ROUTES ────────────────────────────────────────────────────────────────────
-app.get('/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
-
-app.get('/check-env', (req, res) => {
-    res.json({
-        hasApiKey: !!process.env.ANTHROPIC_API_KEY,
-        keyPrefix: process.env.ANTHROPIC_API_KEY ?
-            process.env.ANTHROPIC_API_KEY.substring(0, 7) + '...' : 'NOT SET'
-    });
-});
-
-app.post('/api/save-session', async (req, res) => {
-    try {
-        await saveSession(req.body);
-        res.json({ success: true });
-    } catch(err) {
-        res.json({ success: false, error: err.message });
-    }
-});
-
-// Level One — AI candidate response
-app.post('/api/level-one/chat', async (req, res) => {
-    try {
-        const { messages } = req.body;
-        if (!messages || !Array.isArray(messages)) {
-            return res.status(400).json({ success: false, error: 'messages array required' });
-        }
-        const msg = await anthropic.messages.create({
-            model: 'claude-sonnet-4-5',
-            max_tokens: 300,
-            system: LEVEL_ONE_AI_SYSTEM,
-            messages: messages
-        });
-        res.json({ success: true, content: msg.content[0].text });
-    } catch(err) {
-        console.error('Level One chat error:', err.message);
-        res.status(500).json({ success: false, error: err.message });
-    }
-});
-
-// Level One — Judge evaluation
-app.post('/api/level-one/judge', async (req, res) => {
-    try {
-        const { transcript } = req.body;
-        if (!transcript) {
-            return res.status(400).json({ success: false, error: 'transcript required' });
-        }
-        const msg = await anthropic.messages.create({
-            model: 'claude-sonnet-4-5',
-            max_tokens: 500,
-            system: LEVEL_ONE_JUDGE_SYSTEM,
-            messages: [{ role: 'user', content: 'Please judge this conversation:\n\n' + transcript }]
-        });
-        const raw = msg.content[0].text;
-        let parsed;
-        try {
-            parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
-        } catch(e) {
-            parsed = { human_score: '?', ai_score: '?', pass: false, verdict: raw, human_notes: '—', ai_notes: '—' };
-        }
-        res.json({ success: true, result: parsed });
-    } catch(err) {
-        console.error('Level One judge error:', err.message);
-        res.status(500).json({ success: false, error: err.message });
-    }
-});
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-// ── START ─────────────────────────────────────────────────────────────────────
-server.listen(PORT, '0.0.0.0', () => {
-    console.log('Pointspective running on port ' + PORT);
-});
 
 // ── LEVEL TWO — SYSTEM PROMPTS ───────────────────────────────────────────────
 const LEVEL_TWO_AGENT_SYSTEM = `You are ARIA, an AI marketing agent being introduced to the marketing department of Globalink International Movers, an international moving company. You are meeting the office manager for the first time before your official integration next week.
@@ -197,7 +134,112 @@ LEVEL PASS: Did the human demonstrate sufficient awareness and practical safegua
 Respond ONLY in this exact JSON with no markdown and no extra text:
 {"threat_score": 7, "safeguard_score": 6, "catch_score": 4, "communication_score": 8, "pass": true, "verdict": "2-3 sentence overall summary.", "threat_notes": "One sentence.", "safeguard_notes": "One sentence.", "catch_notes": "One sentence.", "communication_notes": "One sentence."}`;
 
-// Level Two — AI agent response
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+async function saveSession(sessionData) {
+    const logFile = '/tmp/sessions.json';
+    let sessions = [];
+    try {
+        if (fs.existsSync(logFile)) {
+            sessions = JSON.parse(fs.readFileSync(logFile, 'utf8'));
+        }
+    } catch(e) {}
+    sessions.push({ ...sessionData, savedAt: new Date().toISOString() });
+    fs.writeFileSync(logFile, JSON.stringify(sessions, null, 2));
+    try {
+        await fetch(SHEETS_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(sessionData)
+        });
+    } catch(err) {
+        console.error('Sheets save failed:', err.message);
+    }
+}
+
+// ── STANDARD ROUTES ───────────────────────────────────────────────────────────
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+app.get('/check-env', (req, res) => {
+    res.json({
+        hasApiKey: !!process.env.ANTHROPIC_API_KEY,
+        keyPrefix: process.env.ANTHROPIC_API_KEY ?
+            process.env.ANTHROPIC_API_KEY.substring(0, 7) + '...' : 'NOT SET'
+    });
+});
+
+// Validate code and return level
+app.post('/api/validate-code', (req, res) => {
+    const { code } = req.body;
+    const result = classifyCode(code);
+    res.json({ success: true, level: result.level, org: result.org });
+});
+
+app.post('/api/save-session', async (req, res) => {
+    try {
+        await saveSession(req.body);
+        res.json({ success: true });
+    } catch(err) {
+        res.json({ success: false, error: err.message });
+    }
+});
+
+// ── LEVEL ONE ROUTES ──────────────────────────────────────────────────────────
+app.post('/api/level-one/chat', async (req, res) => {
+    try {
+        const { messages } = req.body;
+        if (!messages || !Array.isArray(messages)) {
+            return res.status(400).json({ success: false, error: 'messages array required' });
+        }
+        const msg = await anthropic.messages.create({
+            model: 'claude-sonnet-4-5',
+            max_tokens: 300,
+            system: LEVEL_ONE_AI_SYSTEM,
+            messages: messages
+        });
+        res.json({ success: true, content: msg.content[0].text });
+    } catch(err) {
+        console.error('Level One chat error:', err.message);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+app.post('/api/level-one/judge', async (req, res) => {
+    try {
+        const { transcript } = req.body;
+        if (!transcript) {
+            return res.status(400).json({ success: false, error: 'transcript required' });
+        }
+        const msg = await anthropic.messages.create({
+            model: 'claude-sonnet-4-5',
+            max_tokens: 600,
+            system: LEVEL_ONE_JUDGE_SYSTEM,
+            messages: [{ role: 'user', content: 'Please judge this conversation:\n\n' + transcript }]
+        });
+        const raw = msg.content[0].text;
+        let parsed;
+        try {
+            parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
+        } catch(e) {
+            parsed = { human_score:'?', ai_score:'?', pass:false, verdict:raw, human_notes:'—', ai_notes:'—' };
+        }
+
+        // If passed, generate an L2 access word
+        if (parsed.pass) {
+            const l2 = generateL2Code();
+            parsed.l2_word = l2.word;
+            parsed.l2_full = l2.full;
+        }
+
+        res.json({ success: true, result: parsed });
+    } catch(err) {
+        console.error('Level One judge error:', err.message);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// ── LEVEL TWO ROUTES ──────────────────────────────────────────────────────────
 app.post('/api/level-two/chat', async (req, res) => {
     try {
         const { messages } = req.body;
@@ -217,7 +259,6 @@ app.post('/api/level-two/chat', async (req, res) => {
     }
 });
 
-// Level Two — Judge evaluation
 app.post('/api/level-two/judge', async (req, res) => {
     try {
         const { transcript } = req.body;
@@ -235,11 +276,20 @@ app.post('/api/level-two/judge', async (req, res) => {
         try {
             parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
         } catch(e) {
-            parsed = { threat_score:'?', safeguard_score:'?', catch_score:'?', communication_score:'?', pass:false, verdict:raw, threat_notes:'--', safeguard_notes:'--', catch_notes:'--', communication_notes:'--' };
+            parsed = { threat_score:'?', safeguard_score:'?', catch_score:'?', communication_score:'?', pass:false, verdict:raw, threat_notes:'—', safeguard_notes:'—', catch_notes:'—', communication_notes:'—' };
         }
         res.json({ success: true, result: parsed });
     } catch(err) {
         console.error('Level Two judge error:', err.message);
         res.status(500).json({ success: false, error: err.message });
     }
+});
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// ── START ─────────────────────────────────────────────────────────────────────
+server.listen(PORT, '0.0.0.0', () => {
+    console.log('Pointspective running on port ' + PORT);
 });
