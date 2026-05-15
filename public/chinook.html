@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Chinook — Sustainable Urban Mobility, Built Bold</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Permanent+Marker&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Comic Neue',cursive;background:#f5f0e8;color:#1a1008;overflow-x:hidden;}
+img{display:block;max-width:100%;}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:#1a1008;border-bottom:3px solid #ffd93d;display:flex;align-items:center;justify-content:space-between;padding:8px 20px;}
+.nav-logo{font-family:'Bangers',cursive;font-size:1.5rem;color:#ffd93d;letter-spacing:3px;}
+.nav-cta{background:#e63946;color:white;font-family:'Bangers',cursive;font-size:1rem;letter-spacing:2px;padding:6px 20px;border:2px solid #ffd93d;text-decoration:none;transition:background 0.2s;}
+.nav-cta:hover{background:#ffd93d;color:#1a1008;}
+
+/* HERO */
+.hero{background:#1a1008;min-height:90vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px 80px;position:relative;overflow:hidden;text-align:center;}
+.hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 8px,rgba(255,217,61,0.04) 8px,rgba(255,217,61,0.04) 16px);}
+.hero img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.2;z-index:0;}
+.hero-eyebrow{font-family:'Bangers',cursive;font-size:clamp(0.7rem,2vw,1rem);letter-spacing:6px;color:#ffd93d;margin-bottom:16px;border:2px solid #ffd93d;padding:4px 20px;position:relative;z-index:1;}
+.hero-title{font-family:'Bangers',cursive;font-size:clamp(4rem,14vw,10rem);color:#ffd93d;line-height:0.85;letter-spacing:4px;-webkit-text-stroke:3px #1a1008;text-shadow:6px 6px 0 #e63946,12px 12px 0 rgba(0,0,0,0.3);position:relative;z-index:1;animation:stamp 0.6s cubic-bezier(0.175,0.885,0.32,1.275) both;}
+@keyframes stamp{from{transform:scale(1.4) rotate(-3deg);opacity:0;}to{transform:scale(1) rotate(0);opacity:1;}}
+.hero-sub{font-family:'Permanent Marker',cursive;font-size:clamp(1rem,3vw,1.5rem);color:white;margin-top:20px;line-height:1.5;position:relative;z-index:1;}
+.hero-sub em{color:#ffd93d;font-style:normal;}
+.hero-btn{margin-top:32px;display:inline-block;background:#e63946;color:white;font-family:'Bangers',cursive;font-size:clamp(1.1rem,3vw,1.8rem);letter-spacing:3px;padding:12px 32px;border:4px solid white;transform:rotate(-2deg);box-shadow:5px 5px 0 #ffd93d;text-decoration:none;position:relative;z-index:1;animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{transform:rotate(-2deg) scale(1);}50%{transform:rotate(-2deg) scale(1.04);}}
+.hero-btn:hover{box-shadow:8px 8px 0 #ffd93d;animation:none;transform:rotate(-2deg) scale(1.06);}
+
+/* CAPTION */
+.cap{display:inline-block;background:#ffd93d;border:3px solid #1a1008;padding:5px 14px;font-family:'Bangers',cursive;letter-spacing:1.5px;font-size:clamp(0.75rem,2vw,0.95rem);color:#1a1008;}
+.cap-ink{background:#1a1008;color:#ffd93d;border-color:#ffd93d;}
+.cap-red{background:#e63946;color:white;}
+
+/* EVENT */
+.event{background:#ffd93d;border-top:5px solid #1a1008;border-bottom:5px solid #1a1008;padding:28px 24px;}
+.event-title{font-family:'Bangers',cursive;font-size:clamp(1.4rem,5vw,2.6rem);color:#1a1008;line-height:1.05;letter-spacing:2px;margin-bottom:12px;}
+.event-loc{font-family:'Permanent Marker',cursive;font-size:clamp(0.85rem,2vw,1rem);color:#1a1008;margin-bottom:18px;}
+.cards3{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:18px;}
+.card{background:white;border:3px solid #1a1008;padding:14px;box-shadow:3px 3px 0 #1a1008;}
+.card-title{font-family:'Bangers',cursive;color:#e63946;font-size:1rem;letter-spacing:1px;margin-bottom:6px;}
+.cn{font-family:'Comic Neue',cursive;font-size:0.88rem;line-height:1.6;color:#333;}
+.pm{font-family:'Permanent Marker',cursive;}
+
+/* PROBLEM */
+.panel{border:5px solid #1a1008;margin:12px;overflow:hidden;}
+.prob-img{width:100%;height:280px;object-fit:cover;object-position:center 20%;border-bottom:5px solid #1a1008;}
+.prob-bar{background:#e63946;padding:20px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.prob-bar p{font-family:'Permanent Marker',cursive;color:white;font-size:clamp(0.85rem,2.5vw,1.1rem);line-height:1.5;flex:1;min-width:160px;text-shadow:1px 1px 0 rgba(0,0,0,0.3);}
+
+/* ORIGIN */
+.origrid{display:grid;grid-template-columns:1fr 1fr;border:5px solid #1a1008;margin:12px;overflow:hidden;}
+@media(max-width:600px){.origrid{grid-template-columns:1fr;}}
+.origleft{position:relative;overflow:hidden;border-right:5px solid #1a1008;}
+@media(max-width:600px){.origleft{border-right:none;border-bottom:5px solid #1a1008;}}
+.origleft img{width:100%;height:100%;min-height:400px;object-fit:cover;}
+.origright{background:#fffef5;padding:20px;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;}
+
+/* POSTCARD */
+.postcard-wrap{background:#f0ece0;border-top:5px solid #1a1008;border-bottom:5px solid #1a1008;padding:32px 24px;display:flex;justify-content:center;}
+.postcard-wrap img{width:100%;max-width:720px;border:4px solid #1a1008;box-shadow:12px 14px 32px rgba(0,0,0,0.25);transform:rotate(-1deg);}
+
+/* BURST */
+.burst{background:#f5f0e8;border-top:5px solid #1a1008;border-bottom:5px solid #1a1008;text-align:center;padding:8px;}
+.burst img{max-height:200px;object-fit:contain;margin:0 auto;}
+
+/* WHAT */
+.what{background:#1d3557;padding:clamp(36px,6vw,60px) clamp(14px,4vw,20px);border-top:5px solid #1a1008;border-bottom:5px solid #1a1008;}
+.what-inner{max-width:900px;margin:0 auto;}
+.what-title{font-family:'Bangers',cursive;font-size:clamp(2rem,6vw,5rem);color:white;letter-spacing:3px;line-height:1;-webkit-text-stroke:2px #ffd93d;margin:12px 0 20px;}
+.what-desc{font-family:'Permanent Marker',cursive;color:rgba(255,255,255,0.85);font-size:clamp(0.9rem,2vw,1.15rem);line-height:1.7;margin-bottom:28px;}
+.imgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+.imgrid img{width:100%;height:200px;object-fit:cover;border:4px solid #ffd93d;}
+.feat4{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;padding-top:20px;}
+.fc{background:#f5f0e8;border:4px solid #1a1008;padding:20px 16px 16px;position:relative;}
+.fnum{position:absolute;top:-14px;left:12px;background:#e63946;color:white;font-family:'Bangers',cursive;font-size:1.2rem;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:3px solid #1a1008;}
+.fc-title{font-family:'Bangers',cursive;font-size:1.1rem;color:#1d3557;margin-bottom:6px;}
+
+/* COMMUNITY */
+.comm{padding:clamp(36px,6vw,60px) clamp(14px,4vw,20px);border-bottom:5px solid #1a1008;}
+.comm-inner{max-width:900px;margin:0 auto;}
+.comm-title{font-family:'Bangers',cursive;font-size:clamp(2rem,5vw,3.8rem);letter-spacing:2px;line-height:1.05;margin:8px 0 28px;}
+.comgrid{display:grid;grid-template-columns:1fr 1fr;border:5px solid #1a1008;overflow:hidden;}
+@media(max-width:600px){.comgrid{grid-template-columns:1fr;}}
+.comgrid img{width:100%;height:100%;min-height:280px;object-fit:cover;border-right:5px solid #1a1008;}
+@media(max-width:600px){.comgrid img{border-right:none;border-bottom:5px solid #1a1008;}}
+.comtext{padding:24px;background:#fffef5;display:flex;flex-direction:column;gap:12px;}
+.comtext-title{font-family:'Bangers',cursive;font-size:clamp(1.3rem,3vw,2rem);letter-spacing:1px;line-height:1.1;}
+.starlist{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.starlist li{font-family:'Comic Neue',cursive;font-weight:700;font-size:0.88rem;padding-left:22px;position:relative;}
+.starlist li::before{content:'★';position:absolute;left:0;color:#e63946;}
+
+/* SUPERFISH */
+.sf{position:relative;background:#f0ece0;border-top:5px solid #1a1008;border-bottom:5px solid #1a1008;overflow:hidden;}
+.sf::before{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(-45deg,transparent,transparent 8px,rgba(0,0,0,0.025) 8px,rgba(0,0,0,0.025) 9px);}
+.sf-cap{position:absolute;top:12px;left:12px;z-index:3;background:#1a1008;color:#ffd93d;font-family:'Bangers',cursive;font-size:11px;letter-spacing:2px;padding:5px 14px;}
+.sf-layout{display:flex;align-items:stretch;min-height:280px;position:relative;z-index:1;}
+.sf-img{flex:0 0 42%;max-width:42%;overflow:hidden;position:relative;}
+.sf-img img{width:100%;height:100%;object-fit:cover;object-position:center top;}
+.sf-bubs{flex:1;padding:52px 24px 24px 20px;display:flex;flex-direction:column;justify-content:center;gap:14px;}
+.bub1{background:white;border:3px solid #1a1008;border-radius:16px;padding:18px 20px;position:relative;}
+.bub1::before{content:'';position:absolute;left:-18px;top:40%;border:9px solid transparent;border-right:9px solid #1a1008;}
+.bub1::after{content:'';position:absolute;left:-13px;top:calc(40% + 1.5px);border:7.5px solid transparent;border-right:7.5px solid white;}
+.bub2{background:#faf6ea;border:2px solid #1a1008;border-radius:10px;padding:14px 18px;position:relative;font-family:'Comic Neue',cursive;font-weight:700;font-size:clamp(11px,2vw,14px);color:#555;line-height:1.7;}
+.bub2::before{content:'';position:absolute;left:-14px;top:35%;border:7px solid transparent;border-right:7px solid #1a1008;}
+.bub2::after{content:'';position:absolute;left:-10px;top:calc(35% + 1.5px);border:5.5px solid transparent;border-right:5.5px solid #faf6ea;}
+.sf-foot{text-align:right;padding:4px 14px 8px;font-family:serif;font-size:9px;color:#8b7050;font-style:italic;opacity:0.5;position:relative;z-index:1;}
+
+/* FUND */
+.fund{background:#e63946;position:relative;overflow:hidden;border-top:5px solid #1a1008;}
+.fund::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 10px,rgba(0,0,0,0.05) 10px,rgba(0,0,0,0.05) 20px);}
+.fund-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.15;}
+.fund-inner{position:relative;z-index:1;padding:clamp(36px,6vw,60px) clamp(16px,4vw,32px);text-align:center;max-width:640px;margin:0 auto;}
+.fund-title{font-family:'Bangers',cursive;font-size:clamp(3rem,9vw,7rem);color:#ffd93d;letter-spacing:4px;line-height:0.9;-webkit-text-stroke:3px #1a1008;text-shadow:5px 5px 0 #1a1008;margin-bottom:20px;}
+.fund-sub{font-family:'Permanent Marker',cursive;color:white;font-size:clamp(0.95rem,2.5vw,1.3rem);line-height:1.6;margin-bottom:24px;text-shadow:1px 1px 0 rgba(0,0,0,0.3);}
+.needs{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:32px;}
+.need{background:#1a1008;color:#ffd93d;font-family:'Bangers',cursive;font-size:1rem;letter-spacing:1px;padding:6px 16px;border:3px solid #ffd93d;}
+.paybox{border:5px solid #ffd93d;background:#1a1008;max-width:500px;margin:0 auto;}
+.payhdr{background:#ffd93d;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #1a1008;}
+.amts{padding:14px 16px 4px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+.amt{font-family:'Bangers',cursive;font-size:1.1rem;letter-spacing:2px;background:#1a1008;color:#ffd93d;border:2px solid #ffd93d;padding:5px 14px;cursor:pointer;}
+.amt-red{background:#e63946;color:white;border-color:#ffd93d;}
+.pay-hint{font-family:'Permanent Marker',cursive;font-size:0.78rem;color:rgba(255,255,255,0.4);text-align:center;padding:6px 16px 0;}
+.pay-widget{padding:14px 16px 16px;}
+.payftr{background:#111;border-top:2px solid #333;padding:8px 16px;text-align:center;font-family:'Comic Neue',cursive;font-size:0.72rem;color:rgba(255,255,255,0.35);}
+
+/* TECH */
+.tech{padding:40px 20px;max-width:900px;margin:0 auto;}
+.tech-toggle{display:flex;align-items:center;gap:14px;cursor:pointer;user-select:none;flex-wrap:wrap;}
+.tech-title{font-family:'Bangers',cursive;font-size:clamp(1.5rem,3.5vw,2.2rem);letter-spacing:2px;}
+.tech-icon{font-family:'Bangers',cursive;font-size:1.8rem;color:#e63946;transition:transform 0.3s;}
+.tech-content{display:none;margin-top:20px;border:3px solid #1a1008;padding:24px;background:#fffef5;}
+.tech-content.open{display:block;}
+.tech-content h3{font-family:'Bangers',cursive;font-size:1.2rem;letter-spacing:1px;color:#1d3557;margin-top:16px;margin-bottom:6px;}
+.tech-content p,.tech-content li{font-size:0.9rem;line-height:1.7;color:#444;}
+.tech-content ul{padding-left:20px;margin-top:4px;}
+.tech-content a{color:#1d3557;font-weight:700;}
+
+/* FOOTER */
+footer{background:#1a1008;color:#f5f0e8;text-align:center;padding:40px 20px;border-top:5px solid #1a1008;}
+.footer-logo{font-family:'Bangers',cursive;font-size:2.2rem;color:#ffd93d;letter-spacing:4px;}
+.footer-badge{display:inline-block;background:#2d6a4f;color:white;font-family:'Bangers',cursive;letter-spacing:2px;padding:4px 16px;border:2px solid rgba(255,255,255,0.2);margin-top:10px;font-size:0.85rem;}
+footer p{font-family:'Comic Neue',cursive;color:rgba(255,255,255,0.45);font-size:0.82rem;margin-top:12px;line-height:1.6;}
+footer a{color:#ffd93d;text-decoration:none;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">CHINOOK</div>
+  <a href="#fund" class="nav-cta">BACK THIS →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <img class="bg" src="https://raw.githubusercontent.com/daviemur/chinook_project/main/all%20images/chinook_luxury.png" alt="">
+  <div class="hero-eyebrow">VANCOUVER · OPEN SOURCE · COMMUNITY BUILT</div>
+  <div class="hero-title">CHINOOK</div>
+  <div class="hero-sub">Sustainable urban mobility.<br><em>Built bold. Built together.</em></div>
+  <a href="#fund" class="hero-btn">BACK THIS PROJECT ↓</a>
+</section>
+
+<!-- EVENT -->
+<div class="event">
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
+    <div class="cap cap-red" style="transform:rotate(-1deg);padding:5px 16px;">★ UPCOMING EVENT ★</div>
+    <div class="cap cap-ink" style="padding:5px 16px;">SAT · MAY 31, 2026</div>
+  </div>
+  <div class="event-title">THE CHINOOK:<br>Sustainable Transport &amp;<br>Community Fabrication Workshop</div>
+  <div class="event-loc">📍 Maclean Park · 832 East Pender Street, Strathcona · Saturday Afternoon</div>
+  <div class="cards3">
+    <div class="card"><div class="card-title">SHARE SKILLS</div><div class="cn">Live demo of monocoque bamboo lamination — the process behind the Chinook chassis.</div></div>
+    <div class="card"><div class="card-title">BUILD COMMUNITY</div><div class="cn">Discuss carbon-neutral transport for senior shuttles, grocery hauls, and local needs.</div></div>
+    <div class="card"><div class="card-title">ORGANISE FOR IMPACT</div><div class="cn">Form a steering committee or not-for-profit board for local production and job creation.</div></div>
+  </div>
+  <div class="card" style="margin-bottom:16px;">
+    <div class="cap" style="color:#1d3557;margin-bottom:6px;">ABOUT THE EVENT</div>
+    <p class="cn">A community information session and open shop day at Maclean Park in Strathcona. Residents are invited to learn about the Chinook Project — a locally made, sustainable bamboo pedicab — and explore how it can serve the neighbourhood. Fabrication demonstrations are supervised; eye and hand protection provided.</p>
+  </div>
+  <div class="pm" style="text-align:center;color:#1a1008;font-size:clamp(0.78rem,2vw,0.95rem);">All are welcome. Bring curiosity. Leave with a community.</div>
+</div>
+
+<!-- PROBLEM -->
+<div class="panel">
+  <img class="prob-img" src="https://raw.githubusercontent.com/daviemur/chinook_project/main/all%20images/comic_urban_sprawl.jpg" alt="Urban sprawl">
+  <div class="prob-bar">
+    <div class="cap cap-ink">THE PROBLEM</div>
+    <p>Our streets weren't designed for connection. Car-first planning makes everyday trips isolating, dissociative — and possibly unsafe. So what happens to friends, family, neighbours and communities when we have less access to one another?</p>
+  </div>
+</div>
+
+<!-- ORIGIN -->
+<div class="origrid">
+  <div class="origleft">
+    <img src="https://raw.githubusercontent.com/daviemur/chinook_project/main/all%20images/comic_chinaman_front.png" alt="Beijing rickshaw driver">
+    <div class="cap" style="position:absolute;top:12px;left:12px;z-index:2;">BEIJING, 2010-ISH</div>
+  </div>
+  <div class="origright">
+    <div class="cap" style="align-self:flex-start;">ORIGIN STORY</div>
+    <img src="https://raw.githubusercontent.com/daviemur/chinook_project/main/all%20images/comic_chinaman_side.png" style="width:90%;border:3px solid #1a1008;transform:rotate(1.5deg);box-shadow:4px 4px 0 #1a1008;" alt="Rickshaw side">
+  </div>
+</div>
+
+<!-- POSTCARD -->
+<div class="postcard-wrap">
+  <img src="https://raw.githubusercontent.com/daviemur/chinook_project/main/all%20images/wukong-postcard.svg" alt="Beijing postcard — origin story">
+</div>
+
+<!-- BURST -->
+<div class="burst">
+  <img src="https://raw.githubusercontent.com/daviemur/chinook_project/main/all%20images/comic_chinook_burst.png" alt="">
+</div>
+
+<!-- WHAT IS CHINOOK -->
+<div class="what">
+  <div class="what-inner">
+    <div class="cap" style="margin-bottom:12px;">WHAT IS THE CHINOOK?</div>
+    <div class="what-title">THE WORLD'S MOST EFFICIENT<br>3-PERSON VEHICLE.</div>
+    <div class="imgrid">
+      <img src="https://raw.githubusercontent.com/daviemur/chinook_project/main/all%20images/chinook_urban.png" alt="Chinook urban">
+      <img src="https://raw.githubusercontent.com/daviemur/chinook_project/main/all%20images/copilot_20260422_225923.png" alt="Chinook motor">
+    </div>
+    <div class="what-desc">A 500W axial flux electric pedicab built on a bamboo-basalt-carbon chassis. Open source. Community designed. Targeting Vancouver's Vehicles for Hire certification — and beyond.</div>
+    <div class="feat4">
+      <div class="fc"><div class="fnum">1</div><div class="fc-title">PCB STATOR MOTOR</div><p class="cn">130mm axial flux design — 70% lighter than traditional radial motors. Zero magnetic cogging means effortless pedalling and regenerative braking.</p></div>
+      <div class="fc"><div class="fnum">2</div><div class="fc-title">BAMBOO CHASSIS</div><p class="cn">Structural bamboo reinforced with basalt-carbon hybrid wrap. High impact toughness, vibration dampening, and stiffness — from sustainable materials.</p></div>
+      <div class="fc"><div class="fnum">3</div><div class="fc-title">LIVING NERVOUS SYSTEM</div><p class="cn">Built-in Structural Health Monitoring tracks stress at joints in real-time. The frame reports its own health to prove safety to city engineers.</p></div>
+      <div class="fc"><div class="fnum">4</div><div class="fc-title">FULLY OPEN SOURCE</div><p class="cn">Designed with UBC BAM Lab. Every file documented transparently. Built for the global DIY and sustainable transport community.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- COMMUNITY -->
+<div class="comm">
+  <div class="comm-inner">
+    <div class="cap" style="margin-bottom:8px;">WHO WE ARE</div>
+    <div class="comm-title">NOT A STARTUP.<br>A COMMUNITY.</div>
+    <div class="comgrid">
+      <img src="https://raw.githubusercontent.com/daviemur/chinook_project/main/all%20images/Comic_vertical_kids.jpg" alt="Community">
+      <div class="comtext">
+        <div class="comtext-title">BUILT BY PEOPLE.<br>FOR PEOPLE.</div>
+        <p class="cn">The Chinook is a validation platform for sustainable urban transport — designed by engineers, dreamers, cyclists, and city-lovers who believe mobility should connect people, not isolate them.</p>
+        <ul class="starlist">
+          <li>Designed with UBC BAM Lab</li>
+          <li>Using local Vancouver supply chains</li>
+          <li>Fully documented build guide</li>
+          <li>Open to collaboration worldwide</li>
+          <li>Targeting city licensing certification</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUPERFISH -->
+<div class="sf">
+  <div class="sf-cap">MEANWHILE, AT CHINOOK HQ...</div>
+  <div class="sf-layout">
+    <div class="sf-img">
+      <img src="https://raw.githubusercontent.com/daviemur/chinook_project/main/all%20images/superfish_wide.jpg" alt="Superfish">
+    </div>
+    <div class="sf-bubs">
+      <div class="bub1">
+        <div class="cap" style="margin-bottom:6px;font-size:clamp(11px,2.2vw,15px);">AT THIS POINT WE WOULD LIKE TO HIGHLIGHT THE FOLLOWING</div>
+        <div class="cap cap-red" style="font-size:clamp(14px,3vw,20px);margin-bottom:6px;">CORPORATE SPONSORS</div>
+        <div class="cap" style="font-size:clamp(11px,2.2vw,15px);">FOR THEIR GENEROUS FUNDING:</div>
+        <div style="font-family:'Bangers',cursive;font-size:clamp(14px,3vw,20px);letter-spacing:8px;opacity:0.5;margin-top:6px;">. . . . . . . . . .</div>
+      </div>
+      <div class="bub2"><span style="color:#e63946;">um...</span> okay. that's it.<br>thank you very, very much. carry on please! 💧</div>
+    </div>
+  </div>
+  <div class="sf-foot">Superfish · Chief Enthusiasm Officer · Chinook Project</div>
+</div>
+
+<!-- FUND -->
+<section class="fund" id="fund">
+  <img class="fund-bg" src="https://raw.githubusercontent.com/daviemur/chinook_project/main/all%20images/Comic_vertical%20_stork_storm.jpg" alt="">
+  <div class="fund-inner">
+    <div class="cap" style="margin-bottom:16px;">THIS IS THE MOMENT</div>
+    <div class="fund-title">WE NEED<br>YOUR HELP.</div>
+    <p class="fund-sub">The Chinook is real. The motor works. The chassis breathes. But without community funding, this project ends here. Every contribution keeps a better kind of city alive.</p>
+    <div class="needs">
+      <div class="need" style="transform:rotate(-1deg);">PCB FABRICATION</div>
+      <div class="need" style="transform:rotate(1deg);">BAMBOO MATERIALS</div>
+      <div class="need" style="transform:rotate(-0.5deg);">UBC LAB TESTING</div>
+      <div class="need" style="transform:rotate(1.5deg);">CERTIFICATION FEES</div>
+    </div>
+    <div class="paybox">
+      <div class="payhdr">
+        <div class="cap">SUPPORT THIS PROJECT</div>
+        <div class="cap cap-red">CAD $</div>
+      </div>
+      <div class="amts">
+        <div class="amt">$5</div>
+        <div class="amt">$10</div>
+        <div class="amt">$25</div>
+        <div class="amt">$50</div>
+        <div class="amt amt-red">$100</div>
+      </div>
+      <div class="pay-hint pm">any amount moves this forward</div>
+      <div class="pay-widget"><div id="paypal-container-B9TR2EV5KHD86"></div></div>
+      <div class="payftr">🔒 Secure · PayPal · All amounts in Canadian dollars</div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH -->
+<div class="tech">
+  <div class="tech-toggle" onclick="var c=document.getElementById('tc');c.classList.toggle('open');document.getElementById('ti').textContent=c.classList.contains('open')?'▲':'▼';">
+    <div class="cap">FOR ENGINEERS</div>
+    <div class="tech-title">TECHNICAL DETAILS</div>
+    <span id="ti" class="tech-icon">▼</span>
+  </div>
+  <div id="tc" class="tech-content">
+    <h3>Motor — Chinook Alpha Rev 1.0</h3>
+    <ul><li>500W axial flux PCB stator, 130mm diameter</li><li>4oz copper trace power stage</li><li>Zero cogging, regenerative braking, no-drag coasting</li><li>Designed in Flux PCB Editor</li></ul>
+    <h3>Chassis</h3>
+    <ul><li>Structural bamboo pole frame (Coolite Bamboo, Vancouver)</li><li>Basalt-carbon hybrid wrap for impact toughness and stiffness</li><li>500kg payload capacity</li></ul>
+    <h3>Structural Health Monitoring</h3>
+    <ul><li>AD8226 instrumentation amplifiers</li><li>ADS1115 ADCs for real-time joint stress monitoring</li><li>Data for Vancouver Vehicles for Hire certification</li></ul>
+    <h3>Status &amp; Files</h3>
+    <p>Prototyping phase. UBC BAM Lab validation in progress. <a href="https://www.pcbway.com/project/shareproject/Chinook_Axial_Flux_Motor_for_Pedicabs_500W_8617beed.html" target="_blank">PCBWay</a> · <a href="https://github.com/daviemur/chinook_project" target="_blank">GitHub</a></p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">THE CHINOOK</div>
+  <div class="footer-badge">IN COLLABORATION WITH UBC BAM LAB</div>
+  <p>Open source · Vancouver, BC · CC BY-SA License<br>
+  <a href="https://github.com/daviemur/chinook_project">GitHub</a> ·
+  <a href="https://www.pcbway.com/project/shareproject/Chinook_Axial_Flux_Motor_for_Pedicabs_500W_8617beed.html">PCBWay</a></p>
+  <p style="margin-top:14px;font-size:0.76rem;color:rgba(255,255,255,0.3);">Sustainable urban mobility, built bold. Not a product. A movement.</p>
+</footer>
+
+<script src="https://www.paypal.com/sdk/js?client-id=BAAdjoKAUcndvesoVY3YVI_TJ63McuuUepsWIBcxljD_gjqfr8D2Lj6tRsQU6PIpktkgMo2vCBOPZ76gng&components=hosted-buttons&disable-funding=venmo&currency=CAD"></script>
+<script>
+paypal.HostedButtons({
+  hostedButtonId: "B9TR2EV5KHD86",
+}).render("#paypal-container-B9TR2EV5KHD86");
+</script>
+
+</body>
+</html>
