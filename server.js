@@ -287,8 +287,10 @@ app.post('/api/level-two/judge', async (req, res) => {
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
+}); 
+app.get('/chinook', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'chinook.html'));
 });
-
 // ── START ─────────────────────────────────────────────────────────────────────
 server.listen(PORT, '0.0.0.0', () => {
     console.log('Pointspective running on port ' + PORT);
