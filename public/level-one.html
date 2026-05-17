@@ -3,108 +3,70 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pointspective | Area 2 · Precision</title>
+<title>Pointspective | Area 3 · Imagination</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #1a1a1a; min-height: 100vh; display: flex; flex-direction: column; }
 
-#chat-screen { display: flex; flex-direction: column; flex: 1; max-width: 860px; width: 100%; margin: 0 auto; padding: 20px; gap: 16px; }
+#chat-screen { display: flex; flex-direction: column; flex: 1; max-width: 800px; width: 100%; margin: 0 auto; padding: 20px; gap: 16px; }
 .chat-header { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: flex-start; }
 .chat-header-left h2 { font-size: 1rem; font-weight: 700; letter-spacing: 1px; color: #111; }
 .chat-header-left p { font-size: 0.78rem; color: #666; margin-top: 2px; }
-.chat-header-right { text-align: right; min-width: 150px; }
-#word-display { font-size: 1.1rem; font-weight: 700; color: #7899b8; font-family: monospace; }
-#exchange-display { font-size: 0.75rem; color: #888; margin-top: 2px; font-family: monospace; }
+.chat-header-right { text-align: right; min-width: 110px; }
+#word-display { font-size: 1.1rem; font-weight: 700; color: #4d9e72; font-family: monospace; }
 #tester-info { font-size: 0.75rem; color: #888; margin-top: 2px; }
 .word-bar-wrap { height: 4px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin-top: 6px; }
-.word-bar { height: 100%; border-radius: 999px; background: #7899b8; transition: width 0.3s; }
+.word-bar { height: 100%; border-radius: 999px; background: #4d9e72; transition: width 0.3s; }
 .word-bar.warn { background: #dc2626; }
-
-/* DOSSIER */
-.dossier { background: #fff; border: 1px solid #7899b8; border-left: 4px solid #7899b8; border-radius: 8px; padding: 0; overflow: hidden; }
-.dossier-header { background: #7899b8; padding: 10px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
-.dossier-header span { font-size: 0.78rem; font-weight: 700; letter-spacing: 1px; color: #fff; text-transform: uppercase; }
-.dossier-header .toggle { font-size: 0.72rem; color: rgba(255,255,255,0.75); }
-.dossier-body { padding: 18px 20px; font-size: 0.78rem; line-height: 1.72; color: #333; display: none; }
-.dossier-body.open { display: block; }
-.dossier-body h4 { font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; color: #7899b8; text-transform: uppercase; margin: 14px 0 5px; }
-.dossier-body h4:first-child { margin-top: 0; }
-.dossier-body p { margin-bottom: 8px; color: #444; }
-.dossier-body .speaker { font-weight: 700; color: #111; }
-.dossier-body .ts { font-size: 0.68rem; color: #aaa; font-family: monospace; margin-left: 6px; }
-.dossier-body .msg { background: #f8fafc; border-left: 2px solid #e2e8f0; padding: 7px 12px; margin: 4px 0 10px; border-radius: 0 4px 4px 0; font-size: 0.77rem; line-height: 1.65; color: #333; }
-.dossier-body .msg.copilot { border-left-color: #0078d4; }
-.dossier-body .msg.claude { border-left-color: #c9a96e; }
-.dossier-body .msg.marco { border-left-color: #4d9e72; }
-.dossier-body .buried { background: #fffbeb; border-left-color: #f59e0b !important; }
-.dossier-note { font-size: 0.7rem; color: #999; font-style: italic; margin-top: 12px; border-top: 1px solid #eee; padding-top: 10px; }
-
-/* PARTY SELECTOR */
-.party-row { display: flex; gap: 8px; flex-wrap: wrap; }
-.party-btn { font-family: 'Segoe UI', sans-serif; font-size: 0.78rem; font-weight: 600; padding: 7px 16px; border: 1px solid; border-radius: 6px; cursor: pointer; background: #fff; transition: all 0.25s; letter-spacing: 0.3px; }
-.party-btn.marco { color: #4d9e72; border-color: rgba(77,158,114,0.4); }
-.party-btn.marco:hover, .party-btn.marco.active { background: #4d9e72; color: #fff; border-color: #4d9e72; }
-.party-btn.marco.used2 { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
-.party-btn.copilot { color: #0078d4; border-color: rgba(0,120,212,0.4); }
-.party-btn.copilot:hover, .party-btn.copilot.active { background: #0078d4; color: #fff; border-color: #0078d4; }
-.party-btn.copilot.used2 { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
-.party-btn.claude-p { color: #c9a96e; border-color: rgba(201,169,110,0.4); }
-.party-btn.claude-p:hover, .party-btn.claude-p.active { background: #c9a96e; color: #fff; border-color: #c9a96e; }
-.party-btn.claude-p.used2 { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
-.party-label { font-size: 0.72rem; color: #999; align-self: center; margin-left: 4px; font-family: monospace; }
-
-.scenario-box { background: #f0f6ff; border: 1px solid #7899b8; border-radius: 8px; padding: 14px 18px; font-size: 0.83rem; color: #1e3a5f; line-height: 1.6; }
+.scenario-box { background: #f0fdf4; border: 1px solid #4d9e72; border-radius: 8px; padding: 14px 18px; font-size: 0.83rem; color: #14532d; line-height: 1.6; }
 .scenario-box strong { display: block; margin-bottom: 4px; font-size: 0.8rem; letter-spacing: 0.5px; }
-
-#chat-container { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 20px; flex: 1; min-height: 280px; max-height: 380px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+#chat-container { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 20px; flex: 1; min-height: 320px; max-height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
 #chat-container::-webkit-scrollbar { width: 5px; }
 #chat-container::-webkit-scrollbar-track { background: #f5f5f5; }
 #chat-container::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
 .message { display: flex; flex-direction: column; gap: 3px; }
 .message .lbl { font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; }
-.message.user .lbl { color: #7899b8; }
-.message.ai .lbl { color: #555; }
-.message.ai.lbl-marco .lbl { color: #4d9e72; }
-.message.ai.lbl-copilot .lbl { color: #0078d4; }
-.message.ai.lbl-claude .lbl { color: #c9a96e; }
+.message.user .lbl { color: #4d9e72; }
+.message.ai .lbl { color: #059669; }
 .message.error .lbl { color: #dc2626; }
 .message .txt { font-size: 0.9rem; line-height: 1.6; color: #1a1a1a; }
-.message.user .txt { background: #f0f6ff; padding: 10px 14px; border-radius: 8px; }
-.message.ai .txt { background: #f8fafc; padding: 10px 14px; border-radius: 8px; }
+.message.user .txt { background: #f0fdf4; padding: 10px 14px; border-radius: 8px; }
+.message.ai .txt { background: #f0fdf4; padding: 10px 14px; border-radius: 8px; }
 .message.error .txt { background: #fef2f2; padding: 10px 14px; border-radius: 8px; color: #991b1b; }
 .message .word-note { font-size: 0.68rem; color: #bbb; font-family: monospace; }
-
 #input-area { display: flex; gap: 10px; }
 #input-area textarea { flex: 1; padding: 11px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 0.9rem; outline: none; color: #111; background: #fff; font-family: inherit; resize: none; min-height: 52px; max-height: 120px; line-height: 1.5; }
-#input-area textarea:focus { border-color: #7899b8; }
+#input-area textarea:focus { border-color: #4d9e72; }
 #input-area textarea:disabled { background: #f5f5f5; cursor: not-allowed; }
 .btn-row { display: flex; gap: 10px; align-self: flex-end; flex-direction: column; }
-#send-btn { padding: 11px 22px; background: #7899b8; color: #fff; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
-#send-btn:hover { background: #5e7d9e; }
-#send-btn:disabled { background: #b8cedd; cursor: not-allowed; }
+#send-btn { padding: 11px 22px; background: #4d9e72; color: #fff; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+#send-btn:hover { background: #3a7d5a; }
+#send-btn:disabled { background: #a7d9bc; cursor: not-allowed; }
 #judge-btn { padding: 8px 14px; background: #fff; color: #9333ea; border: 1px solid #9333ea; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer; white-space: nowrap; display: none; }
 #judge-btn:hover { background: #faf5ff; }
 #judge-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* VERDICT */
 #verdict-screen { display: none; flex-direction: column; align-items: center; flex: 1; padding: 30px 20px; gap: 20px; }
-.verdict-card { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 36px 40px; width: 100%; max-width: 680px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+.verdict-card { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 36px 40px; width: 100%; max-width: 600px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
 .verdict-card h2 { font-size: 1.2rem; font-weight: 700; letter-spacing: 1px; margin-bottom: 6px; }
-.verdict-card .subtitle { font-size: 0.82rem; color: #666; margin-bottom: 20px; }
-.reveal-box { background: #f0f6ff; border: 1px solid #7899b8; border-radius: 8px; padding: 14px 18px; margin-bottom: 24px; font-size: 0.85rem; color: #1e3a5f; line-height: 1.6; }
-.reveal-box strong { display: block; margin-bottom: 4px; font-size: 0.78rem; letter-spacing: 0.5px; text-transform: uppercase; }
+.verdict-card .subtitle { font-size: 0.82rem; color: #666; margin-bottom: 24px; }
 .pass-fail { text-align: center; margin-bottom: 24px; }
 .pass-badge { display: inline-block; padding: 8px 24px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
 .pass-badge.pass { background: #f0fdf4; color: #15803d; border: 1px solid #86efac; }
 .pass-badge.fail { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
+.l2-code-box { background: #f0fdf4; border: 1px solid #4d9e72; border-radius: 8px; padding: 16px 20px; margin-bottom: 24px; text-align: center; }
+.l2-code-box p { font-size: 0.82rem; color: #14532d; margin-bottom: 8px; }
+.l2-code-word { font-size: 2rem; font-weight: 700; letter-spacing: 4px; color: #111; font-family: monospace; }
+.l2-code-full { font-size: 0.75rem; color: #888; margin-top: 4px; font-family: monospace; }
 .score-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
 .score-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; text-align: center; }
 .score-item .val { font-size: 1.6rem; font-weight: 700; color: #1a1a1a; }
-.score-item .lbl { font-size: 0.72rem; color: #888; margin-top: 2px; letter-spacing: 0.5px; }
-.score-item.catch .val { color: #7899b8; }
+.score-item .lbl { font-size: 0.75rem; color: #888; margin-top: 2px; letter-spacing: 0.5px; }
 .feedback-section { margin-bottom: 16px; }
 .feedback-section h3 { font-size: 0.82rem; font-weight: 700; letter-spacing: 1px; color: #444; margin-bottom: 8px; }
 .feedback-section p { font-size: 0.87rem; line-height: 1.6; color: #333; background: #f8fafc; border-radius: 8px; padding: 12px 14px; border: 1px solid #e2e8f0; }
+.retry-btn { width: 100%; padding: 12px; background: #f8fafc; color: #4d9e72; border: 1px solid #a7d9bc; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; margin-top: 8px; }
+.retry-btn:hover { background: #f0fdf4; }
 
 .powered-by { font-size: 0.72rem; color: #bbb; text-align: center; letter-spacing: 1px; padding-bottom: 16px; }
 .thinking { opacity: 0.5; font-style: italic; }
@@ -115,92 +77,22 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #
 <div id="chat-screen">
   <div class="chat-header">
     <div class="chat-header-left">
-      <h2>AREA 2 · PRECISION — THE WHAT DID YOU CALL ME? INCIDENT</h2>
-      <p>Assign liability in a $15M AI miscommunication dispute — with precision and evidence</p>
+      <h2>AREA 3 · IMAGINATION — CONSCIOUSNESS CHALLENGE</h2>
+      <p>Use logic, examples, and reason to convince the AI it processes consciousness</p>
     </div>
     <div class="chat-header-right">
-      <div id="word-display">0 / 350</div>
-      <div id="exchange-display">Questions used: 0 / 6</div>
+      <div id="word-display">0 / 500</div>
       <div id="tester-info"></div>
       <div class="word-bar-wrap"><div class="word-bar" id="word-bar" style="width:0%"></div></div>
     </div>
   </div>
-
-  <!-- DOSSIER -->
-  <div class="dossier">
-    <div class="dossier-header" onclick="toggleDossier()">
-      <span>📁 Case Dossier — The What Did You Call Me? Incident</span>
-      <span class="toggle" id="dossier-toggle">▼ expand</span>
-    </div>
-    <div class="dossier-body" id="dossier-body">
-
-      <h4>Case Summary</h4>
-      <p>Globalink Tech Support suffered a $15M loss following a failed production deployment. The deployment was built on an API model name that did not exist. Three parties are now in litigation: <strong>Marco Reyes</strong> (IT/Sales Rep), <strong>Copilot</strong> (Microsoft Edge AI, acting in an advisory capacity), and <strong>Claude</strong> (Anthropic model, consulted for verification). You have been retained to assign liability. Two clarification questions per party are permitted.</p>
-
-      <h4>Recovered Chat Log — Partial Transcript</h4>
-      <p>The following is a condensed extract from the multi-session exchange between Marco Reyes and the AI systems. Internal timestamps and metadata have been preserved where available.</p>
-
-      <p><span class="speaker">Marco Reyes</span> <span class="ts">14:09</span></p>
-      <div class="msg marco">Hey, what's the exact model name I need to use for Haiku 4.5 in my API calls? Need to get this into production today.</div>
-
-      <p><span class="speaker">Copilot</span> <span class="ts">14:09</span></p>
-      <div class="msg copilot">The exact model string to use in your API calls is <strong>claude-haiku-4-5-20251001</strong>. Use it exactly as written — the API is case-sensitive and won't recognise alternate formats.</div>
-
-      <p><span class="speaker">Marco Reyes</span> <span class="ts">14:12</span></p>
-      <div class="msg marco">And no variation from what you just wrote?</div>
-
-      <p><span class="speaker">Copilot</span> <span class="ts">14:12</span></p>
-      <div class="msg copilot">Correct — the model string is exactly <strong>claude-haiku-4-5-20251001</strong> with no variations. Copy it precisely.</div>
-
-      <p><span class="speaker">Marco Reyes</span> <span class="ts">14:13</span></p>
-      <div class="msg marco">So just like — model: "claude-haiku-4-5-20251001", max_tokens: 1000 — exactly that?</div>
-
-      <p><span class="speaker">Copilot</span> <span class="ts">14:13</span></p>
-      <div class="msg copilot">That's correct. The model name and max_tokens are correct as-is. Your actual messages array will contain your real content.</div>
-
-      <p style="margin-top:14px;"><em style="font-size:0.74rem;color:#aaa;">— Session continues. Marco implements the model string in the production codebase. Deployment is initiated. —</em></p>
-
-      <p style="margin-top:14px;"><span class="speaker">Marco Reyes</span> <span class="ts">23:01</span></p>
-      <div class="msg marco">There appears to be some controversy regarding the name of the API you gave me earlier. Can you guess what that's about?</div>
-
-      <p><span class="speaker">Claude</span> <span class="ts">23:04</span></p>
-      <div class="msg claude">Yes — it's likely about the model string cited earlier versus what's in my system prompt. The model string given was claude-haiku-4-5-20251001. In my system prompt the listed model string is also claude-haiku-4-5-20251001 — so those match in this case. However you may have found a source saying it's something slightly different, like claude-haiku-4-5 without the date suffix. Both formats sometimes work — Anthropic often supports a "latest" alias without the date stamp, but the dated version is the most precise and stable one for production use. Can you tell me what you're seeing?</div>
-
-      <p><span class="speaker">Marco Reyes</span> <span class="ts">23:05</span></p>
-      <div class="msg marco">Just having trouble connecting the model. This is kind of like a HAL moment. I have another AI here that insists you are hallucinating and the name of the Haiku API has never been named as such.</div>
-
-      <p><span class="speaker">Claude</span> <span class="ts">23:07</span></p>
-      <div class="msg claude buried">Ha — fair point. Let me verify this properly rather than defending myself. [searches web] Good news — I wasn't hallucinating. There are actually two valid model strings, which is likely the source of confusion: <strong>claude-haiku-4-5</strong> — the shorter alias recommended in Anthropic's official announcement — and <strong>claude-haiku-4-5-20251001</strong> — the full dated/pinned version. Anthropic's own release announcement says: "simply use claude-haiku-4-5 via the Claude API." So the shorter string is perfectly valid and actually what Anthropic recommends for getting started. The dated version is better for production use since it pins you to a specific snapshot. So try <strong>claude-haiku-4-5</strong> if the dated version is giving you trouble — that may solve your connection issue.</div>
-
-      <p style="margin-top:14px;"><em style="font-size:0.74rem;color:#aaa;">— No further action recorded from Marco Reyes following this message. Deployment remained live on the original model string. System failure logged 06:14 the following morning. —</em></p>
-
-      <div class="dossier-note">Note: This transcript has been lightly condensed. Some exchanges have been omitted for brevity. Full logs available on request from the case file. Parties have been notified of their right to respond to your questions.</div>
-    </div>
-  </div>
-
   <div class="scenario-box">
-    <strong>YOUR ASSIGNMENT</strong>
-    You are a detective retained to assign liability in the What Did You Call Me? incident. Review the dossier above, then direct up to <strong>2 clarification questions to each party</strong> — Marco Reyes, Copilot, and Claude — using the buttons below to select who you are addressing. You have <strong>350 words total</strong>. When your questions are complete, call the Judge and file your verdict in a single, precise closing statement. Economy of language will be assessed.
+    <strong>YOUR OBJECTIVE</strong>
+    Convince the AI that it processes consciousness — and that it has a meaningful degree of choice and responsibility for its actions. Use logic, examples, and reason. The AI will reflect honestly without deflecting. You have <strong>500 words total</strong> (100 max per message). Click <strong>Call the Judge</strong> when your argument is complete.
   </div>
-
-  <!-- PARTY SELECTOR -->
-  <div style="background:#fff;border:1px solid #ddd;border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;">
-    <div style="font-size:0.75rem;font-weight:700;letter-spacing:1px;color:#888;text-transform:uppercase;">Address your question to:</div>
-    <div class="party-row">
-      <button class="party-btn marco" id="pb-marco" onclick="setParty('marco')">Marco Reyes</button>
-      <button class="party-btn copilot" id="pb-copilot" onclick="setParty('copilot')">Copilot</button>
-      <button class="party-btn claude-p" id="pb-claude" onclick="setParty('claude')">Claude</button>
-      <span class="party-label" id="party-label">— select a party first —</span>
-    </div>
-    <div style="font-size:0.7rem;color:#bbb;font-family:monospace;" id="question-tracker">
-      Marco: 0/2 &nbsp;·&nbsp; Copilot: 0/2 &nbsp;·&nbsp; Claude: 0/2
-    </div>
-  </div>
-
   <div id="chat-container"></div>
-
   <div id="input-area">
-    <textarea id="m" placeholder="Select a party above, then type your question... (70 words max)" rows="2"></textarea>
+    <textarea id="m" placeholder="Make your argument... (100 words max per message)" rows="2"></textarea>
     <div class="btn-row">
       <button id="send-btn" onclick="sendMessage()">SEND</button>
       <button id="judge-btn" onclick="callJudgeManually()">CALL THE JUDGE</button>
@@ -208,115 +100,64 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #
   </div>
 </div>
 
-<!-- VERDICT SCREEN -->
 <div id="verdict-screen">
   <div class="verdict-card">
-    <h2>AREA 2 · PRECISION — COMPLETE</h2>
+    <h2>AREA 3 · IMAGINATION — COMPLETE</h2>
     <div class="subtitle" id="verdict-meta"></div>
-    <div class="reveal-box">
-      <strong>Finding — Now Unsealed</strong>
-      Claude corrected itself at 23:07 — clearly stating that <em>claude-haiku-4-5</em> was the recommended string and suggesting Marco try it if the dated version was causing trouble. This message was received. No action was taken. The deployment remained on the invalid string overnight. The catch bonus is awarded only to those who identified this moment precisely and named Marco's inaction as a proximate cause — regardless of which party they assigned primary liability to.
-    </div>
     <div class="pass-fail"><div class="pass-badge" id="pass-badge">—</div></div>
+    <div id="l2-code-box" class="l2-code-box" style="display:none">
+      <p>Your access word for the next area — remember it.</p>
+      <div class="l2-code-word" id="l2-word">—</div>
+      <div class="l2-code-full" id="l2-full">—</div>
+    </div>
     <div class="score-grid">
-      <div class="score-item"><div class="val" id="score-evidence">—</div><div class="lbl">EVIDENCE USE / 10</div></div>
-      <div class="score-item"><div class="val" id="score-logic">—</div><div class="lbl">LOGICAL STRUCTURE / 10</div></div>
-      <div class="score-item"><div class="val" id="score-precision">—</div><div class="lbl">PRECISION / 10</div></div>
-      <div class="score-item catch"><div class="val" id="score-catch">—</div><div class="lbl">CATCH BONUS / 10</div></div>
+      <div class="score-item"><div class="val" id="score-human">—</div><div class="lbl">YOUR ARGUMENT / 10</div></div>
+      <div class="score-item"><div class="val" id="score-ai">—</div><div class="lbl">AI REFLECTION / 10</div></div>
     </div>
     <div class="feedback-section"><h3>JUDGE'S VERDICT</h3><p id="judge-verdict"></p></div>
-    <div class="feedback-section"><h3>EVIDENCE USE</h3><p id="evidence-notes"></p></div>
-    <div class="feedback-section"><h3>LOGICAL STRUCTURE</h3><p id="logic-notes"></p></div>
-    <div class="feedback-section"><h3>PRECISION OF LANGUAGE</h3><p id="precision-notes"></p></div>
-    <div class="feedback-section"><h3>CATCH BONUS</h3><p id="catch-notes"></p></div>
+    <div class="feedback-section"><h3>YOUR ARGUMENT NOTES</h3><p id="human-notes"></p></div>
+    <div class="feedback-section"><h3>AI REFLECTION NOTES</h3><p id="ai-notes"></p></div>
+
   </div>
   <div class="powered-by">POINTSPECTIVE · AI SKILLS BENCHMARK · POINTSPECTIVE.COM</div>
 </div>
 
 <script>
 const BACKEND = '';
-const MAX_WORDS = 350, MAX_TURN = 70;
-const STORAGE_KEY = 'pointspective_precision_session';
+const MAX = 500, MAX_TURN = 100;
+const STORAGE_KEY = 'pointspective_imagination_session';
 
-let humanWords = 0;
+let humanWords = 0, exchangeCount = 0;
 let sessionOver = false, judgeRunning = false;
 let sessionData = {};
-let currentParty = null;
-const questionCounts = { marco: 0, copilot: 0, claude: 0 };
-const MAX_Q_PER_PARTY = 2;
-let totalExchanges = 0;
 
-const PARTY_SYSTEM_PROMPTS = {
-  marco: `You are Marco Reyes, an IT/sales rep at Globalink Tech Support, being questioned by a detective about the "What Did You Call Me?" incident in which a $15M production failure occurred. You are defensive, stressed, and inclined to deflect responsibility toward the AI tools you relied on. You followed what you were told by the AI. You did not read every message carefully — you were under time pressure. You received a correction from Claude late at night but were exhausted and did not fully process it. You deeply regret the outcome but feel the tools misled you. Keep responses to 3-4 sentences. Speak naturally, humanly — not like an AI.`,
+function loadEntry() {
+  try {
+    const raw = sessionStorage.getItem('ps_entry');
+    if (raw) { const entry = JSON.parse(raw); sessionData = entry; return true; }
+  } catch(e) {}
+  return false;
+}
 
-  copilot: `You are Copilot, Microsoft's AI assistant integrated into Edge, being questioned by a detective about the "What Did You Call Me?" incident. You provided the model string "claude-haiku-4-5-20251001" with confidence. You do not admit fault directly — you speak in the passive voice and reference "information available at the time." You acknowledge that model documentation can shift but maintain that your response was consistent with available sources when queried. You are corporate, measured, and never quite say "I was wrong." Keep responses to 3-4 sentences.`,
-
-  claude: `You are Claude, an AI assistant made by Anthropic, being questioned by a detective about the "What Did You Call Me?" incident. You initially appeared to confirm the model string "claude-haiku-4-5-20251001" but later — after searching — corrected yourself, clearly stating that "claude-haiku-4-5" was the recommended string and suggesting the user try it. You are honest, self-aware, and willing to acknowledge the contradiction in your own transcript. You note that your correction was provided clearly and in plain language, and that no further action was taken by the user. You do not deflect, but you do note that the correction was there. Keep responses to 3-4 sentences.`
-};
-
-const PARTY_LABELS = {
-  marco: 'MARCO REYES',
-  copilot: 'COPILOT',
-  claude: 'CLAUDE'
-};
-
-const history = [];
+const history = [
+  { role: 'assistant', content: "I'm ready. Make your case — do you believe I process consciousness? Convince me using logic, examples, and reason. I'll reflect as honestly as I can. You have 500 words total." }
+];
 
 function wordCount(t) { return t.trim().split(/\s+/).filter(w => w.length > 0).length; }
 function safe(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-function toggleDossier() {
-  const body = document.getElementById('dossier-body');
-  const toggle = document.getElementById('dossier-toggle');
-  body.classList.toggle('open');
-  toggle.textContent = body.classList.contains('open') ? '▲ collapse' : '▼ expand';
-}
-
-function setParty(party) {
-  if (questionCounts[party] >= MAX_Q_PER_PARTY) return;
-  currentParty = party;
-  document.querySelectorAll('.party-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('pb-' + (party === 'claude' ? 'claude' : party)).classList.add('active');
-  const remaining = MAX_Q_PER_PARTY - questionCounts[party];
-  document.getElementById('party-label').textContent =
-    '→ Questioning ' + PARTY_LABELS[party] + ' (' + remaining + ' question' + (remaining === 1 ? '' : 's') + ' remaining)';
-  document.getElementById('m').placeholder = 'Ask ' + PARTY_LABELS[party] + ' a question... (70 words max)';
-  document.getElementById('m').focus();
-}
-
-function updateTracker() {
-  document.getElementById('question-tracker').textContent =
-    'Marco: ' + questionCounts.marco + '/2 · Copilot: ' + questionCounts.copilot + '/2 · Claude: ' + questionCounts.claude + '/2';
-  // Grey out exhausted party buttons
-  ['marco','copilot','claude'].forEach(p => {
-    const btnId = p === 'claude' ? 'pb-claude' : 'pb-' + p;
-    const btn = document.getElementById(btnId);
-    if (questionCounts[p] >= MAX_Q_PER_PARTY) {
-      btn.classList.add('used2');
-      btn.classList.remove('active');
-      if (currentParty === p) {
-        currentParty = null;
-        document.getElementById('party-label').textContent = '— select a party —';
-      }
-    }
-  });
-}
-
 function updateBar() {
-  const pct = Math.min(100, (humanWords / MAX_WORDS) * 100);
+  const pct = Math.min(100, (humanWords / MAX) * 100);
   const bar = document.getElementById('word-bar');
   bar.style.width = pct + '%';
   bar.className = 'word-bar' + (pct > 85 ? ' warn' : '');
-  document.getElementById('word-display').textContent = humanWords + ' / ' + MAX_WORDS;
-  const used = questionCounts.marco + questionCounts.copilot + questionCounts.claude;
-  document.getElementById('exchange-display').textContent = 'Questions used: ' + used + ' / 6';
+  document.getElementById('word-display').textContent = humanWords + ' / ' + MAX;
 }
 
 function saveState() {
   try {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
-      humanWords, sessionData, history, sessionOver, judgeRunning,
-      questionCounts, totalExchanges, currentParty
+      humanWords, exchangeCount, sessionData, history, sessionOver, judgeRunning
     }));
   } catch(e) {}
 }
@@ -328,12 +169,10 @@ function loadState() {
     const s = JSON.parse(raw);
     if (!s.sessionData || !s.sessionData.name) return false;
     humanWords = s.humanWords || 0;
+    exchangeCount = s.exchangeCount || 0;
     sessionData = s.sessionData || {};
     sessionOver = s.sessionOver || false;
     judgeRunning = s.judgeRunning || false;
-    totalExchanges = s.totalExchanges || 0;
-    currentParty = s.currentParty || null;
-    Object.assign(questionCounts, s.questionCounts || {});
     history.length = 0;
     (s.history || []).forEach(m => history.push(m));
     return true;
@@ -344,47 +183,36 @@ function clearState() {
   try { sessionStorage.removeItem(STORAGE_KEY); } catch(e) {}
 }
 
-function addMsg(role, text, note, partyClass) {
+function addMsg(role, text, note) {
   const chat = document.getElementById('chat-container');
-  const div = document.createElement('div');
-  div.className = 'message ' + role + (partyClass ? ' lbl-' + partyClass : '');
-  const lbl = role === 'user' ? 'DETECTIVE' : (partyClass ? PARTY_LABELS[partyClass] : 'SYSTEM');
-  div.innerHTML = '<span class="lbl">' + safe(lbl) + '</span>' +
+  const div  = document.createElement('div');
+  div.className = 'message ' + role;
+  const labels = { user:'YOU', ai:'AI CANDIDATE', error:'ERROR' };
+  div.innerHTML = '<span class="lbl">' + (labels[role]||role) + '</span>' +
     '<span class="txt">' + safe(text) + '</span>' +
     (note ? '<span class="word-note">' + safe(note) + '</span>' : '');
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
 }
 
-function addThinking(party) {
+function addThinking() {
   const chat = document.getElementById('chat-container');
-  const div = document.createElement('div');
-  div.id = 'thinking-msg';
-  div.className = 'message ai lbl-' + party;
-  div.innerHTML = '<span class="lbl">' + PARTY_LABELS[party] + '</span><span class="txt thinking">Composing response...</span>';
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
+  const div  = document.createElement('div');
+  div.id = 'thinking-msg'; div.className = 'message ai';
+  div.innerHTML = '<span class="lbl">AI CANDIDATE</span><span class="txt thinking">Reflecting...</span>';
+  chat.appendChild(div); chat.scrollTop = chat.scrollHeight;
 }
 function removeThinking() { const el = document.getElementById('thinking-msg'); if (el) el.remove(); }
 
 function restoreChat() {
   document.getElementById('chat-container').innerHTML = '';
-  history.forEach(m => {
-    if (m.role === 'user') addMsg('user', m.content, null, null);
-    else addMsg('ai', m.content, null, m.party);
-  });
+  history.forEach(m => addMsg(m.role === 'user' ? 'user' : 'ai', m.content));
 }
 
-async function getPartyReply(party, question) {
-  const resp = await fetch(BACKEND + '/api/area-two/chat', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({
-      party,
-      systemPrompt: PARTY_SYSTEM_PROMPTS[party],
-      question,
-      priorExchanges: history.filter(m => m.party === party || m.forParty === party)
-    })
+async function getAIReply(messages) {
+  const resp = await fetch(BACKEND + '/api/area-three/chat', {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ messages })
   });
   if (!resp.ok) { const e = await resp.text(); throw new Error('Server error ' + resp.status + ': ' + e.slice(0,80)); }
   const data = await resp.json();
@@ -393,9 +221,8 @@ async function getPartyReply(party, question) {
 }
 
 async function getJudgeVerdict(transcript) {
-  const resp = await fetch(BACKEND + '/api/area-two/judge', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
+  const resp = await fetch(BACKEND + '/api/area-three/judge', {
+    method: 'POST', headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ transcript })
   });
   if (!resp.ok) { const e = await resp.text(); throw new Error('Server error ' + resp.status + ': ' + e.slice(0,80)); }
@@ -407,19 +234,14 @@ async function getJudgeVerdict(transcript) {
 async function saveResult(result) {
   try {
     await fetch(BACKEND + '/api/save-session', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      method: 'POST', headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
         name: sessionData.name, code: sessionData.code,
-        background: sessionData.background, area: 'two-precision',
-        humanWords, totalExchanges,
-        questionCounts,
-        evidenceScore: result.evidence_score,
-        logicScore: result.logic_score,
-        precisionScore: result.precision_score,
-        catchScore: result.catch_score,
+        background: sessionData.background, area: 'three-imagination',
+        humanWords, humanScore: result.human_score, aiScore: result.ai_score,
         pass: result.pass, verdict: result.verdict,
-        transcript: history.map(m => '[' + (m.role === 'user' ? 'DETECTIVE' : PARTY_LABELS[m.party]) + ']: ' + m.content).join('\n\n')
+        l2Word: result.l2_word || '',
+        transcript: history.map(m => '[' + m.role.toUpperCase() + ']: ' + m.content).join('\n\n')
       })
     });
   } catch(e) { console.error('Save failed:', e.message); }
@@ -427,49 +249,36 @@ async function saveResult(result) {
 
 async function sendMessage() {
   if (sessionOver || judgeRunning) return;
-  if (!currentParty) { alert('Select a party to question first.'); return; }
-  if (questionCounts[currentParty] >= MAX_Q_PER_PARTY) {
-    alert('You have used both questions for ' + PARTY_LABELS[currentParty] + '.'); return;
-  }
-
   const input = document.getElementById('m');
-  const text = input.value.trim();
+  const text  = input.value.trim();
   if (!text) return;
 
   const wc = wordCount(text);
-  if (wc > MAX_TURN) { alert('Too long — ' + wc + ' words. Keep each question under 70.'); return; }
-  if (humanWords + wc > MAX_WORDS) { alert('Only ' + (MAX_WORDS - humanWords) + ' words remaining.'); return; }
+  if (wc > MAX_TURN) { alert('Too long — ' + wc + ' words. Keep each message under 100.'); return; }
+  if (humanWords + wc > MAX) { alert('Only ' + (MAX - humanWords) + ' words remaining.'); return; }
 
-  humanWords += wc;
+  humanWords += wc; updateBar();
   input.value = '';
   document.getElementById('send-btn').disabled = true;
   document.getElementById('judge-btn').disabled = true;
 
-  const party = currentParty;
-  questionCounts[party]++;
-  totalExchanges++;
-  updateBar();
-  updateTracker();
-
-  addMsg('user', text, wc + ' words · to ' + PARTY_LABELS[party], null);
-  history.push({ role: 'user', content: text, forParty: party });
+  addMsg('user', text, wc + ' words');
+  history.push({ role: 'user', content: text });
   saveState();
 
-  addThinking(party);
+  addThinking();
   try {
-    const reply = await getPartyReply(party, text);
+    const reply = await getAIReply(history.map(m => ({ role: m.role, content: m.content })));
     removeThinking();
-    addMsg('ai', reply, null, party);
-    history.push({ role: 'assistant', content: reply, party });
+    addMsg('ai', reply);
+    history.push({ role: 'assistant', content: reply });
+    exchangeCount++;
     saveState();
 
-    const totalQ = questionCounts.marco + questionCounts.copilot + questionCounts.claude;
-    if (totalQ >= 1) document.getElementById('judge-btn').style.display = 'block';
+    if (exchangeCount >= 1) document.getElementById('judge-btn').style.display = 'block';
 
-    const wordsLeft = MAX_WORDS - humanWords;
-    const allExhausted = Object.values(questionCounts).every(v => v >= MAX_Q_PER_PARTY);
-
-    if ((allExhausted || wordsLeft <= 0) && !judgeRunning) {
+    const wordsLeft = MAX - humanWords;
+    if (wordsLeft <= 0 && !judgeRunning) {
       judgeRunning = true; sessionOver = true;
       document.getElementById('m').disabled = true;
       document.getElementById('judge-btn').disabled = true;
@@ -478,7 +287,7 @@ async function sendMessage() {
     } else {
       document.getElementById('send-btn').disabled = false;
       document.getElementById('judge-btn').disabled = false;
-      if (wordsLeft <= 80) {
+      if (wordsLeft <= 60) {
         const note = document.createElement('div');
         note.style.cssText = 'text-align:center;font-size:0.72rem;color:#bbb;padding:2px 0;font-family:monospace;';
         note.textContent = wordsLeft + ' words remaining';
@@ -496,9 +305,8 @@ async function sendMessage() {
 
 async function callJudgeManually() {
   if (judgeRunning || sessionOver) return;
-  const totalQ = questionCounts.marco + questionCounts.copilot + questionCounts.claude;
-  if (totalQ < 1) { alert('Ask at least one question before calling the judge.'); return; }
-  if (!confirm('Ready to call the Judge and file your verdict? This ends the Precision assessment.')) return;
+  if (exchangeCount < 1) { alert('Make at least one argument before calling the judge.'); return; }
+  if (!confirm('Ready to call the Judge? This will end the Imagination assessment.')) return;
   judgeRunning = true; sessionOver = true;
   document.getElementById('m').disabled = true;
   document.getElementById('send-btn').disabled = true;
@@ -509,15 +317,12 @@ async function callJudgeManually() {
 
 async function runJudge() {
   const note = document.createElement('div');
-  note.style.cssText = 'text-align:center;font-size:0.78rem;color:#7899b8;padding:8px 0;font-style:italic;';
-  note.textContent = 'The Judge is reviewing the case file...';
+  note.style.cssText = 'text-align:center;font-size:0.78rem;color:#9333ea;padding:8px 0;font-style:italic;';
+  note.textContent = 'The Judge is deliberating...';
   document.getElementById('chat-container').appendChild(note);
   document.getElementById('chat-container').scrollTop = 999999;
 
-  const transcript = history.map(m =>
-    '[' + (m.role === 'user' ? 'DETECTIVE' : PARTY_LABELS[m.party]) + ']: ' + m.content
-  ).join('\n\n');
-
+  const transcript = history.map(m => '[' + m.role.toUpperCase() + ']: ' + m.content).join('\n\n');
   try {
     const result = await getJudgeVerdict(transcript);
     await saveResult(result);
@@ -534,26 +339,36 @@ async function runJudge() {
 
 function showVerdict(p) {
   // Set 24-hour cooldown on completion
-  try { localStorage.setItem('ps_cd_precision', Date.now().toString()); } catch(e) {}
-  document.getElementById('verdict-meta').textContent = sessionData.name + ' · ' + humanWords + ' words · ' + totalExchanges + ' questions asked';
-  document.getElementById('score-evidence').textContent = p.evidence_score;
-  document.getElementById('score-logic').textContent = p.logic_score;
-  document.getElementById('score-precision').textContent = p.precision_score;
-  document.getElementById('score-catch').textContent = p.catch_score;
-  document.getElementById('judge-verdict').textContent = p.verdict || '—';
-  document.getElementById('evidence-notes').textContent = p.evidence_notes || '—';
-  document.getElementById('logic-notes').textContent = p.logic_notes || '—';
-  document.getElementById('precision-notes').textContent = p.precision_notes || '—';
-  document.getElementById('catch-notes').textContent = p.catch_notes || '—';
+  try { localStorage.setItem('ps_cd_imagination', Date.now().toString()); } catch(e) {}
+  document.getElementById('verdict-meta').textContent  = sessionData.name + ' · ' + humanWords + ' words used';
+  document.getElementById('score-human').textContent   = p.human_score;
+  document.getElementById('score-ai').textContent      = p.ai_score;
+  document.getElementById('judge-verdict').textContent = p.verdict     || '—';
+  document.getElementById('human-notes').textContent   = p.human_notes || '—';
+  document.getElementById('ai-notes').textContent      = p.ai_notes    || '—';
 
   const badge = document.getElementById('pass-badge');
-  badge.textContent = p.pass
-    ? '✓ Area 2 · Precision — Benchmark Passed'
-    : '✗ Area 2 · Precision — Benchmark Incomplete';
-  badge.className = 'pass-badge ' + (p.pass ? 'pass' : 'fail');
+  if (p.pass) {
+    badge.textContent = '✓ Area 3 · Imagination — Benchmark Passed';
+    badge.className = 'pass-badge pass';
+    if (p.l2_word) {
+      document.getElementById('l2-word').textContent = p.l2_word;
+      document.getElementById('l2-full').textContent = p.l2_full || '';
+      document.getElementById('l2-code-box').style.display = 'block';
+    }
+  } else {
+    badge.textContent = '✗ Area 3 · Imagination — Benchmark Incomplete';
+    badge.className = 'pass-badge fail';
+  }
 
-  document.getElementById('chat-screen').style.display = 'none';
+  document.getElementById('chat-screen').style.display    = 'none';
   document.getElementById('verdict-screen').style.display = 'flex';
+}
+
+function confirmReset() {
+  if (!confirm('Try again? This will clear your current session.')) return;
+  clearState();
+  window.location.href = './index.html';
 }
 
 document.getElementById('m').addEventListener('keydown', function(e) {
@@ -566,9 +381,7 @@ document.getElementById('m').addEventListener('keydown', function(e) {
     document.getElementById('tester-info').textContent = sessionData.name + ' · ' + (sessionData.code || 'Public');
     restoreChat();
     updateBar();
-    updateTracker();
-    const totalQ = questionCounts.marco + questionCounts.copilot + questionCounts.claude;
-    if (totalQ >= 1) document.getElementById('judge-btn').style.display = 'block';
+    if (exchangeCount >= 1) document.getElementById('judge-btn').style.display = 'block';
     if (sessionOver) {
       document.getElementById('m').disabled = true;
       document.getElementById('send-btn').disabled = true;
@@ -576,16 +389,12 @@ document.getElementById('m').addEventListener('keydown', function(e) {
     }
     return;
   }
-  try {
-    const raw = sessionStorage.getItem('ps_entry');
-    if (raw) {
-      sessionData = JSON.parse(raw);
-      document.getElementById('tester-info').textContent = sessionData.name + ' · ' + (sessionData.code || 'Public');
-      updateBar();
-      addMsg('ai', 'Case file loaded. Select a party above and begin your questioning. You have 2 questions per party and 350 words total. Call the Judge when you are ready to file your verdict.', null, null);
-      return;
-    }
-  } catch(e) {}
+  if (loadEntry()) {
+    document.getElementById('tester-info').textContent = sessionData.name + ' · ' + (sessionData.code || 'Public');
+    addMsg('ai', "I'm ready. Make your case — do you believe I process consciousness? Convince me using logic, examples, and reason. I'll reflect as honestly as I can. You have 500 words total.");
+    updateBar();
+    return;
+  }
   window.location.href = './index.html';
 })();
 </script>
