@@ -10,13 +10,14 @@
 html{scroll-behavior:smooth;}
 body{background:#0d0d0d;color:#e0d8c8;font-family:'Cormorant Garamond',Georgia,serif;font-weight:300;font-size:17px;line-height:1.75;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.5;}
-.wrap{max-width:860px;margin:0 auto;padding:0 2rem;position:relative;z-index:1;}
+.pg{max-width:860px;margin:0 auto;padding:0 2rem;position:relative;z-index:1;}
 
 /* NAV */
 nav{padding:2rem 0 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(201,169,110,0.14);}
 .nlogo{font-family:'Cinzel',serif;font-size:13px;letter-spacing:0.26em;color:#c9a96e;text-transform:uppercase;}
-.nmail{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.1em;color:rgba(201,169,110,0.4);text-decoration:none;transition:color 0.3s;}
-.nmail:hover{color:#c9a96e;}
+.nlinks{display:flex;gap:1.5rem;align-items:center;}
+.nlink{font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.1em;color:rgba(201,169,110,0.4);text-decoration:none;transition:color 0.3s;}
+.nlink:hover{color:#c9a96e;}
 
 /* HERO */
 .hero{padding:6rem 0 3rem;text-align:center;}
@@ -24,7 +25,7 @@ nav{padding:2rem 0 1.5rem;display:flex;align-items:center;justify-content:space-
 .eyebrow::before,.eyebrow::after{content:'';width:50px;height:1px;background:rgba(201,169,110,0.22);}
 h1{font-family:'Cinzel Decorative',serif;font-size:clamp(2.6rem,6vw,5rem);font-weight:400;letter-spacing:0.1em;color:#ede0c4;line-height:1.1;margin-bottom:0.8rem;}
 h1 em{color:#c9a96e;font-style:normal;}
-.tagline{font-style:italic;font-size:clamp(1rem,2.2vw,1.25rem);color:#b8a880;opacity:0.78;max-width:460px;margin:0 auto;}
+.tagline{font-style:italic;font-size:clamp(1rem,2.2vw,1.2rem);color:#b8a880;opacity:0.78;max-width:480px;margin:0 auto;}
 
 /* SECTION DIVIDERS */
 .sd{display:flex;align-items:center;gap:1.2rem;margin:3.5rem 0 2.5rem;}
@@ -38,18 +39,36 @@ h1 em{color:#c9a96e;font-style:normal;}
 .dbody{font-size:1.1rem;font-style:italic;color:#c0b088;line-height:1.75;}
 .dbody strong{font-style:normal;font-weight:400;color:#e8d5a8;}
 
+/* ABOUT BLOCK */
+.about-block{max-width:660px;margin:0 auto;text-align:center;}
+.about-block p{font-size:1.02rem;line-height:1.88;color:#b0a078;margin-bottom:1rem;}
+.about-block p:last-child{margin-bottom:0;}
+
 /* AREAS GRID */
 .areas{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(201,169,110,0.09);border:1px solid rgba(201,169,110,0.09);}
-.acard{background:#0d0d0d;padding:2rem 1.6rem;position:relative;overflow:hidden;transition:background 0.35s;}
+.acard{background:#0d0d0d;padding:2rem 1.6rem 1.6rem;position:relative;overflow:hidden;transition:background 0.35s;display:flex;flex-direction:column;gap:0.6rem;}
 .acard:hover{background:#131108;}
 .acard::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;transform:scaleX(0);transform-origin:left;transition:transform 0.35s;}
 .acard:hover::after{transform:scaleX(1);}
 .g::after{background:#c9a96e;} .b::after{background:#7899b8;} .e::after{background:#4d9e72;}
-.anum{font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.2em;margin-bottom:0.9rem;display:block;}
+.anum{font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.2em;display:block;}
 .g .anum{color:rgba(201,169,110,0.45);} .b .anum{color:rgba(120,153,184,0.45);} .e .anum{color:rgba(77,158,114,0.45);}
-.aname{font-family:'Cinzel',serif;font-size:1rem;letter-spacing:0.14em;margin-bottom:0.6rem;display:block;}
+.aname{font-family:'Cinzel',serif;font-size:1rem;letter-spacing:0.14em;display:block;}
 .g .aname{color:#c9a96e;} .b .aname{color:#7899b8;} .e .aname{color:#4d9e72;}
-.adesc{font-size:0.85rem;line-height:1.65;color:#a89870;font-style:italic;opacity:0.75;}
+.adesc{font-size:0.85rem;line-height:1.65;color:#a89870;font-style:italic;opacity:0.75;flex:1;}
+
+/* TEST BUTTONS */
+.test-btn{display:inline-block;margin-top:0.8rem;font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.18em;text-transform:uppercase;padding:8px 16px;border:1px solid;text-decoration:none;transition:all 0.3s;cursor:pointer;background:transparent;width:100%;text-align:center;}
+.g .test-btn{color:#c9a96e;border-color:rgba(201,169,110,0.32);}
+.g .test-btn:hover:not(.locked){background:rgba(201,169,110,0.1);border-color:#c9a96e;}
+.b .test-btn{color:#7899b8;border-color:rgba(120,153,184,0.32);}
+.b .test-btn:hover:not(.locked){background:rgba(120,153,184,0.1);border-color:#7899b8;}
+.e .test-btn{color:#4d9e72;border-color:rgba(77,158,114,0.32);}
+.e .test-btn:hover:not(.locked){background:rgba(77,158,114,0.1);border-color:#4d9e72;}
+.test-btn.locked{opacity:0.4;cursor:not-allowed;pointer-events:none;}
+.test-btn.soon{opacity:0.3;cursor:not-allowed;pointer-events:none;font-style:italic;}
+.countdown{font-family:'Cinzel',serif;font-size:7px;letter-spacing:0.1em;text-align:center;margin-top:4px;opacity:0.45;min-height:14px;}
+.g .countdown{color:#c9a96e;} .b .countdown{color:#7899b8;} .e .countdown{color:#4d9e72;}
 
 /* GW BLOCK */
 .gwb{max-width:700px;margin:0 auto;padding:2.5rem 3rem;border:1px solid rgba(192,192,210,0.22);background:rgba(192,192,210,0.03);text-align:center;position:relative;}
@@ -72,39 +91,22 @@ h1 em{color:#c9a96e;font-style:normal;}
 .tab.t2:hover,.tab.t2.on{background:#7899b8;color:#080c10;}
 .tab.t3{color:#4d9e72;border-color:rgba(77,158,114,0.32);}
 .tab.t3:hover,.tab.t3.on{background:#4d9e72;color:#030d07;}
-.tab.tgw{color:#c0c0d2;border-color:rgba(192,192,210,0.32);}
-.tab.tgw:hover,.tab.tgw.on{background:#c0c0d2;color:#08080e;}
 .cw{display:none;justify-content:center;margin-bottom:1rem;}
 .cw.on{display:flex;}
 
-/* ── PORTRAIT CERTS ── */
+/* PORTRAIT CERTS */
 .cp{width:480px;height:679px;position:relative;overflow:hidden;flex-shrink:0;}
 .cp.c1{background:#100d08;} .cp.c2{background:#080c10;} .cp.c3{background:#030d07;}
-/* colour tokens per area */
 .c1 .a{color:#c9a96e;}.c1 .A{background:#c9a96e;}.c1 .OB{border:1px solid rgba(201,169,110,0.28);}.c1 .IB{border:1px solid rgba(201,169,110,0.12);}.c1 .RR{background:rgba(201,169,110,0.38);}.c1 .rr{background:rgba(201,169,110,0.14);}.c1 .bt{color:#d0c09a;}.c1 .nt{color:#ece0c2;}.c1 .wm{color:rgba(201,169,110,0.028);}.c1 .or{color:rgba(201,169,110,0.17);}.c1 .SR{border-color:rgba(201,169,110,0.42);}.c1 .SI{border-color:rgba(201,169,110,0.22);}.c1 .BDG{background:rgba(201,169,110,0.055);border:1px solid rgba(201,169,110,0.17);}
 .c2 .a{color:#7899b8;}.c2 .A{background:#7899b8;}.c2 .OB{border:1px solid rgba(120,153,184,0.28);}.c2 .IB{border:1px solid rgba(120,153,184,0.12);}.c2 .RR{background:rgba(120,153,184,0.38);}.c2 .rr{background:rgba(120,153,184,0.14);}.c2 .bt{color:#b4c4d4;}.c2 .nt{color:#dae8f6;}.c2 .wm{color:rgba(120,153,184,0.028);}.c2 .or{color:rgba(120,153,184,0.17);}.c2 .SR{border-color:rgba(120,153,184,0.42);}.c2 .SI{border-color:rgba(120,153,184,0.22);}.c2 .BDG{background:rgba(120,153,184,0.055);border:1px solid rgba(120,153,184,0.17);}
 .c3 .a{color:#4d9e72;}.c3 .A{background:#4d9e72;}.c3 .OB{border:1px solid rgba(77,158,114,0.28);}.c3 .IB{border:1px solid rgba(77,158,114,0.12);}.c3 .RR{background:rgba(77,158,114,0.38);}.c3 .rr{background:rgba(77,158,114,0.14);}.c3 .bt{color:#a4c4b4;}.c3 .nt{color:#d2ecde;}.c3 .wm{color:rgba(77,158,114,0.028);}.c3 .or{color:rgba(77,158,114,0.17);}.c3 .SR{border-color:rgba(77,158,114,0.42);}.c3 .SI{border-color:rgba(77,158,114,0.22);}.c3 .BDG{background:rgba(77,158,114,0.055);border:1px solid rgba(77,158,114,0.17);}
-
-/* ── LANDSCAPE CERT (GW Silver) ── */
-.cl{width:679px;height:480px;position:relative;overflow:hidden;flex-shrink:0;background:#07070d;}
-.cl .a{color:#c0c0d2;}.cl .A{background:#c0c0d2;}.cl .OB{border:1px solid rgba(192,192,210,0.28);}.cl .IB{border:1px solid rgba(192,192,210,0.12);}.cl .RR{background:rgba(192,192,210,0.36);}.cl .rr{background:rgba(192,192,210,0.14);}.cl .bt{color:#b4b4c8;}.cl .nt{color:#dcdcf0;}.cl .wm{color:rgba(192,192,210,0.022);}.cl .or{color:rgba(192,192,210,0.17);}.cl .SR{border-color:rgba(192,192,210,0.4);}.cl .SI{border-color:rgba(192,192,210,0.2);}.cl .BDG{background:rgba(192,192,210,0.05);border:1px solid rgba(192,192,210,0.17);}
-
-/* shared cert internals */
 .wm{position:absolute;font-family:'Cinzel Decorative',serif;font-size:60px;font-weight:700;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-28deg);white-space:nowrap;pointer-events:none;z-index:0;letter-spacing:0.06em;}
 .rom{position:absolute;font-family:'Cinzel Decorative',serif;font-size:160px;font-weight:700;right:-8px;bottom:40px;opacity:0.036;z-index:0;line-height:1;}
 .of{position:absolute;inset:11px;z-index:1;}
 .if2{position:absolute;inset:20px;z-index:1;}
 .gm{position:absolute;width:6px;height:6px;transform:rotate(45deg);z-index:3;}
 .CL{position:absolute;z-index:2;}
-
-/* portrait content */
 .pcc{position:absolute;inset:30px;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:1.2rem 1.8rem;text-align:center;}
-/* landscape grid */
-.lgrid{position:absolute;inset:30px;z-index:4;display:grid;grid-template-columns:100px 1.5px 1fr 1.5px 140px;align-items:stretch;}
-.lcol{display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:1rem 0.8rem;text-align:center;}
-.lvdiv{align-self:stretch;margin:0.5rem 0;}
-
-/* typography */
 .org{font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.35em;text-transform:uppercase;opacity:0.6;}
 .ct{font-family:'Cinzel Decorative',serif;font-size:15px;font-weight:400;letter-spacing:0.08em;line-height:1.2;}
 .cs{font-family:'Cinzel',serif;font-size:7.5px;letter-spacing:0.26em;text-transform:uppercase;opacity:0.4;margin-top:2px;}
@@ -131,52 +133,57 @@ h1 em{color:#c9a96e;font-style:normal;}
 .st{font-style:italic;font-size:9px;opacity:0.35;}
 .dt{font-family:'Cinzel',serif;font-size:7.5px;letter-spacing:0.1em;opacity:0.4;}
 .ii{font-family:'Cinzel',serif;font-size:6.5px;letter-spacing:0.1em;text-transform:uppercase;opacity:0.18;text-align:center;margin-top:5px;}
-.al{font-family:'Cinzel',serif;font-size:7px;letter-spacing:0.22em;text-transform:uppercase;opacity:0.36;writing-mode:vertical-rl;transform:rotate(180deg);}
-.alnum{font-family:'Cinzel Decorative',serif;font-size:22px;font-weight:400;opacity:0.13;line-height:1;}
 
-/* ABOUT */
-.about{max-width:580px;margin:0 auto;text-align:center;}
-.about p{font-size:1.02rem;line-height:1.85;color:#b0a078;opacity:0.8;margin-bottom:1rem;}
+/* CONTACT SECTION */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(201,169,110,0.09);border:1px solid rgba(201,169,110,0.09);max-width:680px;margin:0 auto;}
+.contact-card{background:#0d0d0d;padding:2rem 2rem 1.8rem;text-align:center;}
+.contact-label{font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.28em;color:rgba(201,169,110,0.38);text-transform:uppercase;margin-bottom:0.6rem;}
+.contact-purpose{font-style:italic;font-size:0.9rem;color:#a89870;opacity:0.75;margin-bottom:1rem;line-height:1.6;}
+.contact-email{display:inline-block;font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.1em;color:#c9a96e;text-decoration:none;border:1px solid rgba(201,169,110,0.28);padding:0.6rem 1.4rem;transition:all 0.3s;}
+.contact-email:hover{background:rgba(201,169,110,0.09);border-color:#c9a96e;}
 
-/* CTA */
-.cta{max-width:580px;margin:0 auto 5rem;text-align:center;padding:2.6rem 2rem;border:1px solid rgba(201,169,110,0.12);background:rgba(201,169,110,0.03);}
-.cta::before{content:'◈';display:block;color:#c9a96e;font-size:0.95rem;margin-bottom:1.1rem;opacity:0.35;}
-.clabel{font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.28em;color:rgba(201,169,110,0.38);text-transform:uppercase;margin-bottom:0.7rem;}
-.ctxt{font-style:italic;font-size:1rem;color:#b0a078;margin-bottom:1.4rem;opacity:0.78;}
-.cemail{display:inline-block;font-family:'Cinzel',serif;font-size:10px;letter-spacing:0.13em;color:#c9a96e;text-decoration:none;border:1px solid rgba(201,169,110,0.3);padding:0.7rem 2rem;transition:all 0.3s;}
-.cemail:hover{background:rgba(201,169,110,0.09);border-color:#c9a96e;}
-
-footer{border-top:1px solid rgba(201,169,110,0.07);padding:1.8rem 0;text-align:center;}
+footer{border-top:1px solid rgba(201,169,110,0.07);padding:1.8rem 0;text-align:center;margin-top:5rem;}
 .foot{font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.2em;color:rgba(201,169,110,0.2);text-transform:uppercase;}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
 .hero{animation:fadeUp 0.85s ease both;}
-.def{animation:fadeUp 0.85s 0.1s ease both;}
-.areas{animation:fadeUp 0.85s 0.18s ease both;}
-.gwb{animation:fadeUp 0.85s 0.24s ease both;}
-.about{animation:fadeUp 0.85s 0.3s ease both;}
-.cta{animation:fadeUp 0.85s 0.36s ease both;}
+.def{animation:fadeUp 0.85s 0.08s ease both;}
+.about-block{animation:fadeUp 0.85s 0.12s ease both;}
+.areas{animation:fadeUp 0.85s 0.16s ease both;}
+.gwb{animation:fadeUp 0.85s 0.2s ease both;}
+.contact-grid{animation:fadeUp 0.85s 0.24s ease both;}
 
-@media(max-width:560px){
-  .cp{width:320px;height:453px;} .cl{width:320px;height:226px;}
+@media(max-width:600px){
   .areas{grid-template-columns:1fr;}
-  .rname{font-size:18px;} .ct{font-size:12px;}
+  .contact-grid{grid-template-columns:1fr;}
+  .cp{width:320px;height:453px;}
+  .rname{font-size:18px;}.ct{font-size:12px;}
+  .nlinks{gap:0.8rem;}
 }
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="pg">
 
 <nav>
   <div class="nlogo">Pointspective</div>
-  <a href="mailto:GWcertificates@pointspective.com" class="nmail">GWcertificates@pointspective.com</a>
+  <div class="nlinks">
+    <a href="mailto:inquiries@pointspective.com" class="nlink">inquiries@pointspective.com</a>
+  </div>
 </nav>
 
 <section class="hero">
-  <div class="eyebrow">human · ai · interface</div>
+  <div class="eyebrow">ai communication benchmark</div>
   <h1>Point<em>spective</em></h1>
-  <p class="tagline">Where human perspective meets machine intelligence — with precision and purpose.</p>
+  <p class="tagline">Identifying those with an exceptional gift for AI communication. Providing honest, structured feedback for those who want to know where they stand.</p>
 </section>
+
+<div class="sd"><span>what we do</span></div>
+<div class="about-block">
+  <p>Pointspective is a benchmarking and ranking service. We assess how people communicate with AI models — not whether they use the right tools or follow the right tutorials, but whether they possess a natural or developed fluency that produces results others cannot.</p>
+  <p>We are not educators. We do not offer training. We identify, we assess, and we report — with precision and without flattery. Those who score well will know it clearly. Those who do not will receive feedback that is direct and useful.</p>
+  <p>Pointspective will not have something for everyone. That is by design.</p>
+</div>
 
 <div class="sd"><span>ghost whisperer</span></div>
 <div class="def">
@@ -185,11 +192,35 @@ footer{border-top:1px solid rgba(201,169,110,0.07);padding:1.8rem 0;text-align:c
 </div>
 
 <div class="sd"><span>the three areas</span></div>
-<p style="text-align:center;font-style:italic;font-size:0.95rem;color:#a09068;opacity:0.72;max-width:460px;margin:0 auto 2rem;">Pointspective maps the craft of AI communication across three distinct domains of mastery.</p>
 <div class="areas">
-  <div class="acard g"><span class="anum">area 01</span><span class="aname">Intuition</span><p class="adesc">Reading the model. Feeling the current of context. Knowing what to ask before you know how to ask it.</p></div>
-  <div class="acard b"><span class="anum">area 02</span><span class="aname">Precision</span><p class="adesc">The architecture of the prompt. Every word placed with intent. Structure that leaves no room for drift.</p></div>
-  <div class="acard e"><span class="anum">area 03</span><span class="aname">Imagination</span><p class="adesc">Seeing what the machine can become. Unlocking outputs beyond the obvious — where fluency meets invention.</p></div>
+
+  <!-- AREA 1 · INTUITION -->
+  <div class="acard g">
+    <span class="anum">area 01</span>
+    <span class="aname">Intuition</span>
+    <p class="adesc">Reading the model. Feeling the current of context. Knowing what to ask before you know how to ask it.</p>
+    <button class="test-btn" id="btn-intuition" onclick="goTest('intuition','./level-two.html')">Take the Assessment</button>
+    <div class="countdown" id="cd-intuition"></div>
+  </div>
+
+  <!-- AREA 2 · PRECISION -->
+  <div class="acard b">
+    <span class="anum">area 02</span>
+    <span class="aname">Precision</span>
+    <p class="adesc">The architecture of the prompt. Every word placed with intent. Structure that leaves no room for drift.</p>
+    <button class="test-btn" id="btn-precision" onclick="goTest('precision','./level-three.html')">Take the Assessment</button>
+    <div class="countdown" id="cd-precision"></div>
+  </div>
+
+  <!-- AREA 3 · IMAGINATION -->
+  <div class="acard e">
+    <span class="anum">area 03</span>
+    <span class="aname">Imagination</span>
+    <p class="adesc">Seeing what the machine can become. Unlocking outputs beyond the obvious — where fluency meets invention.</p>
+    <button class="test-btn" id="btn-imagination" onclick="goTest('imagination','./level-one.html')">Take the Assessment</button>
+    <div class="countdown" id="cd-imagination"></div>
+  </div>
+
 </div>
 
 <div class="sd"><span>ghost whisperer status</span></div>
@@ -207,16 +238,15 @@ footer{border-top:1px solid rgba(201,169,110,0.07);padding:1.8rem 0;text-align:c
 </div>
 
 <div class="sd"><span>certificates of achievement</span></div>
-<p class="cv-intro">Each benchmark area carries its own certificate. Ghost Whisperer status carries the Silver.</p>
+<p class="cv-intro">Each benchmark area carries its own certificate, issued on successful completion.</p>
 
 <div class="tabs">
   <button class="tab t1 on" onclick="sc('p1',this)">Area 1 · Intuition</button>
   <button class="tab t2" onclick="sc('p2',this)">Area 2 · Precision</button>
   <button class="tab t3" onclick="sc('p3',this)">Area 3 · Imagination</button>
-  <button class="tab tgw" onclick="sc('lgw',this)">Ghost Whisperer · Silver</button>
 </div>
 
-<!-- ══ CERT 1 · INTUITION · Tess Steadwell ══ -->
+<!-- CERT 1 · INTUITION · Tess Steadwell -->
 <div class="cw on" id="p1"><div class="cp c1">
   <div class="wm">POINTSPECTIVE</div><div class="rom a">I</div>
   <div class="of OB"></div><div class="if2 IB"></div>
@@ -254,7 +284,7 @@ footer{border-top:1px solid rgba(201,169,110,0.07);padding:1.8rem 0;text-align:c
   </div>
 </div></div>
 
-<!-- ══ CERT 2 · PRECISION · Gray Dayson ══ -->
+<!-- CERT 2 · PRECISION · Gray Dayson -->
 <div class="cw" id="p2"><div class="cp c2">
   <div class="wm">POINTSPECTIVE</div><div class="rom a">II</div>
   <div class="of OB"></div><div class="if2 IB"></div>
@@ -292,7 +322,7 @@ footer{border-top:1px solid rgba(201,169,110,0.07);padding:1.8rem 0;text-align:c
   </div>
 </div></div>
 
-<!-- ══ CERT 3 · IMAGINATION · A. Stitagan ══ -->
+<!-- CERT 3 · IMAGINATION · A. Stitagan -->
 <div class="cw" id="p3"><div class="cp c3">
   <div class="wm">POINTSPECTIVE</div><div class="rom a">III</div>
   <div class="of OB"></div><div class="if2 IB"></div>
@@ -330,90 +360,107 @@ footer{border-top:1px solid rgba(201,169,110,0.07);padding:1.8rem 0;text-align:c
   </div>
 </div></div>
 
-<!-- ══ CERT GW · SILVER · LANDSCAPE ══ -->
-<div class="cw" id="lgw"><div class="cl">
-  <div class="wm">POINTSPECTIVE</div>
-  <div style="position:absolute;inset:0;background:linear-gradient(120deg,rgba(255,255,255,0.012) 0%,transparent 55%);z-index:0;pointer-events:none;"></div>
-  <div class="of OB"></div><div class="if2 IB"></div>
-  <div class="gm A" style="top:9px;left:9px"></div><div class="gm A" style="top:9px;right:9px"></div>
-  <div class="gm A" style="bottom:9px;left:9px"></div><div class="gm A" style="bottom:9px;right:9px"></div>
-  <div class="RR CL" style="top:20px;left:20px;width:28px;height:1px"></div><div class="RR CL" style="top:20px;left:20px;width:1px;height:28px"></div>
-  <div class="RR CL" style="top:20px;right:20px;width:28px;height:1px"></div><div class="RR CL" style="top:20px;right:20px;width:1px;height:28px"></div>
-  <div class="RR CL" style="bottom:20px;left:20px;width:28px;height:1px"></div><div class="RR CL" style="bottom:20px;left:20px;width:1px;height:28px"></div>
-  <div class="RR CL" style="bottom:20px;right:20px;width:28px;height:1px"></div><div class="RR CL" style="bottom:20px;right:20px;width:1px;height:28px"></div>
-  <div class="lgrid">
-    <div class="lcol">
-      <div class="alnum a" style="font-family:'Cinzel Decorative',serif;font-size:20px;opacity:0.13;line-height:1;">GW</div>
-      <div class="al a">Ghost Whisperer</div>
-      <div class="sigb" style="margin-top:auto">
-        <div class="sline RR A" style="width:80px"></div>
-        <div class="sn2 a">Director</div><div class="st bt">Programme Director</div>
-      </div>
-    </div>
-    <div class="lvdiv RR"></div>
-    <div class="lcol" style="padding:1rem 1.5rem">
-      <div style="width:100%">
-        <div class="org a">Pointspective</div>
-        <div class="rs" style="margin:7px 0 5px"><div class="RR A"></div><div class="rune or">◈ ✦ ◈</div><div class="RR A"></div></div>
-        <div class="ct a">Ghost Whisperer</div>
-        <div class="cs bt" style="margin-top:2px;font-size:7px;letter-spacing:0.22em">Silver Award · Pointspective</div>
-        <div class="rs" style="margin:6px 0 0"><div class="rr A"></div><div class="rune or">— ✦ —</div><div class="rr A"></div></div>
-      </div>
-      <div style="width:100%">
-        <div class="aw bt">This distinction is awarded to</div>
-        <div class="rname nt" style="margin:5px 0 4px;font-size:20px">[Recipient Full Name]</div>
-        <div class="rs" style="margin-bottom:9px"><div class="rr A"></div><div class="rr A"></div></div>
-        <div class="bd bt" style="font-size:9.5px">in recognition of an exceptionally high standard across all four dimensions of human–AI mastery — demonstrating the rare combination of digital empathy, logic and reason, and direct and indirect communicative fluency that defines the Ghost Whisperer.</div>
-        <div class="BDG" style="gap:6px;padding:6px 12px;margin-top:6px">
-          <div class="an a" style="font-size:6px">Digital Empathy</div><div class="avl A"></div>
-          <div class="an a" style="font-size:6px">Logic &amp; Reason</div><div class="avl A"></div>
-          <div class="an a" style="font-size:6px">Direct Comms</div><div class="avl A"></div>
-          <div class="an a" style="font-size:6px">Indirect Comms</div>
-        </div>
-      </div>
-      <div style="width:100%">
-        <div class="rs" style="margin-bottom:6px"><div class="RR A"></div><div class="rune or">◈</div><div class="RR A"></div></div>
-        <div class="dt a">DD · MM · YYYY</div>
-        <div class="ii a" style="margin-top:4px">pointspective.com · Ghost Whisperer No. GW-001 · All rights reserved</div>
-      </div>
-    </div>
-    <div class="lvdiv RR"></div>
-    <div class="lcol">
-      <div class="sw">
-        <div class="SR"><div class="SI"><div class="SP a">P</div><div class="SL a">verified</div></div></div>
-        <div class="en a">↑ emboss + silver foil ↑</div>
-      </div>
-      <div class="sigb" style="margin-top:auto">
-        <div class="sline RR A" style="width:80px"></div>
-        <div class="sn2 a">Assessor</div><div class="st bt">Lead Assessor</div>
-      </div>
-    </div>
+<div class="sd"><span>contact</span></div>
+<div class="contact-grid">
+  <div class="contact-card">
+    <div class="contact-label">Business Inquiries</div>
+    <p class="contact-purpose">Partnerships, custom rubrics, organisational assessments, and general enquiries.</p>
+    <a href="mailto:inquiries@pointspective.com" class="contact-email">inquiries@pointspective.com</a>
   </div>
-</div></div>
-
-<div class="sd"><span>about</span></div>
-<div class="about">
-  <p>Pointspective exists at the threshold between human thought and AI response. We help people understand, navigate, and master the art of communicating with large language models — not just using them.</p>
-  <p>Whether you are beginning to develop your intuition, refining your precision, or pushing toward the outer edges of what AI collaboration can produce — there is an area here for you.</p>
-</div>
-
-<div class="sd"><span>get in touch</span></div>
-<div class="cta">
-  <div class="clabel">further information</div>
-  <p class="ctxt">For help, guidance, or to begin your journey through the three areas.</p>
-  <a href="mailto:GWcertificates@pointspective.com" class="cemail">GWcertificates@pointspective.com</a>
+  <div class="contact-card">
+    <div class="contact-label">Certificates &amp; Technical</div>
+    <p class="contact-purpose">Certificate orders, delivery issues, and technical problems with the assessment platform.</p>
+    <a href="mailto:GWcertificates@pointspective.com" class="contact-email">GWcertificates@pointspective.com</a>
+  </div>
 </div>
 
 <footer><p class="foot">© Pointspective · www.pointspective.com</p></footer>
 </div>
 
 <script>
+// ── CERT TABS ──────────────────────────────────────────────────────────────────
 function sc(id,btn){
   document.querySelectorAll('.cw').forEach(w=>w.classList.remove('on'));
   document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
   document.getElementById(id).classList.add('on');
   btn.classList.add('on');
 }
+
+// ── 24-HOUR COOLDOWN ──────────────────────────────────────────────────────────
+const COOLDOWN_MS = 24 * 60 * 60 * 1000;
+const AREAS = {
+  intuition:   { btn: 'btn-intuition',   cd: 'cd-intuition',   key: 'ps_cd_intuition' },
+  precision:   { btn: 'btn-precision',   cd: 'cd-precision',   key: 'ps_cd_precision' },
+  imagination: { btn: 'btn-imagination', cd: 'cd-imagination', key: 'ps_cd_imagination' }
+};
+
+function fmt(ms) {
+  const h = Math.floor(ms / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  const s = Math.floor((ms % 60000) / 1000);
+  return h + 'h ' + m + 'm ' + s + 's';
+}
+
+function checkCooldowns() {
+  const now = Date.now();
+  Object.entries(AREAS).forEach(([area, cfg]) => {
+    const btn = document.getElementById(cfg.btn);
+    const cd  = document.getElementById(cfg.cd);
+    if (!btn || btn.classList.contains('soon')) return;
+    let stored;
+    try { stored = localStorage.getItem(cfg.key); } catch(e) {}
+    if (stored) {
+      const last = parseInt(stored, 10);
+      const elapsed = now - last;
+      if (elapsed < COOLDOWN_MS) {
+        btn.classList.add('locked');
+        btn.textContent = 'Unavailable';
+        btn.removeAttribute('onclick');
+        const remaining = COOLDOWN_MS - elapsed;
+        cd.textContent = 'Available in ' + fmt(remaining);
+      } else {
+        btn.classList.remove('locked');
+        btn.textContent = 'Take the Assessment';
+        cd.textContent = '';
+      }
+    }
+  });
+}
+
+function goTest(area, url) {
+  const cfg = AREAS[area];
+  if (!cfg) return;
+  try { localStorage.setItem(cfg.key, Date.now().toString()); } catch(e) {}
+  window.location.href = url;
+}
+
+// Run immediately and tick every second for the countdown
+checkCooldowns();
+setInterval(() => {
+  const now = Date.now();
+  Object.entries(AREAS).forEach(([area, cfg]) => {
+    const btn = document.getElementById(cfg.btn);
+    const cd  = document.getElementById(cfg.cd);
+    if (!btn || btn.classList.contains('soon')) return;
+    let stored;
+    try { stored = localStorage.getItem(cfg.key); } catch(e) {}
+    if (stored) {
+      const elapsed = now - parseInt(stored, 10);
+      if (elapsed < COOLDOWN_MS) {
+        btn.classList.add('locked');
+        btn.textContent = 'Unavailable';
+        const remaining = COOLDOWN_MS - elapsed;
+        cd.textContent = 'Available in ' + fmt(remaining);
+      } else {
+        btn.classList.remove('locked');
+        btn.textContent = 'Take the Assessment';
+        btn.setAttribute('onclick', "goTest('" + area + "','" +
+          (area === 'intuition' ? './level-two.html' : area === 'precision' ? './level-three.html' : './level-one.html') +
+          "')");        cd.textContent = '';
+      }
+    }
+  });
+}, 1000);
 </script>
 </body>
 </html>
