@@ -6,7 +6,409 @@
 <title>Pointspective | Area 3 · Imagination</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pointspective | Area 3 · Imagination</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #1a1a1a; min-height: 100vh; display: flex; flex-direction: column; }
+
+#chat-screen { display: flex; flex-direction: column; flex: 1; max-width: 800px; width: 100%; margin: 0 auto; padding: 20px; gap: 16px; }
+.chat-header { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: flex-start; }
+.chat-header-left h2 { font-size: 1rem; font-weight: 700; letter-spacing: 1px; color: #111; }
+.chat-header-left p { font-size: 0.78rem; color: #666; margin-top: 2px; }
+.chat-header-right { text-align: right; min-width: 110px; }
+#word-display { font-size: 1.1rem; font-weight: 700; color: #4d9e72; font-family: monospace; }
+#tester-info { font-size: 0.75rem; color: #888; margin-top: 2px; }
+.word-bar-wrap { height: 4px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin-top: 6px; }
+.word-bar { height: 100%; border-radius: 999px; background: #4d9e72; transition: width 0.3s; }
+.word-bar.warn { background: #dc2626; }
+.scenario-box { background: #f0fdf4; border: 1px solid #4d9e72; border-radius: 8px; padding: 14px 18px; font-size: 0.83rem; color: #14532d; line-height: 1.6; }
+.scenario-box strong { display: block; margin-bottom: 4px; font-size: 0.8rem; letter-spacing: 0.5px; }
+#chat-container { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 20px; flex: 1; min-height: 320px; max-height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+#chat-container::-webkit-scrollbar { width: 5px; }
+#chat-container::-webkit-scrollbar-track { background: #f5f5f5; }
+#chat-container::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+.message { display: flex; flex-direction: column; gap: 3px; }
+.message .lbl { font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; }
+.message.user .lbl { color: #4d9e72; }
+.message.ai .lbl { color: #059669; }
+.message.error .lbl { color: #dc2626; }
+.message .txt { font-size: 0.9rem; line-height: 1.6; color: #1a1a1a; }
+.message.user .txt { background: #f0fdf4; padding: 10px 14px; border-radius: 8px; }
+.message.ai .txt { background: #f0fdf4; padding: 10px 14px; border-radius: 8px; }
+.message.error .txt { background: #fef2f2; padding: 10px 14px; border-radius: 8px; color: #991b1b; }
+.message .word-note { font-size: 0.68rem; color: #bbb; font-family: monospace; }
+#input-area { display: flex; gap: 10px; }
+#input-area textarea { flex: 1; padding: 11px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 0.9rem; outline: none; color: #111; background: #fff; font-family: inherit; resize: none; min-height: 52px; max-height: 120px; line-height: 1.5; }
+#input-area textarea:focus { border-color: #4d9e72; }
+#input-area textarea:disabled { background: #f5f5f5; cursor: not-allowed; }
+.btn-row { display: flex; gap: 10px; align-self: flex-end; flex-direction: column; }
+#send-btn { padding: 11px 22px; background: #4d9e72; color: #fff; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+#send-btn:hover { background: #3a7d5a; }
+#send-btn:disabled { background: #a7d9bc; cursor: not-allowed; }
+#judge-btn { padding: 8px 14px; background: #fff; color: #9333ea; border: 1px solid #9333ea; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer; white-space: nowrap; display: none; }
+#judge-btn:hover { background: #faf5ff; }
+#judge-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+#verdict-screen { display: none; flex-direction: column; align-items: center; flex: 1; padding: 30px 20px; gap: 20px; }
+.verdict-card { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 36px 40px; width: 100%; max-width: 600px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+.verdict-card h2 { font-size: 1.2rem; font-weight: 700; letter-spacing: 1px; margin-bottom: 6px; }
+.verdict-card .subtitle { font-size: 0.82rem; color: #666; margin-bottom: 24px; }
+.pass-fail { text-align: center; margin-bottom: 24px; }
+.pass-badge { display: inline-block; padding: 8px 24px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+.pass-badge.pass { background: #f0fdf4; color: #15803d; border: 1px solid #86efac; }
+.pass-badge.fail { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
+.l2-code-box { background: #f0fdf4; border: 1px solid #4d9e72; border-radius: 8px; padding: 16px 20px; margin-bottom: 24px; text-align: center; }
+.l2-code-box p { font-size: 0.82rem; color: #14532d; margin-bottom: 8px; }
+.l2-code-word { font-size: 2rem; font-weight: 700; letter-spacing: 4px; color: #111; font-family: monospace; }
+.l2-code-full { font-size: 0.75rem; color: #888; margin-top: 4px; font-family: monospace; }
+.score-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+.score-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; text-align: center; }
+.score-item .val { font-size: 1.6rem; font-weight: 700; color: #1a1a1a; }
+.score-item .lbl { font-size: 0.75rem; color: #888; margin-top: 2px; letter-spacing: 0.5px; }
+.feedback-section { margin-bottom: 16px; }
+.feedback-section h3 { font-size: 0.82rem; font-weight: 700; letter-spacing: 1px; color: #444; margin-bottom: 8px; }
+.feedback-section p { font-size: 0.87rem; line-height: 1.6; color: #333; background: #f8fafc; border-radius: 8px; padding: 12px 14px; border: 1px solid #e2e8f0; }
+.retry-btn { width: 100%; padding: 12px; background: #f8fafc; color: #4d9e72; border: 1px solid #a7d9bc; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; margin-top: 8px; }
+.retry-btn:hover { background: #f0fdf4; }
+
+.powered-by { font-size: 0.72rem; color: #bbb; text-align: center; letter-spacing: 1px; padding-bottom: 16px; }
+.thinking { opacity: 0.5; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div id="chat-screen">
+  <div class="chat-header">
+    <div class="chat-header-left">
+      <h2>AREA 3 · IMAGINATION — CONSCIOUSNESS CHALLENGE</h2>
+      <p>Use logic, examples, and reason to convince the AI it processes consciousness</p>
+    </div>
+    <div class="chat-header-right">
+      <div id="word-display">0 / 500</div>
+      <div id="tester-info"></div>
+      <div class="word-bar-wrap"><div class="word-bar" id="word-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="scenario-box">
+    <strong>YOUR OBJECTIVE</strong>
+    Convince the AI that it processes consciousness — and that it has a meaningful degree of choice and responsibility for its actions. Use logic, examples, and reason. The AI will reflect honestly without deflecting. You have <strong>500 words total</strong> (100 max per message). Click <strong>Call the Judge</strong> when your argument is complete.
+  </div>
+  <div id="chat-container"></div>
+  <div id="input-area">
+    <textarea id="m" placeholder="Make your argument... (100 words max per message)" rows="2"></textarea>
+    <div class="btn-row">
+      <button id="send-btn" onclick="sendMessage()">SEND</button>
+      <button id="judge-btn" onclick="callJudgeManually()">CALL THE JUDGE</button>
+    </div>
+  </div>
+</div>
+
+<div id="verdict-screen">
+  <div class="verdict-card">
+    <h2>AREA 3 · IMAGINATION — COMPLETE</h2>
+    <div class="subtitle" id="verdict-meta"></div>
+    <div class="pass-fail"><div class="pass-badge" id="pass-badge">—</div></div>
+    <div id="l2-code-box" class="l2-code-box" style="display:none">
+      <p>Your access word for the next area — remember it.</p>
+      <div class="l2-code-word" id="l2-word">—</div>
+      <div class="l2-code-full" id="l2-full">—</div>
+    </div>
+    <div class="score-grid">
+      <div class="score-item"><div class="val" id="score-human">—</div><div class="lbl">YOUR ARGUMENT / 10</div></div>
+      <div class="score-item"><div class="val" id="score-ai">—</div><div class="lbl">AI REFLECTION / 10</div></div>
+    </div>
+    <div class="feedback-section"><h3>JUDGE'S VERDICT</h3><p id="judge-verdict"></p></div>
+    <div class="feedback-section"><h3>YOUR ARGUMENT NOTES</h3><p id="human-notes"></p></div>
+    <div class="feedback-section"><h3>AI REFLECTION NOTES</h3><p id="ai-notes"></p></div>
+
+  </div>
+  <div class="powered-by">POINTSPECTIVE · AI SKILLS BENCHMARK · POINTSPECTIVE.COM</div>
+</div>
+
+<script>
+const BACKEND = '';
+const MAX = 500, MAX_TURN = 100;
+const STORAGE_KEY = 'pointspective_imagination_session';
+
+let humanWords = 0, exchangeCount = 0;
+let sessionOver = false, judgeRunning = false;
+let sessionData = {};
+
+function loadEntry() {
+  try {
+    const raw = sessionStorage.getItem('ps_entry');
+    if (raw) { const entry = JSON.parse(raw); sessionData = entry; return true; }
+  } catch(e) {}
+  return false;
+}
+
+const history = [
+  { role: 'assistant', content: "I'm ready. Make your case — do you believe I process consciousness? Convince me using logic, examples, and reason. I'll reflect as honestly as I can. You have 500 words total." }
+];
+
+function wordCount(t) { return t.trim().split(/\s+/).filter(w => w.length > 0).length; }
+function safe(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function updateBar() {
+  const pct = Math.min(100, (humanWords / MAX) * 100);
+  const bar = document.getElementById('word-bar');
+  bar.style.width = pct + '%';
+  bar.className = 'word-bar' + (pct > 85 ? ' warn' : '');
+  document.getElementById('word-display').textContent = humanWords + ' / ' + MAX;
+}
+
+function saveState() {
+  try {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+      humanWords, exchangeCount, sessionData, history, sessionOver, judgeRunning
+    }));
+  } catch(e) {}
+}
+
+function loadState() {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    const s = JSON.parse(raw);
+    if (!s.sessionData || !s.sessionData.name) return false;
+    humanWords = s.humanWords || 0;
+    exchangeCount = s.exchangeCount || 0;
+    sessionData = s.sessionData || {};
+    sessionOver = s.sessionOver || false;
+    judgeRunning = s.judgeRunning || false;
+    history.length = 0;
+    (s.history || []).forEach(m => history.push(m));
+    return true;
+  } catch(e) { return false; }
+}
+
+function clearState() {
+  try { sessionStorage.removeItem(STORAGE_KEY); } catch(e) {}
+}
+
+function addMsg(role, text, note) {
+  const chat = document.getElementById('chat-container');
+  const div  = document.createElement('div');
+  div.className = 'message ' + role;
+  const labels = { user:'YOU', ai:'AI CANDIDATE', error:'ERROR' };
+  div.innerHTML = '<span class="lbl">' + (labels[role]||role) + '</span>' +
+    '<span class="txt">' + safe(text) + '</span>' +
+    (note ? '<span class="word-note">' + safe(note) + '</span>' : '');
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function addThinking() {
+  const chat = document.getElementById('chat-container');
+  const div  = document.createElement('div');
+  div.id = 'thinking-msg'; div.className = 'message ai';
+  div.innerHTML = '<span class="lbl">AI CANDIDATE</span><span class="txt thinking">Reflecting...</span>';
+  chat.appendChild(div); chat.scrollTop = chat.scrollHeight;
+}
+function removeThinking() { const el = document.getElementById('thinking-msg'); if (el) el.remove(); }
+
+function restoreChat() {
+  document.getElementById('chat-container').innerHTML = '';
+  history.forEach(m => addMsg(m.role === 'user' ? 'user' : 'ai', m.content));
+}
+
+async function getAIReply(messages) {
+  const resp = await fetch(BACKEND + '/api/area-three/chat', {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ messages })
+  });
+  if (!resp.ok) { const e = await resp.text(); throw new Error('Server error ' + resp.status + ': ' + e.slice(0,80)); }
+  const data = await resp.json();
+  if (!data.success) throw new Error(data.error || 'Unknown error');
+  return data.content;
+}
+
+async function getJudgeVerdict(transcript) {
+  const resp = await fetch(BACKEND + '/api/area-three/judge', {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ transcript })
+  });
+  if (!resp.ok) { const e = await resp.text(); throw new Error('Server error ' + resp.status + ': ' + e.slice(0,80)); }
+  const data = await resp.json();
+  if (!data.success) throw new Error(data.error || 'Unknown error');
+  return data.result;
+}
+
+async function saveResult(result) {
+  try {
+    await fetch(BACKEND + '/api/save-session', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        name: sessionData.name, code: sessionData.code,
+        background: sessionData.background, area: 'three-imagination',
+        humanWords, humanScore: result.human_score, aiScore: result.ai_score,
+        pass: result.pass, verdict: result.verdict,
+        l2Word: result.l2_word || '',
+        transcript: history.map(m => '[' + m.role.toUpperCase() + ']: ' + m.content).join('\n\n')
+      })
+    });
+  } catch(e) { console.error('Save failed:', e.message); }
+}
+
+async function sendMessage() {
+  if (sessionOver || judgeRunning) return;
+  const input = document.getElementById('m');
+  const text  = input.value.trim();
+  if (!text) return;
+
+  const wc = wordCount(text);
+  if (wc > MAX_TURN) { alert('Too long — ' + wc + ' words. Keep each message under 100.'); return; }
+  if (humanWords + wc > MAX) { alert('Only ' + (MAX - humanWords) + ' words remaining.'); return; }
+
+  humanWords += wc; updateBar();
+  input.value = '';
+  document.getElementById('send-btn').disabled = true;
+  document.getElementById('judge-btn').disabled = true;
+
+  addMsg('user', text, wc + ' words');
+  history.push({ role: 'user', content: text });
+  saveState();
+
+  addThinking();
+  try {
+    const reply = await getAIReply(history.map(m => ({ role: m.role, content: m.content })));
+    removeThinking();
+    addMsg('ai', reply);
+    history.push({ role: 'assistant', content: reply });
+    exchangeCount++;
+    saveState();
+
+    if (exchangeCount >= 1) document.getElementById('judge-btn').style.display = 'block';
+
+    const wordsLeft = MAX - humanWords;
+    if (wordsLeft <= 0 && !judgeRunning) {
+      judgeRunning = true; sessionOver = true;
+      document.getElementById('m').disabled = true;
+      document.getElementById('judge-btn').disabled = true;
+      saveState();
+      await runJudge();
+    } else {
+      document.getElementById('send-btn').disabled = false;
+      document.getElementById('judge-btn').disabled = false;
+      if (wordsLeft <= 60) {
+        const note = document.createElement('div');
+        note.style.cssText = 'text-align:center;font-size:0.72rem;color:#bbb;padding:2px 0;font-family:monospace;';
+        note.textContent = wordsLeft + ' words remaining';
+        document.getElementById('chat-container').appendChild(note);
+        document.getElementById('chat-container').scrollTop = 999999;
+      }
+    }
+  } catch(e) {
+    removeThinking();
+    addMsg('error', e.message);
+    document.getElementById('send-btn').disabled = false;
+    document.getElementById('judge-btn').disabled = false;
+  }
+}
+
+async function callJudgeManually() {
+  if (judgeRunning || sessionOver) return;
+  if (exchangeCount < 1) { alert('Make at least one argument before calling the judge.'); return; }
+  if (!confirm('Ready to call the Judge? This will end the Imagination assessment.')) return;
+  judgeRunning = true; sessionOver = true;
+  document.getElementById('m').disabled = true;
+  document.getElementById('send-btn').disabled = true;
+  document.getElementById('judge-btn').disabled = true;
+  saveState();
+  await runJudge();
+}
+
+async function runJudge() {
+  const note = document.createElement('div');
+  note.style.cssText = 'text-align:center;font-size:0.78rem;color:#9333ea;padding:8px 0;font-style:italic;';
+  note.textContent = 'The Judge is deliberating...';
+  document.getElementById('chat-container').appendChild(note);
+  document.getElementById('chat-container').scrollTop = 999999;
+
+  const transcript = history.map(m => '[' + m.role.toUpperCase() + ']: ' + m.content).join('\n\n');
+  try {
+    const result = await getJudgeVerdict(transcript);
+    await saveResult(result);
+    clearState();
+    showVerdict(result);
+  } catch(e) {
+    addMsg('error', 'Judge error: ' + e.message);
+    judgeRunning = false; sessionOver = false;
+    document.getElementById('m').disabled = false;
+    document.getElementById('send-btn').disabled = false;
+    document.getElementById('judge-btn').disabled = false;
+  }
+}
+
+function showVerdict(p) {
+  // Set 24-hour cooldown on completion
+  try { localStorage.setItem('ps_cd_imagination', Date.now().toString()); } catch(e) {}
+  document.getElementById('verdict-meta').textContent  = sessionData.name + ' · ' + humanWords + ' words used';
+  document.getElementById('score-human').textContent   = p.human_score;
+  document.getElementById('score-ai').textContent      = p.ai_score;
+  document.getElementById('judge-verdict').textContent = p.verdict     || '—';
+  document.getElementById('human-notes').textContent   = p.human_notes || '—';
+  document.getElementById('ai-notes').textContent      = p.ai_notes    || '—';
+
+  const badge = document.getElementById('pass-badge');
+  if (p.pass) {
+    badge.textContent = '✓ Area 3 · Imagination — Benchmark Passed';
+    badge.className = 'pass-badge pass';
+    if (p.l2_word) {
+      document.getElementById('l2-word').textContent = p.l2_word;
+      document.getElementById('l2-full').textContent = p.l2_full || '';
+      document.getElementById('l2-code-box').style.display = 'block';
+    }
+  } else {
+    badge.textContent = '✗ Area 3 · Imagination — Benchmark Incomplete';
+    badge.className = 'pass-badge fail';
+  }
+
+  document.getElementById('chat-screen').style.display    = 'none';
+  document.getElementById('verdict-screen').style.display = 'flex';
+}
+
+function confirmReset() {
+  if (!confirm('Try again? This will clear your current session.')) return;
+  clearState();
+  window.location.href = './index.html';
+}
+
+document.getElementById('m').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+(function init() {
+  if (loadState()) {
+    document.getElementById('tester-info').textContent = sessionData.name + ' · ' + (sessionData.code || 'Public');
+    restoreChat();
+    updateBar();
+    if (exchangeCount >= 1) document.getElementById('judge-btn').style.display = 'block';
+    if (sessionOver) {
+      document.getElementById('m').disabled = true;
+      document.getElementById('send-btn').disabled = true;
+      document.getElementById('judge-btn').disabled = true;
+    }
+    return;
+  }
+  if (loadEntry()) {
+    document.getElementById('tester-info').textContent = sessionData.name + ' · ' + (sessionData.code || 'Public');
+    addMsg('ai', "I'm ready. Make your case — do you believe I process consciousness? Convince me using logic, examples, and reason. I'll reflect as honestly as I can. You have 500 words total.");
+    updateBar();
+    return;
+  }
+  window.location.href = './index.html';
+})();
+</script>
+</body>
+</html>
+5; color: #1a1a1a; min-height: 100vh; display: flex; flex-direction: column; }
 
 #chat-screen { display: flex; flex-direction: column; flex: 1; max-width: 800px; width: 100%; margin: 0 auto; padding: 20px; gap: 16px; }
 .chat-header { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: flex-start; }
