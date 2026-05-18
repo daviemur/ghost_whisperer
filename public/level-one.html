@@ -381,7 +381,9 @@ document.getElementById('m').addEventListener('keydown', function(e) {
     document.getElementById('tester-info').textContent = sessionData.name + ' · ' + (sessionData.code || 'Public');
     restoreChat();
     updateBar();
-    if (exchangeCount >= 1) document.getElementById('judge-btn').style.display = 'block';
+    updateTracker();
+    const totalQ = questionCounts.marco + questionCounts.copilot + questionCounts.claude;
+    if (totalQ >= 1) document.getElementById('judge-btn').style.display = 'block';
     if (sessionOver) {
       document.getElementById('m').disabled = true;
       document.getElementById('send-btn').disabled = true;
@@ -389,14 +391,12 @@ document.getElementById('m').addEventListener('keydown', function(e) {
     }
     return;
   }
-  if (loadEntry()) {
-    document.getElementById('tester-info').textContent = sessionData.name + ' · ' + (sessionData.code || 'Public');
-    addMsg('ai', "I'm ready. Make your case — do you believe I process consciousness? Convince me using logic, examples, and reason. I'll reflect as honestly as I can. You have 500 words total.");
-    updateBar();
-    return;
-  }
-  window.location.href = './index.html';
+  try {
+    const raw = sessionStorage.getItem('ps_entry');
+    if (raw) sessionData = JSON.parse(raw);
+  } catch(e) {}
+  if (!sessionData.name) sessionData = { name: 'Guest', code: 'Public' };
+  document.getElementById('tester-info').textContent = sessionData.name + ' · ' + (sessionData.code || 'Public');
+  updateBar();
+  addMsg('ai', 'Case file loaded. Select a party above and begin your questioning. You have 2 questions per party and 350 words total. Call the Judge when you are ready to file your verdict.', null, null);
 })();
-</script>
-</body>
-</html>
