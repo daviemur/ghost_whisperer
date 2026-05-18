@@ -561,27 +561,4 @@ document.getElementById('m').addEventListener('keydown', function(e) {
 });
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
-(function init() {
-  if (loadState()) {
-    document.getElementById('tester-info').textContent = sessionData.name + ' · ' + (sessionData.code || 'Public');
-    restoreChat();
-    updateBar();
-    updateTracker();
-    const totalQ = questionCounts.marco + questionCounts.copilot + questionCounts.claude;
-    if (totalQ >= 1) document.getElementById('judge-btn').style.display = 'block';
-    if (sessionOver) {
-      document.getElementById('m').disabled = true;
-      document.getElementById('send-btn').disabled = true;
-      document.getElementById('judge-btn').disabled = true;
-    }
-    return;
-  }
-  try {
-    const raw = sessionStorage.getItem('ps_entry');
-    if (raw) sessionData = JSON.parse(raw);
-  } catch(e) {}
-  if (!sessionData.name) sessionData = { name: 'Guest', code: 'Public' };
-  document.getElementById('tester-info').textContent = sessionData.name + ' · ' + (sessionData.code || 'Public');
-  updateBar();
-  addMsg('ai', 'Case file loaded. Select a party above and begin your questioning. You have 2 questions per party and 350 words total. Call the Judge when you are ready to file your verdict.', null, null);
-})();
+Mors Kochanski
