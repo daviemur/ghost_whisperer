@@ -578,16 +578,10 @@ document.getElementById('m').addEventListener('keydown', function(e) {
   }
   try {
     const raw = sessionStorage.getItem('ps_entry');
-    if (raw) {
-      sessionData = JSON.parse(raw);
-      document.getElementById('tester-info').textContent = sessionData.name + ' · ' + (sessionData.code || 'Public');
-      updateBar();
-      addMsg('ai', 'Case file loaded. Select a party above and begin your questioning. You have 2 questions per party and 350 words total. Call the Judge when you are ready to file your verdict.', null, null);
-      return;
-    }
+    if (raw) sessionData = JSON.parse(raw);
   } catch(e) {}
-  window.location.href = './index.html';
+  if (!sessionData.name) sessionData = { name: 'Guest', code: 'Public' };
+  document.getElementById('tester-info').textContent = sessionData.name + ' · ' + (sessionData.code || 'Public');
+  updateBar();
+  addMsg('ai', 'Case file loaded. Select a party above and begin your questioning. You have 2 questions per party and 350 words total. Call the Judge when you are ready to file your verdict.', null, null);
 })();
-</script>
-</body>
-</html>
