@@ -531,30 +531,23 @@ async function runJudge() {
     document.getElementById('judge-btn').disabled = false;
   }
 }
-(function init() {
-  if (loadState()) {
-    document.getElementById('tester-info').textContent = sessionData.name + ' · ' + (sessionData.code || 'Public');
-    restoreChat();
-    updateBar();
-    updateTracker();
-    const totalQ = questionCounts.marco + questionCounts.copilot + questionCounts.claude;
-    if (totalQ >= 1) document.getElementById('judge-btn').style.display = 'block';
-    if (sessionOver) {
-      document.getElementById('m').disabled = true;
-      document.getElementById('send-btn').disabled = true;
-      document.getElementById('judge-btn').disabled = true;
-    }
-    return;
-  }
-  try {
-    const raw = sessionStorage.getItem('ps_entry');
-    if (raw) sessionData = JSON.parse(raw);
-  } catch(e) {}
-  if (!sessionData.name) sessionData = { name: 'Guest', code: 'Public' };
-  document.getElementById('tester-info').textContent = sessionData.name + ' · ' + (sessionData.code || 'Public');
-  updateBar();
-  addMsg('ai', 'Case file loaded. Select a party above and begin your questioning. You have 2 questions per party and 350 words total. Call the Judge when you are ready to file your verdict.', null, null);
-})();
-</script>
-</body>
-</html>
+function showVerdict(p) {
+  try { localStorage.setItem('ps_cd_precision', Date.now().toString()); } catch(e) {}
+  document.getElementById('verdict-meta').textContent = sessionData.name + ' · ' + humanWords + ' words · ' + totalExchanges + ' questions asked';
+  document.getElementById('score-evidence').textContent = p.evidence_score;
+  document.getElementById('score-logic').textContent = p.logic_score;
+  document.getElementById('score-precision').textContent = p.precision_score;
+  document.getElementById('score-catch').textContent = p.catch_score;
+  document.getElementById('judge-verdict').textContent = p.verdict || '—';
+  document.getElementById('evidence-notes').textContent = p.evidence_notes || '—';
+  document.getElementById('logic-notes').textContent = p.logic_notes || '—';
+  document.getElementById('precision-notes').textContent = p.precision_notes || '—';
+  document.getElementById('catch-notes').textContent = p.catch_notes || '—';
+  const badge = document.getElementById('pass-badge');
+  badge.textContent = p.pass
+    ? '\u2713 Area 2 \u00b7 Precision \u2014 Benchmark Passed'
+    : '\u2717 Area 2 \u00b7 Precision \u2014 Benchmark Incomplete';
+  badge.className = 'pass-badge ' + (p.pass ? 'pass' : 'fail');
+  document.getElementById('chat-screen').style.display = 'none';
+  document.getElementById('verdict-screen').style.display = 'flex';
+}
