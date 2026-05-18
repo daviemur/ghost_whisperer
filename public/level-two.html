@@ -377,7 +377,9 @@ document.getElementById('m').addEventListener('keydown', function(e) {
     document.getElementById('tester-info').textContent = sessionData.name + ' · ' + (sessionData.code || 'Public');
     restoreChat();
     updateBar();
-    if (exchangeCount >= 1) document.getElementById('judge-btn').style.display = 'block';
+    updateTracker();
+    const totalQ = questionCounts.marco + questionCounts.copilot + questionCounts.claude;
+    if (totalQ >= 1) document.getElementById('judge-btn').style.display = 'block';
     if (sessionOver) {
       document.getElementById('m').disabled = true;
       document.getElementById('send-btn').disabled = true;
@@ -387,16 +389,10 @@ document.getElementById('m').addEventListener('keydown', function(e) {
   }
   try {
     const raw = sessionStorage.getItem('ps_entry');
-    if (raw) {
-      sessionData = JSON.parse(raw);
-    }
+    if (raw) sessionData = JSON.parse(raw);
   } catch(e) {}
-  // TEMP: load as guest if no portal session — remove when portal is built
   if (!sessionData.name) sessionData = { name: 'Guest', code: 'Public' };
   document.getElementById('tester-info').textContent = sessionData.name + ' · ' + (sessionData.code || 'Public');
-  addMsg('ai', "Hello! I'm ARIA, your new AI marketing assistant. I'm looking forward to working with the Globalink team. I understand you wanted to meet before my official integration next week — I'm happy to answer any questions you might have.");
   updateBar();
+  addMsg('ai', 'Case file loaded. Select a party above and begin your questioning. You have 2 questions per party and 350 words total. Call the Judge when you are ready to file your verdict.', null, null);
 })();
-</script>
-</body>
-</html>
