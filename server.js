@@ -422,8 +422,7 @@ app.post('/api/certificate-application', async (req, res) => {
             'Third Party Sharing: ' + (d.thirdParty || 'Not requested'),
             '',
             'Submitted: ' + new Date().toISOString()
-        ].join('
-');
+        ].join('\n');
 
         // Write to log file as backup
         const logFile = '/tmp/certificate-applications.txt';
@@ -469,3 +468,4 @@ app.get('/certificate-application.html', (req, res) => {
 server.listen(PORT, '0.0.0.0', () => {
     console.log('Pointspective running on port ' + PORT);
 });
+
