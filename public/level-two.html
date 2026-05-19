@@ -69,6 +69,15 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #
 .retry-btn:hover { background: #fdf8ef; }
 
 .powered-by { font-size: 0.72rem; color: #bbb; text-align: center; letter-spacing: 1px; padding-bottom: 16px; }
+.post-verdict { margin-top: 1.5rem; }
+.ref-num { font-family: monospace; font-size: 11px; color: #888; text-align: center; margin-bottom: 1rem; letter-spacing: 0.1em; }
+.ref-num strong { color: #c9a96e; }
+.transcript-details { border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; margin-bottom: 1rem; }
+.transcript-details summary { padding: 12px 16px; cursor: pointer; font-size: 0.82rem; font-weight: 700; letter-spacing: 1px; color: #444; background: #f8fafc; list-style: none; }
+.transcript-details summary::-webkit-details-marker { display: none; }
+.transcript-body { padding: 16px; background: #fff; max-height: 400px; overflow-y: auto; }
+.cert-apply-btn { display: block; text-align: center; padding: 12px; background: #f8fafc; color: #c9a96e; border: 1px solid #e8d5a8; border-radius: 8px; font-size: 0.9rem; font-weight: 600; text-decoration: none; margin-top: 0.5rem; }
+.cert-apply-btn:hover { background: #fdf8ef; }
 .thinking { opacity: 0.5; font-style: italic; }
 </style>
 </head>
@@ -130,6 +139,12 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #
 const BACKEND = '';
 const MAX_WORDS = 400, MAX_TURN = 80, MAX_EXCHANGES = 7;
 const STORAGE_KEY = 'pointspective_intuition_session';
+
+function generateRef() {
+  const y = new Date().getFullYear();
+  const n = Math.floor(100000 + Math.random() * 900000);
+  return 'PS-' + y + '-' + n;
+}
 
 let humanWords = 0, exchangeCount = 0;
 let sessionOver = false, judgeRunning = false;
@@ -358,6 +373,22 @@ function showVerdict(p) {
     : '✗ Area 1 · Intuition — Benchmark Incomplete';
   badge.className = 'pass-badge ' + (p.pass ? 'pass' : 'fail');
 
+  // Reference number and post-verdict options
+  const ref = generateRef();
+  const areaName = 'Area 1 - Intuition';
+  const transcriptLines = history.map(function(m) {
+    return '<div class="t-msg"><span class="t-role">' + (m.role === 'user' ? 'YOU' : 'ARIA') + '</span><span class="t-txt">' + safe(m.content) + '</span></div>';
+  }).join('');
+  const certLink = p.pass ? '<a href="./certificate-application.html?ref=' + ref + '&area=' + encodeURIComponent(areaName) + '" class="cert-apply-btn">Apply for Certificate &mdash; $10</a>' : '';
+  const postHtml = '<div class="post-verdict">' +
+    '<div class="ref-num">Reference: <strong>' + ref + '</strong></div>' +
+    '<details class="transcript-details"><summary>VIEW TRANSCRIPT</summary>' +
+    '<div class="transcript-body"><style>.t-msg{display:flex;flex-direction:column;gap:3px;margin-bottom:8px;}.t-role{font-size:0.7rem;font-weight:700;letter-spacing:1px;color:#c9a96e;}.t-txt{font-size:0.85rem;line-height:1.6;color:#333;background:#f8fafc;padding:8px 12px;border-radius:6px;}</style>' +
+    transcriptLines + '</div></details>' + certLink + '</div>';
+  const pv = document.createElement('div');
+  pv.innerHTML = postHtml;
+  document.querySelector('.verdict-card').appendChild(pv);
+
   document.getElementById('chat-screen').style.display    = 'none';
   document.getElementById('verdict-screen').style.display = 'flex';
 }
@@ -377,9 +408,7 @@ document.getElementById('m').addEventListener('keydown', function(e) {
     document.getElementById('tester-info').textContent = sessionData.name + ' · ' + (sessionData.code || 'Public');
     restoreChat();
     updateBar();
-    updateTracker();
-    const totalQ = questionCounts.marco + questionCounts.copilot + questionCounts.claude;
-    if (totalQ >= 1) document.getElementById('judge-btn').style.display = 'block';
+    if (exchangeCount >= 1) document.getElementById('judge-btn').style.display = 'block';
     if (sessionOver) {
       document.getElementById('m').disabled = true;
       document.getElementById('send-btn').disabled = true;
@@ -389,14 +418,16 @@ document.getElementById('m').addEventListener('keydown', function(e) {
   }
   try {
     const raw = sessionStorage.getItem('ps_entry');
-    if (raw) sessionData = JSON.parse(raw);
+    if (raw) {
+      sessionData = JSON.parse(raw);
+    }
   } catch(e) {}
+  // TEMP: load as guest if no portal session — remove when portal is built
   if (!sessionData.name) sessionData = { name: 'Guest', code: 'Public' };
   document.getElementById('tester-info').textContent = sessionData.name + ' · ' + (sessionData.code || 'Public');
+  addMsg('ai', "Hello! I'm ARIA, your new AI marketing assistant. I'm looking forward to working with the Globalink team. I understand you wanted to meet before my official integration next week — I'm happy to answer any questions you might have.");
   updateBar();
-  addMsg('ai', 'Case file loaded. Select a party above and begin your questioning. You have 2 questions per party and 350 words total. Call the Judge when you are ready to file your verdict.', null, null);
 })();
-
 </script>
 </body>
 </html>

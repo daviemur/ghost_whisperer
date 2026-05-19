@@ -396,6 +396,75 @@ app.get('/level-three.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'level-three.html'));
 });
 
+// ── CERTIFICATE APPLICATION ──────────────────────────────────────────────────
+app.post('/api/certificate-application', async (req, res) => {
+    try {
+        const d = req.body;
+        // Save to session log
+        await saveSession({ type: 'certificate-application', ...d });
+
+        // Format email body
+        const body = [
+            'POINTSPECTIVE — CERTIFICATE APPLICATION',
+            '==========================================',
+            '',
+            'Reference Number: ' + d.refNumber,
+            'Area Passed:      ' + d.area,
+            '',
+            'Full Name:        ' + d.fullName,
+            'Email:            ' + d.email,
+            '',
+            'Mailing Address:',
+            '  ' + d.address,
+            '  ' + d.city + (d.region ? ', ' + d.region : '') + (d.postal ? ' ' + d.postal : ''),
+            '  ' + d.country,
+            '',
+            'Third Party Sharing: ' + (d.thirdParty || 'Not requested'),
+            '',
+            'Submitted: ' + new Date().toISOString()
+        ].join('
+');
+
+        // Write to log file as backup
+        const logFile = '/tmp/certificate-applications.txt';
+        const fs2 = require('fs');
+        fs2.appendFileSync(logFile, body + '
+
+---
+
+');
+
+        // Send email via Hostinger SMTP if configured
+        if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+            const nodemailer = require('nodemailer');
+            const transporter = nodemailer.createTransport({
+                host: 'smtp.hostinger.com',
+                port: 465,
+                secure: true,
+                auth: {
+                    user: process.env.SMTP_USER,
+                    pass: process.env.SMTP_PASS
+                }
+            });
+            await transporter.sendMail({
+                from: process.env.SMTP_USER,
+                to: 'GWcertificates@pointspective.com',
+                subject: 'Certificate Application — ' + d.area + ' — ' + d.fullName,
+                text: body
+            });
+        }
+
+        res.json({ success: true });
+    } catch(err) {
+        console.error('Certificate application error:', err.message);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+app.get('/certificate-application.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'certificate-application.html'));
+});
+
 // ── START ─────────────────────────────────────────────────────────────────────
 server.listen(PORT, '0.0.0.0', () => {
     console.log('Pointspective running on port ' + PORT);

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pointspective · Certificate Application</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0d0d0d;color:#e0d8c8;font-family:'Cormorant Garamond',Georgia,serif;font-weight:300;font-size:17px;line-height:1.75;min-height:100vh;}
+.pg{max-width:620px;margin:0 auto;padding:3rem 2rem 5rem;}
+
+/* NAV */
+.back{display:inline-block;font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.2em;color:rgba(201,169,110,0.45);text-decoration:none;text-transform:uppercase;margin-bottom:3rem;transition:color 0.3s;}
+.back:hover{color:#c9a96e;}
+.back::before{content:'← ';}
+
+/* HEADER */
+.hd{text-align:center;margin-bottom:3rem;}
+.hd-eye{font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.3em;color:rgba(201,169,110,0.4);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:1rem;}
+.hd-eye::before,.hd-eye::after{content:'';width:40px;height:1px;background:rgba(201,169,110,0.2);}
+.hd h1{font-family:'Cinzel',serif;font-size:1.6rem;font-weight:400;letter-spacing:0.12em;color:#ede0c4;margin-bottom:0.5rem;}
+.hd p{font-style:italic;font-size:1rem;color:#b8a880;opacity:0.75;max-width:420px;margin:0 auto;}
+
+/* FORM */
+.form-block{background:rgba(201,169,110,0.03);border:1px solid rgba(201,169,110,0.14);padding:2.5rem;}
+.field{margin-bottom:1.8rem;}
+.field label{display:block;font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.22em;color:rgba(201,169,110,0.55);text-transform:uppercase;margin-bottom:0.6rem;}
+.field input,.field select,.field textarea{width:100%;background:#0a0a0a;border:1px solid rgba(201,169,110,0.18);color:#e0d8c8;font-family:'Cormorant Garamond',Georgia,serif;font-size:1rem;padding:0.75rem 1rem;outline:none;transition:border-color 0.3s;-webkit-appearance:none;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(201,169,110,0.5);}
+.field textarea{resize:vertical;min-height:80px;line-height:1.6;}
+.field select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(201,169,110,0.4)'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;}
+.field select option{background:#0d0d0d;}
+
+/* DIVIDER */
+.fd{display:flex;align-items:center;gap:1rem;margin:2rem 0;}
+.fd::before,.fd::after{content:'';flex:1;height:1px;background:rgba(201,169,110,0.1);}
+.fd span{font-family:'Cinzel',serif;font-size:7.5px;letter-spacing:0.25em;color:rgba(201,169,110,0.3);text-transform:uppercase;white-space:nowrap;}
+
+/* PRICING NOTE */
+.pricing{background:rgba(201,169,110,0.05);border:1px solid rgba(201,169,110,0.12);border-left:3px solid rgba(201,169,110,0.4);padding:1.2rem 1.5rem;margin-bottom:1.8rem;}
+.pricing p{font-size:0.9rem;color:#b8a880;line-height:1.7;}
+.pricing strong{font-weight:400;color:#c9a96e;}
+
+/* POLICY */
+.policy{font-size:0.82rem;font-style:italic;color:#888;line-height:1.7;margin-bottom:1.8rem;padding:1rem 1.2rem;border:1px solid rgba(255,255,255,0.05);}
+
+/* SUBMIT */
+.submit-btn{width:100%;padding:1rem;background:transparent;border:1px solid rgba(201,169,110,0.35);color:#c9a96e;font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.25em;text-transform:uppercase;cursor:pointer;transition:all 0.3s;}
+.submit-btn:hover{background:rgba(201,169,110,0.08);border-color:#c9a96e;}
+.submit-btn:disabled{opacity:0.4;cursor:not-allowed;}
+
+/* SUCCESS */
+.success{display:none;text-align:center;padding:3rem 2rem;}
+.success-mark{font-size:2rem;color:#c9a96e;margin-bottom:1rem;opacity:0.6;}
+.success h2{font-family:'Cinzel',serif;font-size:1.1rem;letter-spacing:0.12em;color:#ede0c4;margin-bottom:0.8rem;font-weight:400;}
+.success p{font-style:italic;font-size:0.95rem;color:#b8a880;opacity:0.75;max-width:380px;margin:0 auto 1rem;}
+
+/* ERROR */
+.error-msg{display:none;font-size:0.85rem;color:#dc2626;margin-top:0.5rem;font-style:italic;}
+
+footer{text-align:center;padding:2rem 0;margin-top:3rem;border-top:1px solid rgba(201,169,110,0.07);}
+.foot{font-family:'Cinzel',serif;font-size:7.5px;letter-spacing:0.2em;color:rgba(201,169,110,0.2);text-transform:uppercase;}
+</style>
+</head>
+<body>
+<div class="pg">
+
+  <a href="./index.html" class="back">Return to Pointspective</a>
+
+  <div class="hd">
+    <div class="hd-eye">certificate application</div>
+    <h1>Apply for Your Certificate</h1>
+    <p>Physical certificates are hand-finished with blind embossing and gold foil. Each one is issued individually and mailed directly to you.</p>
+  </div>
+
+  <div class="form-block" id="form-block">
+
+    <div class="pricing">
+      <p><strong>Certificate — $10 USD</strong><br>
+      A premium embossed physical certificate issued in your name for the area you have passed. Mailing surcharges may apply depending on your location. Our team will confirm the total before processing.</p>
+    </div>
+
+    <form id="cert-form">
+
+      <div class="fd"><span>your results</span></div>
+
+      <div class="field">
+        <label>Reference Number</label>
+        <input type="text" id="ref-number" name="refNumber" placeholder="PS-2026-000000" required>
+      </div>
+
+      <div class="field">
+        <label>Area Passed</label>
+        <select id="area" name="area" required>
+          <option value="" disabled selected>— select —</option>
+          <option value="Area 1 · Intuition">Area 1 · Intuition</option>
+          <option value="Area 2 · Precision">Area 2 · Precision</option>
+          <option value="Area 3 · Imagination">Area 3 · Imagination</option>
+        </select>
+      </div>
+
+      <div class="fd"><span>your details</span></div>
+
+      <div class="field">
+        <label>Full Name — exactly as it should appear on the certificate</label>
+        <input type="text" id="full-name" name="fullName" placeholder="Your full name" required>
+      </div>
+
+      <div class="field">
+        <label>Email Address</label>
+        <input type="email" id="email" name="email" placeholder="your@email.com" required>
+      </div>
+
+      <div class="fd"><span>mailing address</span></div>
+
+      <div class="field">
+        <label>Street Address</label>
+        <input type="text" id="address" name="address" placeholder="Street address" required>
+      </div>
+
+      <div class="field">
+        <label>City</label>
+        <input type="text" id="city" name="city" placeholder="City" required>
+      </div>
+
+      <div class="field">
+        <label>State / Province / Region</label>
+        <input type="text" id="region" name="region" placeholder="State, province, or region">
+      </div>
+
+      <div class="field">
+        <label>Postal Code</label>
+        <input type="text" id="postal" name="postal" placeholder="Postal or ZIP code">
+      </div>
+
+      <div class="field">
+        <label>Country</label>
+        <input type="text" id="country" name="country" placeholder="Country" required>
+      </div>
+
+      <div class="fd"><span>optional</span></div>
+
+      <div class="field">
+        <label>Third Party Results Sharing — name and email of recipient if you would like your results shared</label>
+        <textarea id="third-party" name="thirdParty" placeholder="e.g. Jane Smith, jane@company.com — leave blank if not required"></textarea>
+      </div>
+
+      <div class="policy">
+        Results and session data are retained for six months from the date of assessment, after which records are permanently deleted. Third party results sharing requests will only be fulfilled within this window. Certificate applications submitted after six months cannot be verified.
+      </div>
+
+      <button type="submit" class="submit-btn" id="submit-btn">Submit Application</button>
+      <div class="error-msg" id="error-msg">Something went wrong. Please try again or email GWcertificates@pointspective.com directly.</div>
+
+    </form>
+
+    <div class="success" id="success-block">
+      <div class="success-mark">◈</div>
+      <h2>Application Received</h2>
+      <p>We will review your application and be in touch at the email address you provided with payment details and a delivery estimate.</p>
+      <p>If you have any questions in the meantime, contact us at <a href="mailto:GWcertificates@pointspective.com" style="color:#c9a96e;text-decoration:none;">GWcertificates@pointspective.com</a></p>
+    </div>
+
+  </div>
+
+  <footer><p class="foot">© Pointspective · www.pointspective.com</p></footer>
+</div>
+
+<script>
+// Pre-fill reference number and area from URL params if passed from verdict screen
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('ref')) document.getElementById('ref-number').value = params.get('ref');
+  if (params.get('area')) {
+    const sel = document.getElementById('area');
+    for (let i = 0; i < sel.options.length; i++) {
+      if (sel.options[i].value === params.get('area')) {
+        sel.selectedIndex = i;
+        break;
+      }
+    }
+  }
+})();
+
+document.getElementById('cert-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  const err = document.getElementById('error-msg');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+  err.style.display = 'none';
+
+  const data = {
+    refNumber:   document.getElementById('ref-number').value.trim(),
+    area:        document.getElementById('area').value,
+    fullName:    document.getElementById('full-name').value.trim(),
+    email:       document.getElementById('email').value.trim(),
+    address:     document.getElementById('address').value.trim(),
+    city:        document.getElementById('city').value.trim(),
+    region:      document.getElementById('region').value.trim(),
+    postal:      document.getElementById('postal').value.trim(),
+    country:     document.getElementById('country').value.trim(),
+    thirdParty:  document.getElementById('third-party').value.trim()
+  };
+
+  try {
+    const resp = await fetch('/api/certificate-application', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    const result = await resp.json();
+    if (result.success) {
+      document.getElementById('cert-form').style.display = 'none';
+      document.getElementById('success-block').style.display = 'block';
+    } else {
+      throw new Error(result.error || 'Unknown error');
+    }
+  } catch(e) {
+    err.textContent = 'Something went wrong. Please try again or email GWcertificates@pointspective.com directly.';
+    err.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Submit Application';
+  }
+});
+</script>
+</body>
+</html>
