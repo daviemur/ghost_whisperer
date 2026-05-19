@@ -425,8 +425,11 @@ document.getElementById('m').addEventListener('keydown', function(e) {
     updateBar();
     return;
   }
-  window.location.href = './index.html';
+  if (!sessionData.name) sessionData = { name: 'Guest', code: 'Public' };
+  document.getElementById('tester-info').textContent = sessionData.name + ' · ' + (sessionData.code || 'Public');
+  updateBar();
 })();
 </script>
 </body>
 </html>
+
