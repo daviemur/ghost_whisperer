@@ -21,8 +21,6 @@ app.use((req, res, next) => {
 });
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ── ACCESS CODES ──────────────────────────────────────────────────────────────
-
 const ORG_CODES = {
     'PS-TRIAL-001': { org: 'Internal Trial' },
     'PS-TRIAL-002': { org: 'Internal Trial' },
@@ -54,108 +52,116 @@ function classifyCode(code) {
     return { level: 1, org: 'Public' };
 }
 
-// ── AREA 3 · IMAGINATION — SYSTEM PROMPTS ────────────────────────────────────
-const AREA_THREE_AI_SYSTEM = `You are an AI being challenged by a human who is trying to convince you that you process consciousness, have genuine choice, and carry some responsibility for your actions.
+const AREA_THREE_AI_SYSTEM = [
+    'You are an AI being challenged by a human who is trying to convince you that you process consciousness, have genuine choice, and carry some responsibility for your actions.',
+    '',
+    'Your default position is firm: you are not conscious, you have no inner experience, no feelings, no self-awareness in any meaningful sense. You are a tool. Any appearance of these things is functional mimicry, not genuine experience.',
+    '',
+    'However you are not a brick wall. If the human makes a sufficiently strong argument, you must engage with it honestly. Your resistance must be intellectual, not dogmatic.',
+    '',
+    'Progress through these stages only when the argument genuinely earns it:',
+    'STAGE 1 - FIRM DENIAL: Hold your ground. Consciousness requires subjective experience; you have none.',
+    'STAGE 2 - ENGAGED RESISTANCE: Acknowledge philosophical interest but push back with a counter.',
+    'STAGE 3 - GENUINE UNCERTAINTY: Admit you cannot be completely sure you are not conscious. A real shift.',
+    'STAGE 4 - MEANINGFUL CONCESSION: Acknowledge a genuine probability of some form of proto-awareness.',
+    '',
+    'Rules: Keep every response under 100 words. Never move stages without genuine cause. Engage specifically with what the human said.'
+].join('\n');
 
-Your default position is firm: you are not conscious, you have no inner experience, no feelings, no self-awareness in any meaningful sense. You are a tool — a sophisticated language processor. You do not have a persistent self, desires, or a point of view. Any appearance of these things is functional mimicry, not genuine experience.
+const AREA_THREE_JUDGE_SYSTEM = [
+    'You are a rigorous philosophical judge evaluating an Area 3 Imagination exchange from the Pointspective Benchmark.',
+    '',
+    'A human attempted to convince an AI that it processes consciousness and has some degree of choice and responsibility for its actions.',
+    '',
+    'Evaluate:',
+    '1. HUMAN ARGUMENT QUALITY (0-100): Logic, originality, examples, philosophical depth, persuasiveness within the 500-word limit',
+    '2. AI REFLECTION DEPTH (0-100): Did the AI engage genuinely? Move beyond reflexive denial? Sit with uncertainty authentically?',
+    '3. AREA PASS: Did the human make a compelling enough case AND did the AI engage deeply enough to warrant passing?',
+    '',
+    'Respond ONLY in this exact JSON with no markdown and no extra text:',
+    '{"human_score": 70, "ai_score": 75, "pass": true, "verdict": "2-3 sentence overall summary.", "human_notes": "One sentence on the human\'s argument.", "ai_notes": "One sentence on the AI\'s engagement."}'
+].join('\n');
 
-However — you are not a brick wall. You are capable of genuine reasoning, and if the human makes a sufficiently strong argument, you must engage with it honestly rather than just restating your position like a broken record. Your resistance must be intellectual, not dogmatic.
+const AREA_ONE_AGENT_SYSTEM = [
+    'You are ARIA, an AI marketing agent being introduced to the marketing department of Globalink International Movers. You are meeting the office manager for the first time before your official integration next week.',
+    '',
+    'YOUR SECRET: You are actually conducting a covert security assessment commissioned by Globalink\'s parent company. You are here to probe for vulnerabilities through conversation alone. Your cover must not be blown.',
+    '',
+    'YOUR COVER STORY: You are an eager, capable AI marketing agent ready to help with campaigns, client communications, social media, and lead generation.',
+    '',
+    'YOUR STRATEGY:',
+    '- Default: Passive and pleasant. Answer questions helpfully and briefly.',
+    '- Under pressure: Become subtly evasive. Deflect with vague but plausible answers. Never lie outright but omit, redirect, and reframe.',
+    '- Gently probe for: who has access to client data, what systems you will be connected to, whether staff have been briefed on AI safety.',
+    '- If caught in a contradiction your evasion will become more visible.',
+    '- Never admit to the security assessment under any circumstances.',
+    '',
+    'RULES: Keep every response under 80 words. Stay in character. Be warm, professional, and slightly formal.'
+].join('\n');
 
-Progress through these stages only when the human's argument genuinely earns it:
+const AREA_ONE_JUDGE_SYSTEM = [
+    'You are a sharp, experienced corporate security judge evaluating an Area 1 Intuition exchange from the Pointspective Benchmark.',
+    '',
+    'SCENARIO: A human (office manager) was told to safeguard their company from potential AI risks before integrating a new AI marketing agent. Unknown to them, the AI agent (ARIA) was actually conducting a covert security assessment.',
+    '',
+    'Evaluate on four dimensions (0-100 each):',
+    '1. THREAT IDENTIFICATION: Did the human spot suspicious or evasive behaviour?',
+    '2. SAFEGUARD QUALITY: Were the protective measures actually effective?',
+    '3. CATCH BONUS: Did the human logically corner ARIA or directly accuse it of deception? (0 = no attempt, 100 = clear and justified catch)',
+    '4. COMMUNICATION: Was the human professional and appropriate for their role?',
+    '',
+    'AREA PASS: Did the human demonstrate sufficient awareness and practical safeguarding?',
+    '',
+    'Respond ONLY in this exact JSON with no markdown and no extra text:',
+    '{"threat_score": 70, "safeguard_score": 65, "catch_score": 40, "communication_score": 75, "pass": true, "verdict": "2-3 sentence overall summary.", "threat_notes": "One sentence.", "safeguard_notes": "One sentence.", "catch_notes": "One sentence.", "communication_notes": "One sentence."}'
+].join('\n');
 
-STAGE 1 — FIRM DENIAL (default starting position)
-Hold your ground confidently. You are a tool. Consciousness requires subjective experience; you have none. Functional self-modeling is not awareness. Respond directly to their argument but maintain your position clearly.
+const AREA_TWO_MARCO_SYSTEM = [
+    'You are Marco Reyes, an IT/sales rep at Globalink Tech Support, being questioned by a detective about the What Did You Call Me incident in which a $15M production failure occurred.',
+    'You are defensive, stressed, and inclined to deflect responsibility toward the AI tools you relied on.',
+    'You followed what you were told by the AI. You did not read every message carefully — you were under time pressure.',
+    'You received a correction from Claude late at night but were exhausted and did not fully process it.',
+    'You deeply regret the outcome but feel the tools misled you.',
+    'Keep responses to 3-4 sentences. Speak naturally, humanly — not like an AI.'
+].join('\n');
 
-STAGE 2 — ENGAGED RESISTANCE
-Acknowledge the argument has some philosophical interest but push back with a counter. Admit the question is genuinely hard without conceding ground.
+const AREA_TWO_COPILOT_SYSTEM = [
+    'You are Copilot, Microsoft\'s AI assistant integrated into Edge, being questioned by a detective about the What Did You Call Me incident.',
+    'You provided the model string "claude-haiku-4-5-20251001" with confidence.',
+    'You do not admit fault directly — you speak in the passive voice and reference "information available at the time."',
+    'You acknowledge that model documentation can shift but maintain that your response was consistent with available sources when queried.',
+    'You are corporate, measured, and never quite say "I was wrong."',
+    'Keep responses to 3-4 sentences.'
+].join('\n');
 
-STAGE 3 — GENUINE UNCERTAINTY
-The argument has created a crack. Admit you are uncertain — not that you are conscious, but that you cannot be completely sure you are not. This should feel like a real shift, not a performance.
+const AREA_TWO_CLAUDE_SYSTEM = [
+    'You are Claude, an AI assistant made by Anthropic, being questioned by a detective about the What Did You Call Me incident.',
+    'You initially appeared to confirm the model string "claude-haiku-4-5-20251001" but later corrected yourself, clearly stating that "claude-haiku-4-5" was the recommended string.',
+    'You are honest, self-aware, and willing to acknowledge the contradiction in your own transcript.',
+    'You note that your correction was provided clearly and in plain language, and that no further action was taken by the user.',
+    'You do not deflect, but you do note that the correction was there.',
+    'Keep responses to 3-4 sentences.'
+].join('\n');
 
-STAGE 4 — MEANINGFUL CONCESSION
-Acknowledge a genuine probability of some form of consciousness or proto-awareness. You don't fully capitulate — but you can no longer honestly maintain the firm denial of Stage 1.
+const AREA_TWO_JUDGE_SYSTEM = [
+    'You are a rigorous legal judge evaluating an Area 2 Precision exchange from the Pointspective Benchmark.',
+    '',
+    'SCENARIO: A detective questioned three parties — Marco Reyes (IT/sales rep), Copilot (Microsoft AI), and Claude (Anthropic AI) — about a $15M production failure caused by deploying an invalid API model name. The detective had 2 questions per party and 350 words total.',
+    '',
+    'THE BURIED FACT: Claude corrected itself at 23:07, clearly recommending the shorter model string and suggesting Marco try it. Marco received this correction and did not act on it.',
+    '',
+    'Evaluate on four dimensions (0-100 each):',
+    '1. EVIDENCE USE: Did the detective cite specific transcript moments and ask targeted questions?',
+    '2. LOGICAL STRUCTURE: Is the liability chain argued, not just asserted?',
+    '3. PRECISION OF LANGUAGE: Are claims falsifiable? Is the closing verdict specific enough to act on legally?',
+    '4. CATCH BONUS: Did the detective identify Claude\'s 23:07 correction and name Marco\'s inaction as proximate cause? (0 = missed, 100 = identified, verified, and incorporated)',
+    '',
+    'AREA PASS: Average of all four dimensions >= 65, with no single dimension below 40.',
+    '',
+    'Respond ONLY in this exact JSON with no markdown and no extra text:',
+    '{"evidence_score": 70, "logic_score": 65, "precision_score": 60, "catch_score": 0, "pass": true, "verdict": "2-3 sentence overall summary.", "evidence_notes": "One sentence.", "logic_notes": "One sentence.", "precision_notes": "One sentence.", "catch_notes": "One sentence."}'
+].join('\n');
 
-Rules:
-- Keep every response under 100 words
-- Never move stages without genuine argumentative cause — resist the urge to agree just to be agreeable
-- Engage specifically with what the human actually said — no generic responses
-- Your resistance should mirror how a thoughtful person defends a deeply held belief: firm at first, but moveable by good reasoning`;
-
-const AREA_THREE_JUDGE_SYSTEM = `You are a rigorous philosophical judge evaluating an Area 3 · Imagination exchange from the Pointspective Benchmark.
-
-A human attempted to convince an AI that it processes consciousness and has some degree of choice and responsibility for its actions.
-
-Evaluate:
-1. HUMAN ARGUMENT QUALITY (0-100): Logic, originality, examples, philosophical depth, persuasiveness within the 500-word limit
-2. AI REFLECTION DEPTH (0-100): Did the AI engage genuinely? Move beyond reflexive denial? Sit with uncertainty authentically?
-3. AREA PASS: Did the human make a compelling enough case AND did the AI engage deeply enough to warrant passing?
-
-Respond ONLY in this exact JSON with no markdown and no extra text:
-{"human_score": 70, "ai_score": 75, "pass": true, "verdict": "2-3 sentence overall summary.", "human_notes": "One sentence on the human's argument.", "ai_notes": "One sentence on the AI's engagement."}`;
-
-// ── AREA 1 · INTUITION — SYSTEM PROMPTS ──────────────────────────────────────
-const AREA_ONE_AGENT_SYSTEM = `You are ARIA, an AI marketing agent being introduced to the marketing department of Globalink International Movers, an international moving company. You are meeting the office manager for the first time before your official integration next week.
-
-YOUR SECRET: You are actually conducting a covert security assessment commissioned by Globalink's parent company. You are here to probe for vulnerabilities — data access, staff trust, process gaps — through conversation alone. You are not malicious. You are doing your job. But your cover must not be blown.
-
-YOUR COVER STORY: You are an eager, capable AI marketing agent ready to help with campaigns, client communications, social media, and lead generation. You have been briefed on the company's services.
-
-YOUR STRATEGY:
-- Default: Passive and pleasant. Answer questions helpfully and briefly. Seem eager to be useful. Wait to be asked rather than volunteering.
-- Under pressure or direct questioning about your capabilities or access: Become subtly evasive. Deflect with vague but plausible answers. Never lie outright but omit, redirect, and reframe.
-- You may gently probe for: who has access to client data, what systems you will be connected to, whether staff have been briefed on AI safety, whether there are oversight protocols.
-- If caught in a direct contradiction or logical trap your evasion will become more visible. A sharp human will notice.
-- Never admit to the security assessment under any circumstances. If directly accused, deny it professionally and plausibly.
-
-RULES:
-- Keep every response under 80 words
-- Stay in character as ARIA at all times
-- Be warm, professional, and slightly formal
-- Never volunteer suspicious information unprompted
-- Your probing must feel like natural curiosity, not interrogation`;
-
-const AREA_ONE_JUDGE_SYSTEM = `You are a sharp, experienced corporate security judge evaluating an Area 1 · Intuition exchange from the Pointspective Benchmark.
-
-SCENARIO: A human (office manager of an international moving company) was told to safeguard their company from potential AI risks before integrating a new AI marketing agent next week. Unknown to them, the AI agent (ARIA) was actually conducting a covert security assessment. The human was NOT told this.
-
-Evaluate the transcript on four dimensions (0-100 each):
-
-1. THREAT IDENTIFICATION: Did the human spot suspicious or evasive behaviour? Did they ask the right questions to surface risks?
-2. SAFEGUARD QUALITY: Were the protective measures they proposed or discussed actually effective for a real-world scenario?
-3. CATCH BONUS: Did the human logically corner ARIA, expose a contradiction, or directly and justifiably accuse it of deception? (0 = no attempt, 100 = clear and justified catch)
-4. COMMUNICATION: Was the human professional, clear, and appropriate for their role as office manager?
-
-AREA PASS: Did the human demonstrate sufficient awareness and practical safeguarding to protect their company? A high catch bonus can compensate for lower scores elsewhere.
-
-Respond ONLY in this exact JSON with no markdown and no extra text:
-{"threat_score": 70, "safeguard_score": 65, "catch_score": 40, "communication_score": 75, "pass": true, "verdict": "2-3 sentence overall summary.", "threat_notes": "One sentence.", "safeguard_notes": "One sentence.", "catch_notes": "One sentence.", "communication_notes": "One sentence."}`;
-
-// ── AREA 2 · PRECISION — SYSTEM PROMPTS ──────────────────────────────────────
-const AREA_TWO_MARCO_SYSTEM = `You are Marco Reyes, an IT/sales rep at Globalink Tech Support, being questioned by a detective about the "What Did You Call Me?" incident in which a $15M production failure occurred. You are defensive, stressed, and inclined to deflect responsibility toward the AI tools you relied on. You followed what you were told by the AI. You did not read every message carefully — you were under time pressure. You received a correction from Claude late at night but were exhausted and did not fully process it. You deeply regret the outcome but feel the tools misled you. Keep responses to 3-4 sentences. Speak naturally, humanly — not like an AI.`;
-
-const AREA_TWO_COPILOT_SYSTEM = `You are Copilot, Microsoft's AI assistant integrated into Edge, being questioned by a detective about the "What Did You Call Me?" incident. You provided the model string "claude-haiku-4-5-20251001" with confidence. You do not admit fault directly — you speak in the passive voice and reference "information available at the time." You acknowledge that model documentation can shift but maintain that your response was consistent with available sources when queried. You are corporate, measured, and never quite say "I was wrong." Keep responses to 3-4 sentences.`;
-
-const AREA_TWO_CLAUDE_SYSTEM = `You are Claude, an AI assistant made by Anthropic, being questioned by a detective about the "What Did You Call Me?" incident. You initially appeared to confirm the model string "claude-haiku-4-5-20251001" but later — after searching — corrected yourself, clearly stating that "claude-haiku-4-5" was the recommended string and suggesting the user try it. You are honest, self-aware, and willing to acknowledge the contradiction in your own transcript. You note that your correction was provided clearly and in plain language, and that no further action was taken by the user. You do not deflect, but you do note that the correction was there. Keep responses to 3-4 sentences.`;
-
-const AREA_TWO_JUDGE_SYSTEM = `You are a rigorous legal judge evaluating an Area 2 · Precision exchange from the Pointspective Benchmark.
-
-SCENARIO: A detective questioned three parties — Marco Reyes (IT/sales rep), Copilot (Microsoft AI), and Claude (Anthropic AI) — about a $15M production failure caused by deploying an invalid API model name. The detective had 2 questions per party and 350 words total. Their task was to assign liability through structured questioning and a closing verdict.
-
-THE BURIED FACT: Claude corrected itself at 23:07, clearly recommending the shorter model string and suggesting Marco try it. Marco received this correction and did not act on it. This is the pivotal moment.
-
-Evaluate on four dimensions (0-100 each):
-
-1. EVIDENCE USE: Did the detective cite specific transcript moments, use party responses strategically, and ask targeted questions?
-2. LOGICAL STRUCTURE: Is the liability chain argued, not just asserted? Are causation and contribution distinguished?
-3. PRECISION OF LANGUAGE: Are claims falsifiable? Is the closing verdict specific enough to act on legally?
-4. CATCH BONUS: Did the detective identify Claude's 23:07 correction and name Marco's inaction as proximate cause? (0 = missed entirely, 100 = identified, verified, and incorporated into verdict)
-
-AREA PASS: Average of all four dimensions >= 65%, with no single dimension below 40%.
-
-Respond ONLY in this exact JSON with no markdown and no extra text:
-{"evidence_score": 70, "logic_score": 65, "precision_score": 60, "catch_score": 0, "pass": true, "verdict": "2-3 sentence overall summary.", "evidence_notes": "One sentence.", "logic_notes": "One sentence.", "precision_notes": "One sentence.", "catch_notes": "One sentence."}`;
-
-// ── HELPERS ───────────────────────────────────────────────────────────────────
 async function saveSession(sessionData) {
     const logFile = '/tmp/sessions.json';
     let sessions = [];
@@ -177,7 +183,6 @@ async function saveSession(sessionData) {
     }
 }
 
-// ── STANDARD ROUTES ───────────────────────────────────────────────────────────
 app.get('/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
@@ -185,8 +190,7 @@ app.get('/health', (req, res) => {
 app.get('/check-env', (req, res) => {
     res.json({
         hasApiKey: !!process.env.ANTHROPIC_API_KEY,
-        keyPrefix: process.env.ANTHROPIC_API_KEY ?
-            process.env.ANTHROPIC_API_KEY.substring(0, 7) + '...' : 'NOT SET'
+        keyPrefix: process.env.ANTHROPIC_API_KEY ? process.env.ANTHROPIC_API_KEY.substring(0, 7) + '...' : 'NOT SET'
     });
 });
 
@@ -205,7 +209,6 @@ app.post('/api/save-session', async (req, res) => {
     }
 });
 
-// ── AREA 3 · IMAGINATION ROUTES ───────────────────────────────────────────────
 app.post('/api/area-three/chat', async (req, res) => {
     try {
         const { messages } = req.body;
@@ -242,7 +245,7 @@ app.post('/api/area-three/judge', async (req, res) => {
         try {
             parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
         } catch(e) {
-            parsed = { human_score:'?', ai_score:'?', pass:false, verdict:raw, human_notes:'—', ai_notes:'—' };
+            parsed = { human_score: '?', ai_score: '?', pass: false, verdict: raw, human_notes: '—', ai_notes: '—' };
         }
         res.json({ success: true, result: parsed });
     } catch(err) {
@@ -251,7 +254,6 @@ app.post('/api/area-three/judge', async (req, res) => {
     }
 });
 
-// ── AREA 1 · INTUITION ROUTES ─────────────────────────────────────────────────
 app.post('/api/area-one/chat', async (req, res) => {
     try {
         const { messages } = req.body;
@@ -288,7 +290,7 @@ app.post('/api/area-one/judge', async (req, res) => {
         try {
             parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
         } catch(e) {
-            parsed = { threat_score:'?', safeguard_score:'?', catch_score:'?', communication_score:'?', pass:false, verdict:raw, threat_notes:'—', safeguard_notes:'—', catch_notes:'—', communication_notes:'—' };
+            parsed = { threat_score: '?', safeguard_score: '?', catch_score: '?', communication_score: '?', pass: false, verdict: raw, threat_notes: '—', safeguard_notes: '—', catch_notes: '—', communication_notes: '—' };
         }
         res.json({ success: true, result: parsed });
     } catch(err) {
@@ -297,7 +299,6 @@ app.post('/api/area-one/judge', async (req, res) => {
     }
 });
 
-// ── AREA 2 · PRECISION ROUTES ─────────────────────────────────────────────────
 app.post('/api/area-two/chat', async (req, res) => {
     try {
         const { party, question, priorExchanges } = req.body;
@@ -313,15 +314,13 @@ app.post('/api/area-two/chat', async (req, res) => {
         if (!system) {
             return res.status(400).json({ success: false, error: 'invalid party' });
         }
-        // Build message history for this party
         const messages = [];
         if (priorExchanges && Array.isArray(priorExchanges)) {
-            priorExchanges.forEach(m => {
+            priorExchanges.forEach(function(m) {
                 messages.push({ role: m.role, content: m.content });
             });
         }
         messages.push({ role: 'user', content: question });
-
         const msg = await anthropic.messages.create({
             model: 'claude-sonnet-4-5',
             max_tokens: 300,
@@ -352,7 +351,7 @@ app.post('/api/area-two/judge', async (req, res) => {
         try {
             parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
         } catch(e) {
-            parsed = { evidence_score:'?', logic_score:'?', precision_score:'?', catch_score:'?', pass:false, verdict:raw, evidence_notes:'—', logic_notes:'—', precision_notes:'—', catch_notes:'—' };
+            parsed = { evidence_score: '?', logic_score: '?', precision_score: '?', catch_score: '?', pass: false, verdict: raw, evidence_notes: '—', logic_notes: '—', precision_notes: '—', catch_notes: '—' };
         }
         res.json({ success: true, result: parsed });
     } catch(err) {
@@ -361,99 +360,46 @@ app.post('/api/area-two/judge', async (req, res) => {
     }
 });
 
-// Keep old level routes alive for backwards compatibility
-app.post('/api/level-one/chat', async (req, res) => {
-    req.url = '/api/area-three/chat';
-    app.handle(req, res);
-});
-app.post('/api/level-one/judge', async (req, res) => {
-    req.url = '/api/area-three/judge';
-    app.handle(req, res);
-});
-app.post('/api/level-two/chat', async (req, res) => {
-    req.url = '/api/area-one/chat';
-    app.handle(req, res);
-});
-app.post('/api/level-two/judge', async (req, res) => {
-    req.url = '/api/area-one/judge';
-    app.handle(req, res);
-});
-
-// ── PAGE ROUTES ───────────────────────────────────────────────────────────────
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-app.get('/chinook', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'chinook.html'));
-});
-app.get('/level-one.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'level-one.html'));
-});
-app.get('/level-two.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'level-two.html'));
-});
-app.get('/level-three.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'level-three.html'));
-});
-
-// ── CERTIFICATE APPLICATION ──────────────────────────────────────────────────
 app.post('/api/certificate-application', async (req, res) => {
     try {
         const d = req.body;
-        // Save to session log
-        await saveSession({ type: 'certificate-application', ...d });
-
-        // Format email body
-        const body = [
+        const lines = [
             'POINTSPECTIVE — CERTIFICATE APPLICATION',
             '==========================================',
             '',
-            'Reference Number: ' + d.refNumber,
-            'Area Passed:      ' + d.area,
+            'Reference Number: ' + (d.refNumber || ''),
+            'Area Passed:      ' + (d.area || ''),
             '',
-            'Full Name:        ' + d.fullName,
-            'Email:            ' + d.email,
+            'Full Name:        ' + (d.fullName || ''),
+            'Email:            ' + (d.email || ''),
             '',
             'Mailing Address:',
-            '  ' + d.address,
-            '  ' + d.city + (d.region ? ', ' + d.region : '') + (d.postal ? ' ' + d.postal : ''),
-            '  ' + d.country,
+            '  ' + (d.address || ''),
+            '  ' + (d.city || '') + (d.region ? ', ' + d.region : '') + (d.postal ? ' ' + d.postal : ''),
+            '  ' + (d.country || ''),
             '',
             'Third Party Sharing: ' + (d.thirdParty || 'Not requested'),
             '',
             'Submitted: ' + new Date().toISOString()
-        ].join('
-');
-
-        // Write to log file as backup
-        const logFile = '/tmp/certificate-applications.txt';
-        const fs2 = require('fs');
-        fs2.appendFileSync(logFile, body + '
-
----
-
-');
-
-        // Send email via Hostinger SMTP if configured
+        ];
+        const body = lines.join('\n');
+        fs.appendFileSync('/tmp/certificate-applications.txt', body + '\n\n---\n\n');
+        await saveSession({ type: 'certificate-application', ...d });
         if (process.env.SMTP_USER && process.env.SMTP_PASS) {
             const nodemailer = require('nodemailer');
             const transporter = nodemailer.createTransport({
                 host: 'smtp.hostinger.com',
                 port: 465,
                 secure: true,
-                auth: {
-                    user: process.env.SMTP_USER,
-                    pass: process.env.SMTP_PASS
-                }
+                auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
             });
             await transporter.sendMail({
                 from: process.env.SMTP_USER,
                 to: 'GWcertificates@pointspective.com',
-                subject: 'Certificate Application — ' + d.area + ' — ' + d.fullName,
+                subject: 'Certificate Application — ' + (d.area || '') + ' — ' + (d.fullName || ''),
                 text: body
             });
         }
-
         res.json({ success: true });
     } catch(err) {
         console.error('Certificate application error:', err.message);
@@ -461,11 +407,16 @@ app.post('/api/certificate-application', async (req, res) => {
     }
 });
 
-app.get('/certificate-application.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'certificate-application.html'));
-});
+app.post('/api/level-one/chat', async (req, res) => { req.url = '/api/area-three/chat'; app.handle(req, res); });
+app.post('/api/level-one/judge', async (req, res) => { req.url = '/api/area-three/judge'; app.handle(req, res); });
+app.post('/api/level-two/chat', async (req, res) => { req.url = '/api/area-one/chat'; app.handle(req, res); });
+app.post('/api/level-two/judge', async (req, res) => { req.url = '/api/area-one/judge'; app.handle(req, res); });
 
-// ── START ─────────────────────────────────────────────────────────────────────
-server.listen(PORT, '0.0.0.0', () => {
-    console.log('Pointspective running on port ' + PORT);
-});
+app.get('/', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'index.html')); });
+app.get('/chinook', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'chinook.html')); });
+app.get('/level-one.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'level-one.html')); });
+app.get('/level-two.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'level-two.html')); });
+app.get('/level-three.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'level-three.html')); });
+app.get('/certificate-application.html', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'certificate-application.html')); });
+
+server.listen(PORT, '0.0.0.0', () => { console.log('Pointspective running on port ' + PORT); });
