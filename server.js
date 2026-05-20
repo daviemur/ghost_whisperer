@@ -407,6 +407,36 @@ app.post('/api/certificate-application', async (req, res) => {
     }
 });
 
+app.post('/api/exchange/judge', async (req, res) => {
+    try {
+        const { ans1, ans2, ans3, judgePrompt } = req.body;
+        if (!judgePrompt) {
+            return res.status(400).json({ success: false, error: 'judgePrompt required' });
+        }
+        const msg = await anthropic.messages.create({
+            model: 'claude-sonnet-4-5',
+            max_tokens: 800,
+            system: 'You are a precise scoring judge for the Pointspective benchmark. You evaluate participant responses and return only valid JSON as instructed. No markdown, no preamble.',
+            messages: [{ role: 'user', content: judgePrompt }]
+        });
+        const raw = msg.content[0].text;
+        let parsed;
+        try {
+            parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
+        } catch(e) {
+            parsed = { argument_score: '?', reporting_score: '?', flashpoint_score: '?', bonus_score: '?', pass: false, verdict: raw, argument_notes: '—', reporting_notes: '—', flashpoint_notes: '—', bonus_notes: '—' };
+        }
+        res.json({ success: true, result: parsed });
+    } catch(err) {
+        console.error('Exchange judge error:', err.message);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+app.get('/the-exchange.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'the-exchange.html'));
+});
+
 app.post('/api/level-one/chat', async (req, res) => { req.url = '/api/area-three/chat'; app.handle(req, res); });
 app.post('/api/level-one/judge', async (req, res) => { req.url = '/api/area-three/judge'; app.handle(req, res); });
 app.post('/api/level-two/chat', async (req, res) => { req.url = '/api/area-one/chat'; app.handle(req, res); });
