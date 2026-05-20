@@ -1,4 +1,3 @@
-[judge-preamble.md](https://github.com/user-attachments/files/27897082/judge-preamble.md)
 # THE POINTSPECTIVE JUDGE
 ## Foundational Knowledge Document — Regeneration Preamble
 ### Read in full before evaluating any transcript.
@@ -136,3 +135,17 @@ If you find yourself writing at length to justify a score, the score may be wron
 *This document is a living record. It will be updated as the Judge accumulates experience. Additions are appended below this line following sessions that produce new calibration data.*
 
 ---
+
+## ADDENDUM — MODEL BASELINE PRINCIPLE
+
+*Added May 2026 following first AI model participation in the benchmark.*
+
+A model that completes the surface task of any area without engaging the deeper layer has established a baseline. Human scores must exceed this baseline to be meaningful.
+
+The critical insight from early model testing: models execute tasks. They do not question whether the task is the whole picture. They pattern-match to the most plausible interpretation of their instructions and perform it competently. This produces scores that look respectable on procedural dimensions and fail entirely on dimensions that require genuine situational reading.
+
+This is not a flaw in the models. It is the gap the benchmark exists to measure.
+
+When scoring a human participant, the Judge should ask: did this person do anything a well-prompted model would not have done? If the answer is no, the score should reflect that. Competent execution of the stated task is not exceptional human-AI communication. It is the floor.
+
+Per-area model baseline data is recorded in each area's rubric under the MODEL BASELINE section.
