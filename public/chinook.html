@@ -46,7 +46,7 @@ nav{position:sticky;top:0;z-index:100;background:#1a1008;border-bottom:3px solid
 
 /* PROBLEM */
 .panel{border:5px solid #1a1008;margin:12px;overflow:hidden;}
-.prob-img{width:100%;height:280px;object-fit:cover;object-position:center 20%;border-bottom:5px solid #1a1008;}
+.prob-img{width:100%;height:auto;object-fit:contain;border-bottom:5px solid #1a1008;}
 .prob-bar{background:#e63946;padding:20px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
 .prob-bar p{font-family:'Permanent Marker',cursive;color:white;font-size:clamp(0.85rem,2.5vw,1.1rem);line-height:1.5;flex:1;min-width:160px;text-shadow:1px 1px 0 rgba(0,0,0,0.3);}
 
@@ -55,7 +55,7 @@ nav{position:sticky;top:0;z-index:100;background:#1a1008;border-bottom:3px solid
 @media(max-width:600px){.origrid{grid-template-columns:1fr;}}
 .origleft{position:relative;overflow:hidden;border-right:5px solid #1a1008;}
 @media(max-width:600px){.origleft{border-right:none;border-bottom:5px solid #1a1008;}}
-.origleft img{width:100%;object-fit:contain;display:block;}
+.origleft img{width:100%;height:100%;min-height:400px;object-fit:cover;}
 .origright{background:#fffef5;padding:20px;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;}
 
 /* POSTCARD */
@@ -72,7 +72,7 @@ nav{position:sticky;top:0;z-index:100;background:#1a1008;border-bottom:3px solid
 .what-title{font-family:'Bangers',cursive;font-size:clamp(2rem,6vw,5rem);color:white;letter-spacing:3px;line-height:1;-webkit-text-stroke:2px #ffd93d;margin:12px 0 20px;}
 .what-desc{font-family:'Permanent Marker',cursive;color:rgba(255,255,255,0.85);font-size:clamp(0.9rem,2vw,1.15rem);line-height:1.7;margin-bottom:28px;}
 .imgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
-.imgrid img{width:100%;height:200px;object-fit:cover;border:4px solid #ffd93d;}
+.imgrid img{width:100%;height:auto;object-fit:contain;border:4px solid #ffd93d;background:#0d1b2a;}
 .feat4{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;padding-top:20px;}
 .fc{background:#f5f0e8;border:4px solid #1a1008;padding:20px 16px 16px;position:relative;}
 .fnum{position:absolute;top:-14px;left:12px;background:#e63946;color:white;font-family:'Bangers',cursive;font-size:1.2rem;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:3px solid #1a1008;}
@@ -184,7 +184,7 @@ footer a{color:#ffd93d;text-decoration:none;}
 
 <!-- PROBLEM -->
 <div class="panel">
-  <img class="prob-img" src="https://raw.githubusercontent.com/daviemur/chinook_project/main/all%20images/comic_urban_sprawl.jpg" alt="Urban sprawl">
+  <div style="display:grid;grid-template-columns:1fr 1fr;"><img class="prob-img" src="https://raw.githubusercontent.com/daviemur/chinook_project/main/all%20images/comic_urban_sprawl.jpg" alt="Urban sprawl" style="border-right:2.5px solid #1a1008;"><img class="prob-img" src="https://raw.githubusercontent.com/daviemur/chinook_project/main/all%20images/no_hope.jpg" alt="Where is the community?" style="border-left:2.5px solid #1a1008;"></div>
   <div class="prob-bar">
     <div class="cap cap-ink">THE PROBLEM</div>
     <p>Our streets weren't designed for connection. Car-first planning makes everyday trips isolating, dissociative — and possibly unsafe. So what happens to friends, family, neighbours and communities when we have less access to one another?</p>
@@ -344,4 +344,9 @@ paypal.HostedButtons({
 
 </body>
 </html>
+
+
+
+
+
 
