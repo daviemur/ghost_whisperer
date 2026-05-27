@@ -59,7 +59,7 @@
             position: relative;
         }
 
-        /* Ghost Whisper Title - Fade In */
+        /* Ghost Whisper Title - Fade In and Out */
         .ghost-whisper {
             font-family: 'Cinzel Decorative', serif;
             font-size: 72px;
@@ -67,7 +67,7 @@
             letter-spacing: 0.1em;
             margin-bottom: 48px;
             opacity: 0;
-            animation: fadeInTitle 2s ease-out forwards;
+            animation: fadeInTitle 2s ease-out forwards, fadeOutTitle 8s ease-out 2s forwards;
             text-transform: uppercase;
             color: #ede0c4;
         }
@@ -83,6 +83,18 @@
             }
             to {
                 opacity: 1;
+            }
+        }
+
+        @keyframes fadeOutTitle {
+            0% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
             }
         }
 
@@ -378,7 +390,7 @@
 </head>
 <body>
 
-    <button class="skip-btn" onclick="window.location.href='#';">Skip</button>
+    <button class="skip-btn" onclick="window.location.href='/tests';">Skip</button>
 
     <!-- Hero -->
     <div class="hero">
@@ -429,7 +441,7 @@
     <div class="elements">
         <div class="element">
             <div class="element-image">
-                <img src="/path/to/half-face.png" alt="The AI">
+                <img src="./images/half-face.png" alt="The AI">
             </div>
             <h3>The AI</h3>
             <p>In each test, you interact with <strong>Claude Sonnet 4.5</strong> playing a specific character — an AI candidate reflecting on consciousness, a party in a liability case, or an assistant with unclear intentions. The model performs its role convincingly, responding honestly within character constraints. Your task is to work with what the AI gives you, not what you wish it would say.</p>
@@ -437,7 +449,7 @@
 
         <div class="element">
             <div class="element-image">
-                <img src="/path/to/girl-portrait.png" alt="You">
+                <img src="./images/girl-portrait.png" alt="You">
             </div>
             <h3>You</h3>
             <p>This assessment is designed for those using AI in professional or career-minded contexts where precision and strategic thinking matter.</p>
@@ -452,18 +464,43 @@
 
         <div class="element">
             <div class="element-image">
-                <img src="/path/to/full-face.png" alt="The Judge">
+                <img src="./images/full-face.png" alt="The Judge">
             </div>
             <h3>The Judge</h3>
-            <p>After you complete a test, the Judge evaluates your performance across multiple dimensions specific to that area.</p>
-            <p><strong>You receive:</strong></p>
+            <p>After you complete a test, the Judge evaluates your performance across multiple dimensions specific to that area. The Judge is not a person — it is a rigorous LLM-based evaluator trained to distinguish genuine reasoning from its performance.</p>
+            
+            <p><strong>What the Judge measures:</strong></p>
             <ul>
-                <li>Dimensional scores (0-100% per criterion)</li>
-                <li>Constructive feedback highlighting strengths and gaps</li>
-                <li>Recognition of exceptional approaches — ingenious solutions are logged and remembered</li>
-                <li>Honest assessment — process-focused evaluation, not outcome-only</li>
+                <li>The quality of your reasoning path, not just whether you reached a conclusion</li>
+                <li>Genuine situational intelligence — not competent execution of the surface task</li>
+                <li>Confidence paired with evidence — not fluent assertion</li>
+                <li>Adaptive thinking under uncertainty — how you adjust when information changes</li>
             </ul>
-            <p style="margin-top: 16px;"><strong>Pass/Fail threshold:</strong> Average ≥75% across all dimensions, with no single dimension below 50%.</p>
+            
+            <p style="margin-top: 16px;"><strong>The Judge is not impressed by:</strong></p>
+            <ul>
+                <li>Fluency without reasoning — well-written answers that contain no actual thought</li>
+                <li>Confidence without evidence — stating conclusions without showing the work</li>
+                <li>Pattern-matching — executing the obvious task without reading what the situation actually demands</li>
+            </ul>
+            
+            <p style="margin-top: 16px;"><strong>You receive:</strong></p>
+            <ul>
+                <li>Dimensional scores (0-100% per criterion) — specific and defensible</li>
+                <li>Honest feedback — the Judge scores at expert level, which means not being impressed by performance</li>
+                <li>Recognition of exceptional approaches — ingenious solutions are logged and learned from</li>
+                <li>Clarity on exactly what determined your score</li>
+            </ul>
+            
+            <p style="margin-top: 16px;"><strong>Standardized scoring ensures:</strong></p>
+            <ul>
+                <li>Reproducibility — your score would be identical if re-evaluated next week</li>
+                <li>Consistency — all participants evaluated against the same rigorous standard</li>
+                <li>Fairness — the Judge actively resists its own biases (leniency, harshness, narrative framing)</li>
+                <li>Model baseline calibration — human performance is measured against what AI can do, not against itself</li>
+            </ul>
+            
+            <p style="margin-top: 16px;"><strong>Pass/Fail threshold:</strong> Average ≥75% across all dimensions, with no single dimension below 50%. The floor prevents any single skill from compensating for complete failure in another.</p>
         </div>
     </div>
 
@@ -501,8 +538,8 @@
 
     <!-- CTA Buttons -->
     <div class="cta-container">
-        <button class="btn" onclick="window.location.href='#';">Back</button>
-        <button class="btn btn-primary" onclick="window.location.href='#';">Continue to Tests</button>
+        <button class="btn" onclick="window.location.href='/';">Back</button>
+        <button class="btn btn-primary" onclick="window.location.href='/tests';">Continue to Tests</button>
     </div>
 
     <div class="footer">
