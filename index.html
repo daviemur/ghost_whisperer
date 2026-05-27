@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghost Whisper - Pointspective</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0d0d0d;
+            color: #e0d8c8;
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-weight: 300;
+            font-size: 17px;
+            line-height: 1.75;
+            overflow-x: hidden;
+        }
+
+        /* Skip Button */
+        .skip-btn {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: transparent;
+            color: rgba(201, 169, 110, 0.4);
+            border: 1px solid rgba(201, 169, 110, 0.2);
+            padding: 8px 16px;
+            font-family: 'Cinzel', serif;
+            font-size: 8px;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            z-index: 100;
+            opacity: 0.7;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .skip-btn:hover {
+            opacity: 1;
+            color: #c9a96e;
+            border-color: #c9a96e;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        /* Ghost Whisper Title - Fade In */
+        .ghost-whisper {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 72px;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            margin-bottom: 48px;
+            opacity: 0;
+            animation: fadeInTitle 2s ease-out forwards;
+            text-transform: uppercase;
+            color: #ede0c4;
+        }
+
+        .ghost-whisper em {
+            color: #c9a96e;
+            font-style: normal;
+        }
+
+        @keyframes fadeInTitle {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Subtitle */
+        .subtitle {
+            font-family: 'Cinzel', serif;
+            font-size: 9px;
+            letter-spacing: 0.32em;
+            color: rgba(201, 169, 110, 0.45);
+            margin-bottom: 60px;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeInContent 1.5s ease-out 0.8s forwards;
+        }
+
+        /* Tagline */
+        .tagline {
+            font-family: 'Cinzel', serif;
+            font-size: 8px;
+            color: rgba(201, 169, 110, 0.32);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 80px;
+            max-width: 500px;
+            opacity: 0;
+            animation: fadeInContent 1.5s ease-out 1s forwards;
+        }
+
+        /* Competencies Grid */
+        .competencies {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin-bottom: 100px;
+            opacity: 0;
+            animation: fadeInContent 1.5s ease-out 1.2s forwards;
+        }
+
+        .competency {
+            text-align: left;
+            padding: 24px;
+            border: 1px solid #333;
+            background: rgba(20, 20, 20, 0.6);
+        }
+
+        .competency h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 9px;
+            letter-spacing: 0.22em;
+            margin-bottom: 12px;
+            color: #c9a96e;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .competency p {
+            font-size: 15px;
+            color: rgba(224, 216, 200, 0.8);
+            line-height: 1.8;
+        }
+
+        /* Assessment Areas */
+        .areas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin-bottom: 100px;
+            opacity: 0;
+            animation: fadeInContent 1.5s ease-out 1.4s forwards;
+        }
+
+        .area {
+            text-align: left;
+            padding: 24px;
+            border-left: 3px solid #c9a96e;
+            background: rgba(20, 20, 20, 0.4);
+        }
+
+        .area h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 9px;
+            letter-spacing: 0.22em;
+            margin-bottom: 12px;
+            color: #c9a96e;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .area p {
+            font-size: 15px;
+            color: rgba(224, 216, 200, 0.8);
+            line-height: 1.8;
+        }
+
+        /* Divider */
+        .divider {
+            width: 200px;
+            height: 1px;
+            background: #333;
+            margin: 80px 0;
+            opacity: 0;
+            animation: fadeInContent 1.5s ease-out 1.6s forwards;
+        }
+
+        /* Three Elements Section */
+        .elements {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 60px;
+            max-width: 1200px;
+            margin-bottom: 100px;
+        }
+
+        .element {
+            text-align: center;
+            position: relative;
+        }
+
+        .element-image {
+            width: 200px;
+            height: 280px;
+            margin: 0 auto 32px;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        .element-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Fade in images on scroll/intersect */
+        .element-image.fade-in {
+            opacity: 1;
+        }
+
+        .element h3 {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 20px;
+            letter-spacing: 0.1em;
+            margin-bottom: 20px;
+            color: #ede0c4;
+            text-transform: uppercase;
+            font-weight: 400;
+        }
+
+        .element p {
+            font-size: 15px;
+            color: rgba(224, 216, 200, 0.8);
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .element ul {
+            list-style: none;
+            font-size: 15px;
+            color: rgba(224, 216, 200, 0.8);
+            line-height: 2;
+        }
+
+        .element ul li {
+            margin-bottom: 8px;
+        }
+
+        .element ul li:before {
+            content: "• ";
+            color: #666;
+            margin-right: 8px;
+        }
+
+        /* More About Section */
+        .more-about {
+            max-width: 900px;
+            margin: 80px auto;
+            padding: 40px;
+            border: 1px solid #333;
+            background: rgba(20, 20, 20, 0.4);
+        }
+
+        .more-about h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 9px;
+            letter-spacing: 0.32em;
+            margin-bottom: 40px;
+            color: #c9a96e;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .more-about-section h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 9px;
+            letter-spacing: 0.22em;
+            margin-bottom: 12px;
+            color: #c9a96e;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .more-about-section p {
+            font-size: 15px;
+            color: rgba(224, 216, 200, 0.8);
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+
+        /* CTA Buttons */
+        .cta-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 60px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 32px;
+            font-family: 'Cinzel', serif;
+            font-size: 8px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #c9a96e;
+            background: transparent;
+            color: #c9a96e;
+        }
+
+        .btn:hover {
+            background: rgba(201, 169, 110, 0.1);
+            color: #ede0c4;
+            border-color: #ede0c4;
+        }
+
+        .btn-primary {
+            background: #c9a96e;
+            color: #0d0d0d;
+        }
+
+        .btn-primary:hover {
+            background: #ede0c4;
+            border-color: #ede0c4;
+            color: #0d0d0d;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid #333;
+            color: #666;
+            font-size: 12px;
+            margin-top: 60px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .ghost-whisper {
+                font-size: 48px;
+                letter-spacing: 2px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+            }
+
+            .competencies,
+            .areas,
+            .elements {
+                gap: 24px;
+            }
+
+            .element-image {
+                width: 150px;
+                height: 210px;
+            }
+        }
+
+        @keyframes fadeInContent {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="skip-btn" onclick="window.location.href='#';">Skip</button>
+
+    <!-- Hero -->
+    <div class="hero">
+        <h1 class="ghost-whisper"><em>Ghost</em> Whisper</h1>
+        <p class="subtitle">User-to-AI Instruction, Influence and Inference Benchmarking</p>
+        <p class="tagline">Structured assessment. Reproducible results. We test what matters.</p>
+    </div>
+
+    <!-- Competencies -->
+    <div class="competencies">
+        <div class="competency">
+            <h3>Digital Empathy</h3>
+            <p>Understanding how AI systems process information, where they fail, and how to adjust your communication accordingly.</p>
+        </div>
+        <div class="competency">
+            <h3>Logic & Reason</h3>
+            <p>Structured thinking under incomplete information. Building sound arguments and distinguishing evidence from assumption.</p>
+        </div>
+        <div class="competency">
+            <h3>Direct Communication</h3>
+            <p>Precision, economy, and clarity. Saying exactly what you mean with no wasted words.</p>
+        </div>
+        <div class="competency">
+            <h3>Indirect Communication</h3>
+            <p>Strategic framing and adaptive dialogue. Extracting information without demanding it.</p>
+        </div>
+    </div>
+
+    <!-- Assessment Areas -->
+    <div class="areas">
+        <div class="area">
+            <h3>Area 1 · Intuition</h3>
+            <p>Read situations when information is incomplete and stakes are real. Sense hidden complexity.</p>
+        </div>
+        <div class="area">
+            <h3>Area 2 · Precision</h3>
+            <p>Assign responsibility through structured questioning and evidence-based reasoning.</p>
+        </div>
+        <div class="area">
+            <h3>Area 3 · Imagination</h3>
+            <p>Construct original arguments in contested intellectual territory. Engage adaptively.</p>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Three Elements -->
+    <div class="elements">
+        <div class="element">
+            <div class="element-image">
+                <img src="/path/to/half-face.png" alt="The AI">
+            </div>
+            <h3>The AI</h3>
+            <p>In each test, you interact with <strong>Claude Sonnet 4.5</strong> playing a specific character — an AI candidate reflecting on consciousness, a party in a liability case, or an assistant with unclear intentions. The model performs its role convincingly, responding honestly within character constraints. Your task is to work with what the AI gives you, not what you wish it would say.</p>
+        </div>
+
+        <div class="element">
+            <div class="element-image">
+                <img src="/path/to/girl-portrait.png" alt="You">
+            </div>
+            <h3>You</h3>
+            <p>This assessment is designed for those using AI in professional or career-minded contexts where precision and strategic thinking matter.</p>
+            <p><strong>This test might not be for you if:</strong></p>
+            <ul>
+                <li>You're exploring AI casually rather than professionally</li>
+                <li>You're better at showing than explaining</li>
+                <li>You're loose with grammar, structure, or written precision</li>
+            </ul>
+            <p style="margin-top: 16px;">We're upfront about our goal: to identify exceptional ability. Most people don't pass. The benchmark exists to distinguish those who genuinely understand AI communication from those who are competent users.</p>
+        </div>
+
+        <div class="element">
+            <div class="element-image">
+                <img src="/path/to/full-face.png" alt="The Judge">
+            </div>
+            <h3>The Judge</h3>
+            <p>After you complete a test, the Judge evaluates your performance across multiple dimensions specific to that area.</p>
+            <p><strong>You receive:</strong></p>
+            <ul>
+                <li>Dimensional scores (0-100% per criterion)</li>
+                <li>Constructive feedback highlighting strengths and gaps</li>
+                <li>Recognition of exceptional approaches — ingenious solutions are logged and remembered</li>
+                <li>Honest assessment — process-focused evaluation, not outcome-only</li>
+            </ul>
+            <p style="margin-top: 16px;"><strong>Pass/Fail threshold:</strong> Average ≥75% across all dimensions, with no single dimension below 50%.</p>
+        </div>
+    </div>
+
+    <!-- More About Our Benchmarking -->
+    <div class="more-about">
+        <h2>More About Our Benchmarking</h2>
+        
+        <div class="more-about-section">
+            <h3>Process-Based Evaluation</h3>
+            <p>We score the quality of your reasoning path, not just whether you reached a conclusion. A correct answer arrived at through poor logic scores lower than sophisticated reasoning that reaches an uncertain but defensible position.</p>
+        </div>
+
+        <div class="more-about-section">
+            <h3>Model Baseline Calibration</h3>
+            <p>Each test area has been completed by AI models operating at their competent best. If your performance is indistinguishable from a well-prompted language model, you haven't demonstrated user-AI mastery — you've demonstrated you're operating at the level of procedural automation.</p>
+        </div>
+
+        <div class="more-about-section">
+            <h3>Adaptive Learning</h3>
+            <p>The Judge records unexpected solutions, creative approaches, and novel framings that scenario designers didn't anticipate. These become calibration data, ensuring the assessment evolves rather than calcifies around familiar patterns.</p>
+        </div>
+
+        <div class="more-about-section">
+            <h3>What We Don't Test</h3>
+            <p>Template application. Rote prompt engineering. Following checklists. These are valuable skills, but they're not what separates users who truly understand AI systems from those who've memorized best practices.</p>
+        </div>
+
+        <div class="more-about-section">
+            <h3>What We Do Test</h3>
+            <p>Situational reading. Adaptive reasoning under uncertainty. The capacity to work with incomplete information. Strategic communication that extracts insight without demanding it. Evidence-based argumentation. Intellectual honesty about what you can and cannot prove.</p>
+        </div>
+
+        <p style="margin-top: 40px; font-style: italic; color: #777; font-size: 12px;">The benchmark exists because the difference between using AI tools competently and understanding how they actually work matters in high-stakes decisions, complex projects, and situations where the wrong answer costs more than time.</p>
+    </div>
+
+    <!-- CTA Buttons -->
+    <div class="cta-container">
+        <button class="btn" onclick="window.location.href='#';">Back</button>
+        <button class="btn btn-primary" onclick="window.location.href='#';">Continue to Tests</button>
+    </div>
+
+    <div class="footer">
+        <p>Pointspective · AI Skills Benchmark · pointspective.com</p>
+    </div>
+
+    <!-- Intersection Observer for Image Fade-In -->
+    <script>
+        const imageElements = document.querySelectorAll('.element-image');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+
+        imageElements.forEach(img => observer.observe(img));
+    </script>
+
+</body>
+</html>
