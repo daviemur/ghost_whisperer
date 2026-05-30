@@ -6,6 +6,7 @@ const { Anthropic } = require('@anthropic-ai/sdk');
 
 const app = express();
 const server = http.createServer(app);
+const PORT = process.env.PORT || 3000;
 const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyWMfNZhL7Z_xr19a7u9mONM8w3N-A_ING9RUNDGQka_13q4i7b9Vk8oEVawQ_gqYDowg/exec';
 
 const anthropic = new Anthropic();
