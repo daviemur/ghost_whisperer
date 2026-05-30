@@ -174,7 +174,6 @@ async function saveSession(sessionData) {
   sessions.push({ ...sessionData, savedAt: new Date().toISOString() });
   fs.writeFileSync(logFile, JSON.stringify(sessions, null, 2));
   try {
-<<<<<<< HEAD
     // Transform judge data into Google Apps Script format
     const sheetData = {
       name: sessionData.fullName || sessionData.name || '',
@@ -193,7 +192,6 @@ async function saveSession(sessionData) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(sheetData)
-=======
     await fetch(SHEETS_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
