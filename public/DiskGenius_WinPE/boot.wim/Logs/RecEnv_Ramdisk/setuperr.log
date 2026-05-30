@@ -1,0 +1,8 @@
+﻿2025-11-24 01:44:53, Error                        Bsd And BCD associated OSes are different!![gle=0x000000ea]
+2025-11-24 01:44:53, Error                        Failed to check OS architecture. 0x00000490[gle=0x00000002]
+2025-11-24 01:44:53, Error                        [recenv.exe] winreArePathsEqualFailed to get attributes for L:\DiskGenius_WinPE\boot.wim: 0x3
+2025-11-24 01:44:53, Error                        CRecoveryToolAction->Init() failed. Error: 0x00000490[gle=0x00000003]
+2025-11-24 01:44:53, Error                        CRecoveryToolAction->Init() failed. Error: 0x00000490[gle=0x00000002]
+2025-11-24 01:44:54, Error                        CRecoveryToolAction->Init() failed. Error: 0x00000490[gle=0x00000001]
+2025-11-24 01:44:54, Error                        Failed to create recovery action. 0x00000490[gle=0x00000001]
+2025-11-24 01:44:54, Error                        Invalid path specified[gle=0x00000002]
