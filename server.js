@@ -6,12 +6,7 @@ const { Anthropic } = require('@anthropic-ai/sdk');
 
 const app = express();
 const server = http.createServer(app);
-const PORT = process.env.PORT || 3000;
-<<<<<<< HEAD
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyWMfNZhL7Z_xr19a7u9mONM8w3N-A_ING9RUNDGQka_13q4i7b9Vk8oEVawQ_gqYDowg/exec';ros/s/AKfycbyWMfNZhL7Z_xr19a7u9mONM8w3N-A_ING9RUNDGQka_13q4i7b9Vk8oEVawQ_gqYDowg/exec';
-=======
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzYmNNFavgyt39drZ0grnX0CDfFmoB-gpCZwS-uOOEujzNVMtWDE4fO5AClVb88WcpNQg/exec';
->>>>>>> e20504c072b6649dc37f3db76eaa9e8121e4e33c
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyWMfNZhL7Z_xr19a7u9mONM8w3N-A_ING9RUNDGQka_13q4i7b9Vk8oEVawQ_gqYDowg/exec';
 
 const anthropic = new Anthropic();
 
@@ -202,7 +197,6 @@ async function saveSession(sessionData) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(sessionData)
->>>>>>> e20504c072b6649dc37f3db76eaa9e8121e4e33c
     });
   } catch(err) {
     console.error('Sheets save failed:', err.message);
