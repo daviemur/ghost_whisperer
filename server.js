@@ -193,6 +193,11 @@ async function saveSession(sessionData) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(sheetData)
     await fetch(SHEETS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(sessionData)
+    });
+  } catch(err) {
     console.error('Sheets save failed:', err.message);
   }
 }
