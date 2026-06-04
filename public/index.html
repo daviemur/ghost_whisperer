@@ -562,7 +562,19 @@
 
     <div class="footer">
         <p>Pointspective · AI Skills Benchmark · pointspective.com</p>
+        <p style="margin-top: 10px; font-size: 10px; letter-spacing: 0.18em; color: rgba(201,169,110,0.35); font-family: 'Cinzel', serif; text-transform: uppercase;" id="visitor-counter"></p>
     </div>
+
+    <!-- Visitor Counter -->
+    <script>
+        fetch('/api/visitor-count', { method: 'POST' })
+            .then(r => r.json())
+            .then(data => {
+                const el = document.getElementById('visitor-counter');
+                if (el && data.count) el.textContent = data.count.toLocaleString() + ' visitors';
+            })
+            .catch(() => {});
+    </script>
 
     <!-- Intersection Observer for Image Fade-In -->
     <script>

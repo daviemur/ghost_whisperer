@@ -198,6 +198,25 @@ async function saveSession(sessionData) {
   }
 }
 
+// Visitor counter
+let visitorCount = 0;
+const VISITOR_FILE = '/tmp/visitor_count.json';
+try {
+  if (fs.existsSync(VISITOR_FILE)) {
+    visitorCount = JSON.parse(fs.readFileSync(VISITOR_FILE, 'utf8')).count || 0;
+  }
+} catch(e) {}
+
+app.post('/api/visitor-count', (req, res) => {
+  visitorCount++;
+  try { fs.writeFileSync(VISITOR_FILE, JSON.stringify({ count: visitorCount })); } catch(e) {}
+  res.json({ count: visitorCount });
+});
+
+app.get('/api/visitor-count', (req, res) => {
+  res.json({ count: visitorCount });
+});
+
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
