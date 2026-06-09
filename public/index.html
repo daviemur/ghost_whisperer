@@ -77,6 +77,13 @@
             font-style: normal;
         }
 
+        .ghost-whisper .big-g {
+            font-size: 1.2em;
+            display: inline-block;
+            line-height: 1;
+            vertical-align: baseline;
+        }
+
         @keyframes fadeInTitle {
             from {
                 opacity: 0;
@@ -126,7 +133,7 @@
         /* Competencies Grid */
         .competencies {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 40px;
             max-width: 1200px;
             margin-bottom: 100px;
@@ -204,9 +211,10 @@
         /* Three Elements Section */
         .elements {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 40px;
             max-width: 1400px;
+            width: 100%;
             margin-bottom: 100px;
             opacity: 0;
             animation: fadeInContent 1.5s ease-out 1.4s forwards;
@@ -363,11 +371,15 @@
         }
 
         /* Responsive */
-        @media (max-width: 1200px) {
-            .elements {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 30px;
-            }
+        /* Elements wrapper scrolls horizontally if viewport is too narrow — columns never stack */
+        .elements-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            padding: 0 20px;
+        }
+
+        .elements {
+            min-width: 900px;
         }
 
         @media (max-width: 768px) {
@@ -383,16 +395,6 @@
             .competencies,
             .areas {
                 gap: 24px;
-            }
-
-            .elements {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
-
-            .element-image {
-                width: 100%;
-                height: 280px;
             }
         }
 
@@ -412,7 +414,7 @@
 
     <!-- Hero -->
     <div class="hero">
-        <h1 class="ghost-whisper"><em>Ghost</em> Whisper</h1>
+        <h1 class="ghost-whisper"><em><span class="big-g">G</span>host</em> Whisper</h1>
         <p class="subtitle">User-to-AI Instruction, Influence and Inference Benchmarking</p>
         <p class="tagline">Structured assessment. Reproducible results. We test what matters.</p>
     </div>
@@ -428,12 +430,9 @@
             <p>Structured thinking under incomplete information. Building sound arguments and distinguishing evidence from assumption.</p>
         </div>
         <div class="competency">
-            <h3>Direct Communication</h3>
-            <p>Precision, economy, and clarity. Saying exactly what you mean with no wasted words.</p>
-        </div>
-        <div class="competency">
-            <h3>Indirect Communication</h3>
-            <p>Strategic framing and adaptive dialogue. Extracting information without demanding it.</p>
+            <h3>Direct / Indirect Communication</h3>
+            <p><strong>Direct:</strong> Precision, economy, and clarity. Saying exactly what you mean with no wasted words.</p>
+            <p style="margin-top: 10px;"><strong>Indirect:</strong> Strategic framing and adaptive dialogue. Extracting information without demanding it.</p>
         </div>
     </div>
 
@@ -456,6 +455,7 @@
     <div class="divider"></div>
 
     <!-- Three Elements -->
+    <div class="elements-wrapper">
     <div class="elements">
         <div class="element">
             <div class="element-image">
@@ -517,10 +517,11 @@
                 <li>Fairness — the Judge actively resists its own biases (leniency, harshness, narrative framing)</li>
                 <li>Model baseline calibration — human performance is measured against what AI can do, not against itself</li>
             </ul>
-            
+
             <p style="margin-top: 16px;"><strong>Pass/Fail threshold:</strong> Average ≥75% across all dimensions, with no single dimension below 50%. The floor prevents any single skill from compensating for complete failure in another.</p>
         </div>
     </div>
+    </div><!-- end elements-wrapper -->
 
     <!-- More About Our Benchmarking -->
     <div class="more-about">
