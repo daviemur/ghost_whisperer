@@ -238,13 +238,6 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-app.get('/check-env', (req, res) => {
-  res.json({
-    hasApiKey: !!process.env.ANTHROPIC_API_KEY,
-    keyPrefix: process.env.ANTHROPIC_API_KEY ? process.env.ANTHROPIC_API_KEY.substring(0, 7) + '...' : 'NOT SET'
-  });
-});
-
 app.post('/api/validate-code', (req, res) => {
   const { code } = req.body;
   const result = classifyCode(code);
