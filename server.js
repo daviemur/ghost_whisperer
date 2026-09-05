@@ -439,7 +439,7 @@ app.post('/api/certificate-application', async (req, res) => {
       });
       transporter.sendMail({
         from: process.env.SMTP_USER,
-        to: 'GWcertificates@pointspective.com',
+        to: 'inquiries@pointspective.com',
         subject: 'Certificate Application — ' + (d.area || '') + ' — ' + (d.fullName || ''),
         text: body
       }).catch(err => console.error('Cert email failed:', err.message));
