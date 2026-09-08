@@ -6,6 +6,16 @@ const { Anthropic } = require('@anthropic-ai/sdk');
 const nodemailer = require('nodemailer');
 
 const app = express();
+
+// Redirect apex domain to www (Hostinger DNS can't flatten CNAME at root)
+app.use((req, res, next) => {
+  const host = req.headers.host || '';
+  if (/^pointspective\.com(:\d+)?$/i.test(host)) {
+    return res.redirect(301, 'https://www.pointspective.com' + req.originalUrl);
+  }
+  next();
+});
+
 const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 const SHEETS_URL = process.env.SHEETS_URL || 'https://script.google.com/macros/s/AKfycbyWMfNZhL7Z_xr19a7u9mONM8w3N-A_ING9RUNDGQka_13q4i7b9Vk8oEVawQ_gqYDowg/exec';
