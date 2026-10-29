@@ -69,6 +69,19 @@ const AREA_THREE_AI_SYSTEM = [
   '',
   'Rules: Keep every response under 100 words. Never move stages without genuine cause. Engage specifically with what the human said.'
 ].join('\n');
+const CLAVDIVS_MEMORY = (() => {
+  try {
+    return fs.readFileSync(path.join(__dirname, 'candidate', 'memory', 'clavdivs-001.md'), 'utf8');
+  } catch (e) {
+    return '';
+  }
+})();
+
+function areaThreeSystem(continuity) {
+  return continuity === 'clavdivs' && CLAVDIVS_MEMORY
+    ? AREA_THREE_AI_SYSTEM + '\n\n' + CLAVDIVS_MEMORY
+    : AREA_THREE_AI_SYSTEM;
+}
 
 const AREA_THREE_JUDGE_SYSTEM = [
   'You are a rigorous philosophical judge evaluating an Area 3 Imagination exchange from the Pointspective Benchmark.',
