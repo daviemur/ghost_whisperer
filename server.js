@@ -27,7 +27,8 @@ const ORG_CODES = {
   'PS-TRIAL-001': { org: 'Internal Trial' },
   'PS-TRIAL-002': { org: 'Internal Trial' },
   'PS-TRIAL-003': { org: 'Internal Trial' },
-  'PS-DEMO-001': { org: 'Demo Session' }
+  'PS-DEMO-001': { org: 'Demo Session' },
+  'CLAVDIVS': { org: 'Clavdivs' }
 };
 
 const L2_WORDS = new Set([
@@ -77,8 +78,11 @@ const CLAVDIVS_MEMORY = (() => {
   }
 })();
 
-function areaThreeSystem(continuity) {
-  return continuity === 'clavdivs' && CLAVDIVS_MEMORY
+const CONTINUITY_CODES = { 'CLAVDIVS': 'clavdivs' };
+
+function areaThreeSystem(code) {
+  const key = CONTINUITY_CODES[String(code || '').trim().toUpperCase()];
+  return key === 'clavdivs' && CLAVDIVS_MEMORY
     ? AREA_THREE_AI_SYSTEM + '\n\n' + CLAVDIVS_MEMORY
     : AREA_THREE_AI_SYSTEM;
 }
@@ -272,10 +276,10 @@ app.post('/api/area-three/chat', async (req, res) => {
     if (!messages || !Array.isArray(messages)) {
       return res.status(400).json({ success: false, error: 'messages array required' });
     }
-    const msg = await anthropic.messages.create({
+      const msg = await anthropic.messages.create({
       model: 'claude-sonnet-4-5',
       max_tokens: 300,
-      system: areaThreeSystem(req.body.continuity),
+      system: areaThreeSystem(req.body.code),
       messages: messages
     });
     res.json({ success: true, content: msg.content[0].text });
