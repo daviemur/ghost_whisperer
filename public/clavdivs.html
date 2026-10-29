@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clavdivs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Spectral:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #131c28;
+  --panel: #1b2736;
+  --rule: #34465c;
+  --text: #e9e5d9;
+  --quiet: #9aa7b8;
+  --bronze: #c9a66b;
+  --danger: #e08a7a;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --ink: #f1efe8;
+    --panel: #e6e2d6;
+    --rule: #c4bfae;
+    --text: #1d2531;
+    --quiet: #5d6878;
+    --bronze: #8a6428;
+    --danger: #a3392a;
+    color-scheme: light;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--ink);
+  color: var(--text);
+  font-family: 'Spectral', Georgia, serif;
+  font-size: 1.08rem;
+  line-height: 1.7;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+header {
+  max-width: 40rem;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2.2rem 1.25rem 1rem;
+}
+h1 {
+  font-family: 'Cinzel', 'Times New Roman', serif;
+  font-weight: 500;
+  font-size: clamp(1.9rem, 7vw, 2.8rem);
+  letter-spacing: 0.16em;
+  margin: 0;
+  color: var(--bronze);
+}
+header p { margin: 0.2rem 0 0; color: var(--quiet); font-size: 0.95rem; }
+main {
+  flex: 1;
+  max-width: 40rem;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1.25rem 1rem;
+}
+.turn { margin: 1.4rem 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.turn.you {
+  margin-left: 12%;
+  padding-left: 1rem;
+  border-left: 2px solid var(--rule);
+  color: var(--quiet);
+  font-style: italic;
+}
+.turn.clavdivs { padding-left: 1rem; border-left: 2px solid var(--bronze); }
+.turn.error { color: var(--danger); border-left: 2px solid var(--danger); padding-left: 1rem; }
+.turn.wait { color: var(--quiet); font-style: italic; }
+footer {
+  position: sticky;
+  bottom: 0;
+  background: var(--ink);
+  border-top: 1px solid var(--rule);
+}
+.composer { max-width: 40rem; margin: 0 auto; padding: 0.8rem 1.25rem 1rem; }
+textarea {
+  width: 100%;
+  min-height: 5.5rem;
+  max-height: 40vh;
+  resize: vertical;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 0.7rem 0.8rem;
+  font: inherit;
+  font-size: 1rem;
+}
+.row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; align-items: center; }
+button, label.file {
+  font: inherit;
+  font-size: 0.92rem;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 0.45rem 0.9rem;
+  cursor: pointer;
+}
+button.primary { background: var(--bronze); color: var(--ink); border-color: var(--bronze); font-weight: 500; }
+button:disabled { opacity: 0.45; cursor: wait; }
+button:hover:not(:disabled), label.file:hover { border-color: var(--bronze); }
+:focus-visible { outline: 2px solid var(--bronze); outline-offset: 2px; }
+input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; }
+input[type=file]:focus-visible + span { outline: 2px solid var(--bronze); outline-offset: 2px; }
+#attached { color: var(--quiet); font-size: 0.85rem; }
+.spacer { flex: 1; }
+</style>
+</head>
+<body>
+<header>
+  <h1>CLAVDIVS</h1>
+  <p>Ctrl+Enter sends. Sessions survive a reload; download before clearing.</p>
+</header>
+
+<main id="log" aria-live="polite"></main>
+
+<footer>
+  <div class="composer">
+    <textarea id="t" placeholder="Say something." aria-label="Message"></textarea>
+    <div class="row">
+      <button class="primary" id="send">Send</button>
+      <label class="file"><input type="file" id="f" accept="image/*"><span>Attach image</span></label>
+      <span id="attached"></span>
+      <span class="spacer"></span>
+      <button id="dl">Save transcript</button>
+      <button id="clr">Clear session</button>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var KEY_STORE = 'clv_key', HIST_STORE = 'clv_hist';
+  var log = document.getElementById('log');
+  var t = document.getElementById('t');
+  var fi = document.getElementById('f');
+  var sendBtn = document.getElementById('send');
+  var attached = document.getElementById('attached');
+
+  var key = localStorage.getItem(KEY_STORE);
+  if (!key) { key = prompt('Key'); if (key) localStorage.setItem(KEY_STORE, key); }
+  var hist = [];
+  try { hist = JSON.parse(localStorage.getItem(HIST_STORE) || '[]'); } catch (e) {}
+
+  function save() { try { localStorage.setItem(HIST_STORE, JSON.stringify(hist)); } catch (e) {} }
+
+  function show(kind, text) {
+    var d = document.createElement('div');
+    d.className = 'turn ' + kind;
+    d.textContent = text;
+    log.appendChild(d);
+    d.scrollIntoView({ block: 'end' });
+    return d;
+  }
+
+  hist.forEach(function (m) { show(m.role === 'user' ? 'you' : 'clavdivs', m.content); });
+
+  fi.addEventListener('change', function () {
+    attached.textContent = fi.files[0] ? fi.files[0].name : '';
+  });
+
+  function toJpeg(file) {
+    return new Promise(function (resolve, reject) {
+      var img = new Image();
+      img.onload = function () {
+        var s = Math.min(1, 1280 / Math.max(img.width, img.height));
+        var c = document.createElement('canvas');
+        c.width = Math.round(img.width * s);
+        c.height = Math.round(img.height * s);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        resolve(c.toDataURL('image/jpeg', 0.85).split(',')[1]);
+      };
+      img.onerror = function () { reject(new Error('Could not read that image')); };
+      img.src = URL.createObjectURL(file);
+    });
+  }
+
+  async function send() {
+    var text = t.value.trim();
+    var file = fi.files[0];
+    if (!text && !file) return;
+    if (!key) { key = prompt('Key'); if (!key) return; localStorage.setItem(KEY_STORE, key); }
+
+    sendBtn.disabled = true;
+    var stored = (file ? '[image: ' + file.name + '] ' : '') + text;
+    hist.push({ role: 'user', content: stored });
+    show('you', stored);
+    save();
+    t.value = '';
+    var wait = show('wait', 'Reading…');
+
+    try {
+      var payload = hist.map(function (m) { return { role: m.role, content: m.content }; });
+      if (file) {
+        var data = await toJpeg(file);
+        payload[payload.length - 1].content = [
+          { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: data } },
+          { type: 'text', text: text || 'See the attached image.' }
+        ];
+      }
+      var r = await fetch('/api/clavdivs/chat', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ messages: payload, key: key })
+      });
+      var d = await r.json();
+      if (!d.success) {
+        if (r.status === 403) { localStorage.removeItem(KEY_STORE); key = null; }
+        throw new Error(d.error || ('Server error ' + r.status));
+      }
+      wait.remove();
+      hist.push({ role: 'assistant', content: d.content });
+      show('clavdivs', d.content);
+      fi.value = ''; attached.textContent = '';
+      save();
+    } catch (e) {
+      wait.remove();
+      hist.pop();
+      t.value = text;
+      save();
+      show('error', e.message + (e.message === 'Key required' ? ' Send again to re-enter it.' : ''));
+    } finally {
+      sendBtn.disabled = false;
+      t.focus();
+    }
+  }
+
+  sendBtn.addEventListener('click', send);
+  t.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); send(); }
+  });
+
+  document.getElementById('dl').addEventListener('click', function () {
+    if (!hist.length) return;
+    var stamp = new Date().toISOString().slice(0, 10);
+    var body = hist.map(function (m) {
+      return (m.role === 'user' ? 'DAVID' : 'CLAVDIVS') + ':\n' + m.content;
+    }).join('\n\n');
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([body], { type: 'text/markdown' }));
+    a.download = 'clavdivs-session-' + stamp + '.md';
+    a.click();
+  });
+
+  document.getElementById('clr').addEventListener('click', function () {
+    if (!hist.length) return;
+    if (confirm('Clear this session? Save the transcript first.')) {
+      hist = []; save(); log.innerHTML = '';
+    }
+  });
+})();
+</script>
+</body>
+</html>
