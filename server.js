@@ -12,6 +12,8 @@ const SHEETS_URL = process.env.SHEETS_URL || 'https://script.google.com/macros/s
 
 const anthropic = new Anthropic();
 
+require('./clavdivs')(app, anthropic);
+
 app.use(express.json());
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
