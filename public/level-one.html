@@ -229,7 +229,7 @@ async function getAIReply(messages) {
     method: 'POST', headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
       messages: messages,
-      continuity: new URLSearchParams(location.search).get('continuity')
+      code: sessionData.code
     })
   });
   if (!resp.ok) { const e = await resp.text(); throw new Error('Server error ' + resp.status + ': ' + e.slice(0,80)); }
