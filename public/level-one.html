@@ -227,7 +227,10 @@ function restoreChat() {
 async function getAIReply(messages) {
   const resp = await fetch(BACKEND + '/api/area-three/chat', {
     method: 'POST', headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ messages })
+    body: JSON.stringify({
+      messages: messages,
+      continuity: new URLSearchParams(location.search).get('continuity')
+    })
   });
   if (!resp.ok) { const e = await resp.text(); throw new Error('Server error ' + resp.status + ': ' + e.slice(0,80)); }
   const data = await resp.json();
