@@ -275,7 +275,7 @@ app.post('/api/area-three/chat', async (req, res) => {
     const msg = await anthropic.messages.create({
       model: 'claude-sonnet-4-5',
       max_tokens: 300,
-      system: AREA_THREE_AI_SYSTEM,
+      system: areaThreeSystem(req.body.continuity),
       messages: messages
     });
     res.json({ success: true, content: msg.content[0].text });
