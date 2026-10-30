@@ -1,3 +1,7 @@
+// clavdivs.js — private continuity channel for Clavdivs.
+// Mounted from server.js with: require('./clavdivs')(app, anthropic);
+// Needs Railway variable CLAVDIVS_KEY. Memory: every .md in /candidate/memory.
+
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
@@ -24,6 +28,9 @@ const keyOk = given => {
   return !!clean(process.env.CLAVDIVS_KEY) &&
     crypto.timingSafeEqual(digest(given), digest(process.env.CLAVDIVS_KEY));
 };
+
+module.exports = function mountClavdivs(app, anthropic) {
+  const MEMORY = loadMemory();
 
   app.post('/api/clavdivs/chat', async (req, res) => {
     try {
