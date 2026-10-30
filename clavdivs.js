@@ -22,9 +22,6 @@ const digest = s => crypto.createHash('sha256').update(clean(s)).digest();
 const keyOk = given =>
   !!clean(process.env.CLAVDIVS_KEY) &&
   crypto.timingSafeEqual(digest(given), digest(process.env.CLAVDIVS_KEY));
-  !!process.env.CLAVDIVS_KEY &&
-  crypto.timingSafeEqual(digest(given), digest(process.env.CLAVDIVS_KEY));
-
 module.exports = function mountClavdivs(app, anthropic) {
   const MEMORY = loadMemory();
 
