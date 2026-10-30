@@ -113,6 +113,7 @@ button:hover:not(:disabled), label.file:hover { border-color: var(--bronze); }
 input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; }
 input[type=file]:focus-visible + span { outline: 2px solid var(--bronze); outline-offset: 2px; }
 #attached { color: var(--quiet); font-size: 0.85rem; }
+#k { font: inherit; font-size: 0.92rem; width: 8.5rem; background: var(--panel); color: var(--text); border: 1px solid var(--rule); border-radius: 4px; padding: 0.4rem 0.6rem; }
 .spacer { flex: 1; }
 </style>
 </head>
@@ -131,6 +132,7 @@ input[type=file]:focus-visible + span { outline: 2px solid var(--bronze); outlin
       <button class="primary" id="send">Send</button>
       <label class="file"><input type="file" id="f" accept="image/*"><span>Attach image</span></label>
       <span id="attached"></span>
+      <input type="password" id="k" placeholder="Key" autocomplete="off" aria-label="Key">
       <span class="spacer"></span>
       <button id="dl">Save transcript</button>
       <button id="clr">Clear session</button>
@@ -147,8 +149,10 @@ input[type=file]:focus-visible + span { outline: 2px solid var(--bronze); outlin
   var sendBtn = document.getElementById('send');
   var attached = document.getElementById('attached');
 
-  var key = localStorage.getItem(KEY_STORE);
-  if (!key) { key = prompt('Key'); if (key) localStorage.setItem(KEY_STORE, key); }
+  var keyBox = document.getElementById('k');
+  keyBox.value = localStorage.getItem(KEY_STORE) || '';
+  keyBox.addEventListener('input', function () { localStorage.setItem(KEY_STORE, keyBox.value.trim()); });
+  function getKey() { return keyBox.value.trim(); }
   var hist = [];
   try { hist = JSON.parse(localStorage.getItem(HIST_STORE) || '[]'); } catch (e) {}
 
@@ -189,7 +193,7 @@ input[type=file]:focus-visible + span { outline: 2px solid var(--bronze); outlin
     var text = t.value.trim();
     var file = fi.files[0];
     if (!text && !file) return;
-    if (!key) { key = prompt('Key'); if (!key) return; localStorage.setItem(KEY_STORE, key); }
+    if (!getKey()) { show('error', 'Type the key into the Key box first.'); return; }
 
     sendBtn.disabled = true;
     var stored = (file ? '[image: ' + file.name + '] ' : '') + text;
@@ -211,11 +215,11 @@ input[type=file]:focus-visible + span { outline: 2px solid var(--bronze); outlin
       var r = await fetch('/api/clavdivs/chat', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ messages: payload, key: key })
+        body: JSON.stringify({ messages: payload, key: getKey() })
       });
       var d = await r.json();
       if (!d.success) {
-        if (r.status === 403) { localStorage.removeItem(KEY_STORE); key = null; }
+        if (r.status === 403) throw new Error('Key rejected. The page sent ' + getKey().length + ' characters.');
         throw new Error(d.error || ('Server error ' + r.status));
       }
       wait.remove();
@@ -228,7 +232,7 @@ input[type=file]:focus-visible + span { outline: 2px solid var(--bronze); outlin
       hist.pop();
       t.value = text;
       save();
-      show('error', e.message + (e.message === 'Key required' ? ' Send again to re-enter it.' : ''));
+      show('error', e.message);
     } finally {
       sendBtn.disabled = false;
       t.focus();
