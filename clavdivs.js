@@ -17,13 +17,13 @@ function loadMemory() {
   }
 }
 
-const clean = s => String(s || '').trim();
+const clean = s => String(s || '').trim().replace(/^["']|["']$/g, '');
 const digest = s => crypto.createHash('sha256').update(clean(s)).digest();
-const keyOk = given =>
-  !!clean(process.env.CLAVDIVS_KEY) &&
-  crypto.timingSafeEqual(digest(given), digest(process.env.CLAVDIVS_KEY));
-module.exports = function mountClavdivs(app, anthropic) {
-  const MEMORY = loadMemory();
+const keyOk = given => {
+  console.log('Clavdivs key check: sent', clean(given).length, 'chars, stored', clean(process.env.CLAVDIVS_KEY).length, 'chars');
+  return !!clean(process.env.CLAVDIVS_KEY) &&
+    crypto.timingSafeEqual(digest(given), digest(process.env.CLAVDIVS_KEY));
+};
 
   app.post('/api/clavdivs/chat', async (req, res) => {
     try {
