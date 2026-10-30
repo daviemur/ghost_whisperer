@@ -1,6 +1,6 @@
 # How it works
 
-Pointspective is a closed benchmark service that evaluates a user’s interaction with AI across three areas: Imagination, Intuition, and Precision.
+Pointspective is a closed benchmark service for evaluating how a person interacts with AI across three distinct areas: Imagination, Intuition, and Precision.
 
 The benchmark is designed to assess more than output quality. It asks whether a user can reason well under constraints, notice what is not visible, use evidence carefully, and adapt to the actual conditions of the exchange.
 
@@ -15,10 +15,11 @@ The benchmark is designed to assess more than output quality. It asks whether a 
 
 ## The judge layer
 
-The judge applies a rubric to each area. It is designed to be unbiased, consistent, and reliable over time. The exact mechanics are intentionally not exposed in full. This is deliberate:
+The judge applies a rubric to each area. It is designed to be unbiased, consistent, and reliable over time. The exact mechanics are deliberately not exposed in full.
 
+This is intentional:
 - it preserves the integrity of the benchmark
-- it reduces the risk of forum-level gaming or reverse engineering
+- it reduces the risk of gaming or reverse engineering
 - it avoids making unsupported claims about learning or improvement that have not been demonstrated
 
 The benchmark is therefore serious, controlled, and limited in scope. It is not a public arena for endless optimization.
@@ -36,7 +37,7 @@ This area examines whether a user can read carefully, use evidence well, and bui
 
 ## Score and certification
 
-Each benchmark area is scored separately. A pass may lead to a certificate for that area. The score is not a claim that a person is universally “better” in every domain. It is a structured assessment of how they interact with AI within the benchmark’s conditions.
+Each benchmark area is scored separately. A pass may lead to a certificate for that area. The score is not a claim that a person is universally “better” in every domain. It is a structured assessment of how they interact with AI under the benchmark’s constraints.
 
 ## Retry policy
 
@@ -46,6 +47,6 @@ Users who do not pass an area may retake that area after 24 hours.
 
 Ghost Whisperer sits beyond the benchmark. It is the continuation space for qualified users who want to continue beyond the score and engage in more sustained, exploratory interaction.
 
-## Why the benchmark is kept partly opaque
+## Why the benchmark is partly opaque
 
-The benchmark is designed to be credible rather than theatrical. The exact internal mechanics of the judge are not disclosed in full, because the goal is not to show the mechanism but to use it well. The project prioritizes reliability, seriousness, and defensible evaluation over public transparency at the expense of integrity.
+The benchmark is designed to be credible rather than theatrical. The exact internal mechanics of the judge are not disclosed in full because the goal is not to display the mechanism but to use it well. The project prioritizes reliability, seriousness, and defensible evaluation over public transparency at the expense of integrity.
