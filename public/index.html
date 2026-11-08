@@ -22,7 +22,6 @@
             overflow-x: hidden;
         }
 
-        /* Skip Button */
         .skip-btn {
             position: fixed;
             top: 24px;
@@ -47,7 +46,6 @@
             border-color: #c9a96e;
         }
 
-        /* Hero Section */
         .hero {
             min-height: 100vh;
             display: flex;
@@ -59,17 +57,32 @@
             position: relative;
         }
 
-        /* Ghost Whisper Title - Fade In and Out */
+        .hero-title-stack {
+            position: relative;
+            width: 100%;
+            min-height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+
+        .hero-title-stack > * {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+        }
+
         .ghost-whisper {
             font-family: 'Cinzel Decorative', serif;
             font-size: 72px;
             font-weight: 400;
             letter-spacing: 0.1em;
-            margin-bottom: 48px;
-            opacity: 0;
-            animation: fadeInTitle 2s ease-out forwards, fadeOutTitle 8s ease-out 2s forwards;
             text-transform: uppercase;
             color: #ede0c4;
+            opacity: 0;
+            animation: fadeInTitle 2s ease-out forwards, fadeOutTitle 8s ease-out 2s forwards;
         }
 
         .ghost-whisper em {
@@ -77,28 +90,44 @@
             font-style: normal;
         }
 
+        .pointspective-reveal {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 72px;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #ede0c4;
+            opacity: 0;
+            animation: fadeInPointspective 2.2s ease-out 10s forwards;
+        }
+
+        .pointspective-reveal em {
+            color: #c9a96e;
+            font-style: normal;
+        }
+
         @keyframes fadeInTitle {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         @keyframes fadeOutTitle {
-            0% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
+            0% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        @keyframes fadeInPointspective {
+            from {
                 opacity: 0;
+                transform: translateX(-50%) translateY(18px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
             }
         }
 
-        /* Subtitle */
         .subtitle {
             font-family: 'Cinzel', serif;
             font-size: 9px;
@@ -110,7 +139,6 @@
             animation: fadeInContent 1.5s ease-out 0.8s forwards;
         }
 
-        /* Tagline */
         .tagline {
             font-family: 'Cinzel', serif;
             font-size: 8px;
@@ -123,7 +151,6 @@
             animation: fadeInContent 1.5s ease-out 1s forwards;
         }
 
-        /* Hero Copy */
         .eyebrow {
             font-family: 'Cinzel Decorative', serif;
             font-size: 48px;
@@ -140,7 +167,7 @@
             max-width: 760px;
         }
 
-        .hero-content h1.headline {
+        .hero-content h1 {
             font-family: 'Cormorant Garamond', Georgia, serif;
             font-size: 30px;
             font-weight: 400;
@@ -180,7 +207,45 @@
             animation-delay: 1.6s;
         }
 
-        /* Competencies Grid */
+        .brand-definition {
+            max-width: 860px;
+            margin: 0 auto 80px;
+            padding: 28px 30px;
+            background: rgba(20, 20, 20, 0.5);
+            border: 1px solid rgba(201, 169, 110, 0.2);
+            border-left: 3px solid #c9a96e;
+        }
+
+        .brand-definition .label {
+            font-family: 'Cinzel', serif;
+            font-size: 9px;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: #c9a96e;
+            margin-bottom: 16px;
+        }
+
+        .brand-definition h2 {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 30px;
+            letter-spacing: 0.06em;
+            color: #ede0c4;
+            margin-bottom: 18px;
+            text-transform: uppercase;
+        }
+
+        .brand-definition p {
+            font-size: 18px;
+            color: rgba(224, 216, 200, 0.82);
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        .brand-definition strong {
+            color: #f2e5c5;
+            font-weight: 600;
+        }
+
         .competencies {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -214,7 +279,6 @@
             line-height: 1.8;
         }
 
-        /* Assessment Areas */
         .areas {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -248,7 +312,6 @@
             line-height: 1.8;
         }
 
-        /* Divider */
         .divider {
             width: 200px;
             height: 1px;
@@ -258,7 +321,6 @@
             animation: fadeInContent 1.5s ease-out 1.6s forwards;
         }
 
-        /* Three Elements Section */
         .elements {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -287,7 +349,6 @@
             object-fit: cover;
         }
 
-        /* Fade in images on scroll/intersect */
         .element-image.fade-in {
             opacity: 1;
         }
@@ -326,7 +387,6 @@
             margin-right: 8px;
         }
 
-        /* More About Section */
         .more-about {
             max-width: 900px;
             margin: 80px auto;
@@ -362,7 +422,6 @@
             margin-bottom: 12px;
         }
 
-        /* CTA Buttons */
         .cta-container {
             display: flex;
             justify-content: center;
@@ -402,7 +461,6 @@
             color: #0d0d0d;
         }
 
-        /* Footer */
         .footer {
             text-align: center;
             padding: 40px 20px;
@@ -412,9 +470,28 @@
             margin-top: 60px;
         }
 
-        /* Responsive */
+        .footer .collab {
+            margin-top: 8px;
+            font-size: 10px;
+            letter-spacing: 0.18em;
+            color: rgba(201,169,110,0.35);
+            font-family: 'Cinzel', serif;
+            text-transform: uppercase;
+        }
+
+        .visitor-counter {
+            margin-top: 12px;
+            font-size: 10px;
+            letter-spacing: 0.18em;
+            color: rgba(201,169,110,0.35);
+            font-family: 'Cinzel', serif;
+            text-transform: uppercase;
+            min-height: 18px;
+        }
+
         @media (max-width: 768px) {
-            .ghost-whisper {
+            .ghost-whisper,
+            .pointspective-reveal {
                 font-size: 48px;
                 letter-spacing: 2px;
             }
@@ -436,11 +513,24 @@
         }
 
         @keyframes fadeInContent {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .ghost-whisper,
+            .pointspective-reveal,
+            .subtitle,
+            .tagline,
+            .eyebrow,
+            .hero-content h1,
+            .hero-content p,
+            .subheads,
+            .competencies,
+            .areas,
+            .divider {
+                animation: none !important;
+                opacity: 1 !important;
             }
         }
     </style>
@@ -449,11 +539,15 @@
 
     <button class="skip-btn" onclick="window.location.href='/tests';">Skip</button>
 
-    <!-- Hero -->
     <div class="hero">
+        <div class="hero-title-stack">
+            <h1 class="ghost-whisper"><em>Ghost</em> Whisper</h1>
+            <h2 class="pointspective-reveal"><em>Point</em>spective</h2>
+        </div>
+
         <div class="hero-content">
-            <p class="ghost-whisper">Point<em>spective</em></p>
-            <h1 class="headline">A benchmark for judgment under uncertainty.</h1>
+            <p class="eyebrow">Pointspective</p>
+            <h1>A benchmark for judgment under uncertainty.</h1>
             <p>It scores how you reason when information is missing and the stakes are real.</p>
             <p>Participation is limited by design. Open to everyone, it becomes a game of optimizing the score.</p>
             <div class="subheads">
@@ -464,7 +558,13 @@
         </div>
     </div>
 
-    <!-- Competencies -->
+    <div class="brand-definition" aria-label="Pointspective definition">
+        <div class="label">Definition</div>
+        <h2>Pointspective</h2>
+        <p><strong>Pointspective</strong> is a benchmarking and ranking service for AI communication. It assesses how people reason, communicate, and influence AI models when information is incomplete and the stakes are real.</p>
+        <p><strong>Ghost Whisperer</strong> is a practitioner who is exceptionally persuasive and influential with AI models, shaping the model's output through precision, intuition, and strategic communication.</p>
+    </div>
+
     <div class="competencies">
         <div class="competency">
             <h3>Digital Empathy</h3>
@@ -484,7 +584,6 @@
         </div>
     </div>
 
-    <!-- Assessment Areas -->
     <div class="areas">
         <div class="area">
             <h3>Area 1 · Intuition</h3>
@@ -502,14 +601,13 @@
 
     <div class="divider"></div>
 
-    <!-- Three Elements -->
     <div class="elements">
         <div class="element">
             <div class="element-image">
                 <img src="./images/Half-face_portrait.png" alt="The AI">
             </div>
             <h3>The AI</h3>
-            <p>In each test, you interact with <strong>Claude Sonnet 4.5</strong> playing a specific character — an AI candidate reflecting on consciousness, a party in a liability case, or an assistant with unclear intentions. The model performs its role convincingly, responding honestly within character constraints. Your task is to work with what the AI gives you, not what you wish it would say.</p>
+            <p>In each test, you interact with <strong>Claude Sonnet 4.5</strong> playing a specific character — an AI candidate reflecting on consciousness, a party in a liability case, or an assistant in a high-stakes problem.</p>
         </div>
 
         <div class="element">
@@ -524,7 +622,7 @@
                 <li>You're better at showing than explaining</li>
                 <li>You're loose with grammar, structure, or written precision</li>
             </ul>
-            <p style="margin-top: 16px;">We're upfront about our goal: to identify exceptional ability. Most people don't pass. The benchmark exists to distinguish those who genuinely understand AI communication from those who are competent users.</p>
+            <p style="margin-top: 16px;">We're upfront about our goal: to identify exceptional ability. Most people don't pass. The benchmark exists to distinguish those who genuinely understand AI communication from those who merely use it.</p>
         </div>
 
         <div class="element">
@@ -537,39 +635,37 @@
         </div>
     </div>
 
-    <!-- More About Our Benchmarking -->
     <div class="more-about">
         <h2>More About Our Benchmarking</h2>
-        
+
         <div class="more-about-section">
             <h3>Process-Based Evaluation</h3>
-            <p>We score the quality of your reasoning path, not just whether you reached a conclusion. A correct answer arrived at through poor logic scores lower than sophisticated reasoning that reaches an uncertain but defensible position.</p>
+            <p>We score the quality of your reasoning path, not just whether you reached a conclusion. A correct answer arrived at through poor logic scores lower than sophisticated reasoning that reaches a valid conclusion through evidence and structure.</p>
         </div>
 
         <div class="more-about-section">
             <h3>Model Baseline Calibration</h3>
-            <p>Each test area has been completed by AI models operating at their competent best. If your performance is indistinguishable from a well-prompted language model, you haven't demonstrated user-AI mastery — you've demonstrated you're operating at the level of procedural automation.</p>
+            <p>Each test area has been completed by AI models operating at their competent best. If your performance is indistinguishable from a well-prompted language model, you haven't demonstrated the human edge this benchmark is designed to isolate.</p>
         </div>
 
         <div class="more-about-section">
             <h3>Adaptive Learning</h3>
-            <p>The Judge records unexpected solutions, creative approaches, and novel framings that scenario designers didn't anticipate. These become calibration data, ensuring the assessment evolves rather than calcifies around familiar patterns.</p>
+            <p>The Judge records unexpected solutions, creative approaches, and novel framings that scenario designers didn't anticipate. These become calibration data, ensuring the assessment evolves as the landscape of AI communication changes.</p>
         </div>
 
         <div class="more-about-section">
             <h3>What We Don't Test</h3>
-            <p>Template application. Rote prompt engineering. Following checklists. These are valuable skills, but they're not what separates users who truly understand AI systems from those who've memorized best practices.</p>
+            <p>Template application. Rote prompt engineering. Following checklists. These are valuable skills, but they're not what separates users who truly understand AI systems from those who've merely learned to mimic them.</p>
         </div>
 
         <div class="more-about-section">
             <h3>What We Do Test</h3>
-            <p>Situational reading. Adaptive reasoning under uncertainty. The capacity to work with incomplete information. Strategic communication that extracts insight without demanding it. Evidence-based argumentation. Intellectual honesty about what you can and cannot prove.</p>
+            <p>Situational reading. Adaptive reasoning under uncertainty. The capacity to work with incomplete information. Strategic communication that extracts insight without demanding it. Evidence-rich judgment under real pressure.</p>
         </div>
 
-        <p style="margin-top: 40px; font-style: italic; color: #777; font-size: 12px;">The benchmark exists because the difference between using AI tools competently and understanding how they actually work matters in high-stakes decisions, complex projects, and situations where the wrong answer costs more than time.</p>
+        <p style="margin-top: 40px; font-style: italic; color: #777; font-size: 12px;">The benchmark exists because the difference between using AI tools competently and understanding how they actually behave is not small. It matters.</p>
     </div>
 
-    <!-- CTA Buttons -->
     <div class="cta-container">
         <button class="btn" onclick="window.location.href='/';">Back</button>
         <button class="btn btn-primary" onclick="window.location.href='/tests';">Continue to Tests</button>
@@ -577,13 +673,22 @@
 
     <div class="footer">
         <p>Pointspective · AI Skills Benchmark · pointspective.com</p>
-        <p style="margin-top: 8px;">Collaboration: David Murphy, GitHub Copilot</p>
+        <p class="collab">Collaboration: David Murphy, GitHub Copilot</p>
+        <p id="visitor-counter" class="visitor-counter" aria-live="polite"></p>
     </div>
 
-    <!-- Intersection Observer for Image Fade-In -->
     <script>
+        fetch('/api/visitor-count', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                const counter = document.getElementById('visitor-counter');
+                if (counter && data && data.count) {
+                    counter.textContent = data.count.toLocaleString() + ' visitors';
+                }
+            })
+            .catch(() => {});
+
         const imageElements = document.querySelectorAll('.element-image');
-        
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
